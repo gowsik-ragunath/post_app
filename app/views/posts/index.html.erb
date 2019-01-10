@@ -1,0 +1,14 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-6">
+			<ul class="post-list">
+				<%= @post.each do |f| %>
+					<h1 class="list-heading"> <li><%= f.title %></li> </h1>
+					<li class="list-body"><%= f.body %></li>
+				<% end %>
+			</ul>
+		</div>
+		<div class="co-md-6"></div>
+	</div>
+</div>
+			
