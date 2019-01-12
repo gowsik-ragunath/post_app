@@ -3,7 +3,7 @@
 		<div class="col-md-6">
 			<ul class="post-list">
 				<% @post.each do |f| %>
-					<h1 class="list-heading"> <li><%= link_to f.title, post_path(f) %></li> </h1>
+					<%= link_to f.title, topic_post_path(f.topic_id,f), class: "list-body " %>
 					<li class="list-body"><%= f.body %></li>
 				<% end %>
 			</ul>

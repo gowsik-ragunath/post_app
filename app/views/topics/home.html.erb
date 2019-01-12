@@ -1,0 +1,18 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-6">
+			<ul class="post-list">
+				<% @post.each do |f| %>
+					<div class="container">
+					<div class="row home-content">
+						<%= link_to f.title, topic_post_path(f.topic_id,f), class: "list-body " %>
+						<li class="list-body"><%= f.body %></li>
+					</div>
+					</div>
+				<% end %>
+			</ul>
+		</div>
+		<div class="co-md-6"></div>
+	</div>
+</div>
+			

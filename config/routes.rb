@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :topics do
+    resources :posts
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   # root to: 'posts#index'
@@ -7,6 +10,6 @@ Rails.application.routes.draw do
   # get '/posts/:id', to: 'posts#show' ,as: 'post'
   # delete '/posts/:id', to: 'posts#delete'
   # post 'posts/:id', to: 'posts#edit'
-  resources :posts, path: '/'
+  root to: "topics#home"
 end
 	

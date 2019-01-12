@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
 
 	def index
-		@post = Post.all
+		@post = Post.where("topic_id=?",params[:topic_id])
 	end
 
 	def new
@@ -11,7 +11,7 @@ class PostsController < ApplicationController
 	def create
 		@post = Post.new(post_paramas)
 		@post.save
-		redirect_to(posts_path)
+		redirect_to(topic_posts_path)
 	end
 
 	def show
@@ -21,7 +21,8 @@ class PostsController < ApplicationController
 	def destroy
 		@post = Post.find(params[:id])
 		@post.destroy
-		redirect_to(posts_path)
+		puts "!!!!!!!!!!!!!!!!!!!!!!!!"
+		redirect_to(topic_posts_path)
 	end
 
 	def edit
@@ -31,7 +32,7 @@ class PostsController < ApplicationController
 	def update
 		@post = Post.find(params[:id])
 		if @post.update_attributes(post_paramas)
-			redirect_to(posts_path)
+			redirect_to(topic_posts_path)
 		else
 			@post = Post.find(params[:id])
 			render action: :edit
@@ -41,7 +42,9 @@ class PostsController < ApplicationController
 	private
 
 	def post_paramas
-		params.require(:post).permit(:title,:body)
+		params.require(:post).permit(:title,:body,:topic_id)
 	end
+
+
 
 end

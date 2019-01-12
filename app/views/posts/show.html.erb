@@ -3,9 +3,10 @@
 		<div class="col-md-8">
 			<h1> <%= @post.title %> </h1>
 			<p> <%= @post.body %> </p>
-			<%= button_to 'Delete', post_path , method: :delete, class: "btn btn-danger show-btn", 
+			<p> <%= @post.topic_id %> </p>
+			<%= button_to 'Delete', topic_post_path , method: :delete, class: "btn btn-danger show-btn", 
                          data: { confirm: 'Are you sure?' } %>
-			<%= button_to 'Edit', edit_post_path , method: :get, class: "btn btn-warning show-btn" %>
+			<%= button_to 'Edit', edit_topic_post_path , method: :get, class: "btn btn-warning show-btn" %>
 		</div>
 		<div class="col-md-4"></div>
 	</div>
