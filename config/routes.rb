@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # get '/posts/:id', to: 'posts#show' ,as: 'post'
   # delete '/posts/:id', to: 'posts#delete'
   # post 'posts/:id', to: 'posts#edit'
-  root to: "topics#home"
+  get '/posts', to: "topics#home"
+  root to:"topics#index"
 end
 	

@@ -10,6 +10,14 @@
 			  <%= @topic.name %>
 			</p>
 
+			<ul>
+				<% @post.each do |f| %>
+					<% if f.topic_id == @topic.id %>
+						<li><%= link_to f.title , topic_post_path(@topic,f) %> </li>
+					<% end %>
+				<% end %>
+			</ul>
+
 			<%= link_to 'Edit', edit_topic_path(@topic) %> |
 			<%= link_to 'Back', topics_path %>
 </div>
