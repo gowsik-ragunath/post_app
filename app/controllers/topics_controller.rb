@@ -8,7 +8,8 @@ class TopicsController < ApplicationController
   end
 
   def home
-    @post = Post.paginate(page: params[:page], per_page: 10)
+    @post = Post.preload(:topic).paginate(page: params[:page], per_page: 10)
+    # @topic_name = Post.includes(:topic).to_a
   end
 
   # GET /topics/1

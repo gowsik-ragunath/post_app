@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
 
 	def index
-		@post = Post.where(topic_id: params[:topic_id]).paginate(page: params[:page], per_page: 10)
+		@post = Post.includes(:topic).where(topic_id: params[:topic_id]).paginate(page: params[:page], per_page: 10)
 	end
 
 	def new

@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div class="offset-md-1 col-md-6">
+    <div class="col-md-8">
       <%= bootstrap_form_with url: topic_post_comments_path(params[:topic_id],params[:post_id] || params[:id])  do |form| %>
         <% if @comment.errors.any? %>
           <div id="error_explanation">
