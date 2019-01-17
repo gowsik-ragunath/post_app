@@ -1,0 +1,27 @@
+<%= form_with(model: tag_post_member, local: true) do |form| %>
+  <% if tag_post_member.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(tag_post_member.errors.count, "error") %> prohibited this tag_post_member from being saved:</h2>
+
+      <ul>
+      <% tag_post_member.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :tag_id %>
+    <%= form.number_field :tag_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :post_id %>
+    <%= form.number_field :post_id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

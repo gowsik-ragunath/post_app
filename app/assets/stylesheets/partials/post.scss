@@ -2,6 +2,7 @@
 
 	li{
 		list-style:none;
+
 	}
 
 	.list-heading{
@@ -9,6 +10,15 @@
 	}
 
 	.list-body{
-		margin-left:50px;
+		margin-top: 15px;
+		margin-left: 50px;
+	}
+}
+.pagination{
+	justify-content: center;
+	li{
+		border: 1px solid #ddd;
+  		padding: 8px 16px;
+  		text-decoration: none;
 	}
 }

@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
+  
+  resources :tags
+  resources :tag_post_members
   resources :topics do
-    resources :posts
+    resources :posts do
+      resources :comments    
+    end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 

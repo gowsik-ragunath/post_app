@@ -5,7 +5,8 @@
 			<%= bootstrap_form_for @post, url: topic_posts_path do |p| %>
 				<%= p.text_field(:title) %>
 				<%= p.text_area(:body) %>
-				<%= p.text_field(:topic_id) %>
+				<%= p.collection_select :topic_id, @topic , :id ,:name %>
+				<%= p.collection_select :tag_ids, @tag, :id, :tag,{}, {multiple: true} %>
 				<%= p.submit('create') %>
 			<% end %>
 		</div>

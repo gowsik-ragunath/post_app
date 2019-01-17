@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="row">
+    <div class="offset-md-1 col-md-6">
+      <%= bootstrap_form_with url: topic_post_comments_path(params[:topic_id],params[:post_id] || params[:id])  do |form| %>
+        <% if @comment.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+
+            <ul>
+            <% @comment.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="field">
+          <%= form.text_field :commenter %>
+        </div>
+
+        <div class="field">
+          <%= form.text_area :body %>
+        </div>
+
+
+        <div class="actions">
+          <%= form.submit %>
+        </div>
+      <% end %>
+      </div>
+  </div>
+</div>

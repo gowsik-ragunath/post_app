@@ -8,7 +8,7 @@ class TopicsController < ApplicationController
   end
 
   def home
-    @post = Post.all
+    @post = Post.paginate(page: params[:page], per_page: 10)
   end
 
   # GET /topics/1

@@ -9,8 +9,14 @@
 				<p>
 					<%= p.text_area :body %>
 				</p>
+				<p>
+				<%= p.collection_select :tag_ids, @tag, :id, :tag,{}, {multiple: true} %></p>
 				<p> <%= p.submit %> </p>
+
 			<% end %>
+			<%= button_to 'Delete', topic_post_path , method: :delete, class: "btn btn-danger show-btn", 
+                         data: { confirm: 'Are you sure?' } %>
+			<%= button_to 'Edit', edit_topic_post_path , method: :get, class: "btn btn-warning show-btn" %>
 		</div>
 	</div>
 </div>

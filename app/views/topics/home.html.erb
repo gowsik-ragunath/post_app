@@ -1,15 +1,20 @@
 <div class="container">
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-12">
 			<ul class="post-list">
+
+			<p><%= will_paginate @post, renderer: BootstrapPagination::Rails%></p>
 				<% @post.each do |f| %>
 					<div class="container">
 					<div class="row home-content">
-						<%= link_to f.title, topic_post_path(f.topic_id,f), class: "list-body " %>
-						<li class="list-body"><%= f.body %></li>
+						<h2><%= link_to f.title+' ('+f.topic.name.upcase+") ", topic_post_path(f.topic_id,f), class: "list-heading " %></h2>
+						<p><li class="list-body"><%= f.body %></li></p>
+
 					</div>
 					</div>
 				<% end %>
+
+			<p><%= will_paginate @post, renderer: BootstrapPagination::Rails%></p>
 			</ul>
 		</div>
 		<div class="co-md-6"></div>
