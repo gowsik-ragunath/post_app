@@ -13,7 +13,7 @@ class Post < ApplicationRecord
 
 
 
-	accepts_nested_attributes_for :tags
+	accepts_nested_attributes_for :tags, reject_if: -> (tag) {tag['tag'].blank?}
 
 
  ################################validation######################################################################
