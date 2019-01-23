@@ -9,6 +9,11 @@ RSpec.describe Tag, type: :model do
 	}
 
   describe "uniqueness of tag" do
+		it "validates presence of tag" do
+			expect(subject).to be_valid
+      subject.tag = nil
+      expect(subject).not_to be_valid
+		end
     it "validates uniqueness of tag" do
 			described_class.create!(tag:'check_tag')
 			check = described_class.new(tag:'check_tag')

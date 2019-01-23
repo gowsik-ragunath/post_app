@@ -81,7 +81,7 @@ RSpec.describe TagsController, type: :controller do
     context "with invalid params" do
       it "returns a success response (i.e. to display the 'edit' template)" do
         put :update, params: {id: @tag.to_param , tag: {tag:""}}, session: valid_session
-        expect(response).to redirect_to(@tag)
+        expect(response).to be_successful
       end
     end
   end
