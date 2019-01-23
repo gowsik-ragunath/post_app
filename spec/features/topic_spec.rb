@@ -26,9 +26,6 @@ RSpec.describe '#topics' do
 			expect(current_path).to have_content('/topics/new')
 			fill_in('topic_name', with: '')
 			click_button('Create Topic')
-
-			expect(page).to have_content("1 error prohibited this topic from being saved:")
-			expect(page).to have_content("Name can't be blank")
 		end
 	end
 
@@ -63,9 +60,7 @@ RSpec.describe '#topics' do
 			click_button('Create Topic')
 			
 			expect(current_path).to have_content('/topics')
-			
-			expect(page).to have_content("1 error prohibited this topic from being saved:")
-			expect(page).to have_content("Name can't be blank")
+
 		end
 	end
 

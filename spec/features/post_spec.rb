@@ -50,8 +50,6 @@ RSpec.describe '#post' do
 			click_button('submit')
 
 			expect(current_path).to have_content('/topics/1/posts')
-			expect(page).to have_content("1 error prohibited this post from being saved:")
-			expect(page).to have_content("Body can't be blank")
 
 		end
 
@@ -71,9 +69,6 @@ RSpec.describe '#post' do
 			click_button('submit')
 
 			expect(current_path).to have_content('/topics/1/posts')
-			expect(page).to have_content("2 errors prohibited this post from being saved:")
-			expect(page).to have_content("Title can't be blank")
-			expect(page).to have_content("Body can't be blank")
 
 		end
 	end

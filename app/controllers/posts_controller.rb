@@ -15,9 +15,6 @@ class PostsController < ApplicationController
 
 	def new
 		@post = @topic.posts.new
-		# @tag.each do |t|
-		# 	t.tag.bulid
-		# end
 	end
 
 	def create
@@ -33,8 +30,8 @@ class PostsController < ApplicationController
 
 	def show
 		
-		# @rating = Rating.new
-		# @rating_post = @post.ratings
+		@rating = Rating.new
+		@rating_post = @post.ratings
 		# @post.ratings.each do |p|
 		# 	if p.rating is 1
 				

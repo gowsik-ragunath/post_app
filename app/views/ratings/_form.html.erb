@@ -20,9 +20,9 @@
   </div>
   <%if not params.has_key?(:topic_id) %>
     <div class="field">
-      <%= form.collection_select :post_id, @post , :id ,:title %>  
+      <%= form.collection_select :post_id, @post , :id ,:title %>
     </div>
-  <% end %>   
+  <% end %>
   <div class="actions">
     <%= form.submit %>
   </div>

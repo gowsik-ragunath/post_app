@@ -41,6 +41,21 @@ RSpec.describe PostsController, type: :controller do
         }.to change(Post, :count).by(1)
       end
 
+      it "new Post with title nil" do
+        expect{ post :create, params: {topic_id:@topic.id , post: {title:"",body:"body", tag_ids: [1]}}
+        }.to change(Post, :count).by(0)
+      end
+
+      it "new Post with body nil" do
+        expect{ post :create, params: {topic_id:@topic.id , post: {title:"title",body:"", tag_ids: [1]}}
+        }.to change(Post, :count).by(0)
+      end
+
+      it "new Post with tag_ids nil" do
+        expect{ post :create, params: {topic_id:@topic.id , post: {title:"title",body:"body", tag_ids: []}}
+        }.to change(Post, :count).by(1)
+      end
+
       it "redirects to the /posts" do
         post :create, params: {topic_id:@topic.id , post: {title:"title",body:"body", tag_ids: [1]}} , session: valid_session
         expect(response).to redirect_to(topic_posts_path)
@@ -57,6 +72,24 @@ RSpec.describe PostsController, type: :controller do
 
       it "updates the requested post" do
         put :update, params: {id: @post.to_param,topic_id: @topic.id, post: {title:"update title",body:"update body", tag_ids: [1]}}, session: valid_session
+        @post.reload
+      end
+
+      it "updates the requested post with invalid title" do
+        put :update, params: {id: @post.to_param,topic_id: @topic.id, post: {title:"",body:"update body", tag_ids: [1]}}, session: valid_session
+        expect(@post.title).not_to be_empty
+        @post.reload
+      end
+
+      it "updates the requested post with invalid body" do
+        put :update, params: {id: @post.to_param,topic_id: @topic.id, post: {title:"update title",body:"", tag_ids: [1]}}, session: valid_session
+        expect(@post.body).not_to be_empty
+        @post.reload
+      end
+
+      it "updates the requested post with no tags" do
+        put :update, params: {id: @post.to_param,topic_id: @topic.id, post: {title:"update title",body:"update body", tag_ids: []}}, session: valid_session
+        expect(@post.tag_ids).to be_empty
         @post.reload
       end
 

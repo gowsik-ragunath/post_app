@@ -8,5 +8,5 @@ class Topic < ApplicationRecord
 
 
  ################################validation######################################################################
-	validates :name, presence: true
+	validates :name, presence: true, length:{ minimum: 3 , maximum: 25}
 end

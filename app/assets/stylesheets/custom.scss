@@ -35,15 +35,19 @@ body{
 
 
 .rating-form{
-	float:right;
+  display: block;
 	.form-check{
-		float:right;
+		display: inline;
 	}
 }
-
-
 
 .show-btn{
 	float:left;
 	margin-right:20px;
+}
+
+.rating-view{
+  padding: 2px;
+  border: gold 2px solid ;
+  display:inline;
 }

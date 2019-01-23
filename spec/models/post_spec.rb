@@ -16,12 +16,28 @@ RSpec.describe Post, type: :model do
 	  	expect(subject).to be_valid
 	  	subject.title = nil
 	  	expect(subject).to_not be_valid
-	  end
+    end
+
+    it "title validation for min length" do
+      should validate_length_of(:title).is_at_least(3)
+    end
+
+    it "title validation for max length" do
+      should validate_length_of(:title).is_at_most(25)
+    end
   
     it "body validation" do
       expect(subject).to be_valid
       subject.body = nil
       expect(subject).to_not be_valid
+    end
+
+    it "body validation for min length" do
+      should validate_length_of(:body).is_at_least(3)
+    end
+
+    it "body validation for max length" do
+      should validate_length_of(:body).is_at_most(250)
     end
 
     it "tag_ids validation" do

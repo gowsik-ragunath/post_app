@@ -35,13 +35,10 @@ RSpec.describe Comment, type: :model do
   describe "destroy" do
 
   	it "comment deletion" do
+
       expect(subject).to be_valid
-	  
-	  puts "before deleting comment post count: " + Comment.count.to_s
-      
       expect { subject.destroy }.to change{ Comment.count}
-	  
-	  puts "after comment post count: " + Comment.count.to_s
+
   	end
 
   end

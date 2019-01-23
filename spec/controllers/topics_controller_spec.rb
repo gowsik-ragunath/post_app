@@ -48,8 +48,14 @@ RSpec.describe TopicsController, type: :controller do
     context "with valid params" do
       it "creates a new Topic" do
         expect {
-          post :create, params: {topic: {name:"sd"} }, session: valid_session
+          post :create, params: {topic: {name:"sddsa"} }, session: valid_session
         }.to change(Topic, :count).by(1)
+      end
+
+      it "creates a new Topic invalid param" do
+        expect {
+          post :create, params: {topic: {name:nil} }, session: valid_session
+        }.to change(Topic, :count).by(0)
       end
 
       it "redirects to the created topic" do
@@ -79,8 +85,8 @@ RSpec.describe TopicsController, type: :controller do
 
     context "with invalid params" do
       it "returns a success response (i.e. to display the 'edit' template)" do
-        put :update, params: {id: @topic.to_param , topic: {name:""}}, session: valid_session
-        expect(response).to be_successful
+        put :update, params: {id: @topic.to_param , topic: {name:nil}}, session: valid_session
+        expect(@topic.name).not_to be_blank
       end
     end
   end

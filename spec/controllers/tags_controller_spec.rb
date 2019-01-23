@@ -53,6 +53,12 @@ RSpec.describe TagsController, type: :controller do
         }.to change(Tag, :count).by(1)
       end
 
+      it "creates a new Tag with invaild params" do
+        expect {
+          post :create, params: { tag:{tag: nil }}, session: valid_session
+        }.to change(Tag, :count).by(0)
+      end
+
       it "redirects to the created tag" do
         post :create, params: {tag: {tag:"DSa"}} , session: valid_session
         expect(response).to redirect_to(tags_path)
@@ -72,9 +78,10 @@ RSpec.describe TagsController, type: :controller do
         @tag.reload
       end
 
-      it "redirects to the tag" do
-        put :update, params: {id: @tag.to_param, tag: {tag:"valid_attributes"}}, session: valid_session
-        expect(response).to redirect_to(@tag)
+      it "updates the requested tag with invalid params" do
+        put :update, params: {id: @tag.to_param, tag:{tag:nil}}, session: valid_session
+        expect( @tag.tag ).not_to be_empty
+        @tag.reload
       end
     end
 

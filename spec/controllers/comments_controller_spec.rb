@@ -33,6 +33,63 @@ RSpec.describe CommentsController, type: :controller do
     end
   end
 
+  describe "PUT #update" do
+    context "with valid params" do
+      let(:new_attributes) {
+        skip("Add a hash of attributes valid for your model")
+      }
+
+      it "updates the requested comment" do
+        put :update, params: {id: @comment.to_param,topic_id: @topic.id,post_id: @post.id, comment: {commenter:'user', body:"body"}}, session: valid_session
+        @comment.reload
+      end
+
+      it "redirects to the rating" do
+        put :update, params: {id: @comment.to_param,topic_id: @topic.id,post_id: @post.id,comment: {commenter:'user', body:"body"}}, session: valid_session
+        expect(response).to redirect_to(topic_post_path(@topic.id,@post.id))
+      end
+    end
+
+    context "with invalid params" do
+      it "returns response with invalid commenter" do
+        put :update, params: {id: @comment.to_param,topic_id: @topic.id,post_id: @post.id, comment: {commenter:nil, body:"body"}}, session: valid_session
+        expect(@comment.commenter).not_to be_empty
+      end
+
+      it "returns response with string" do
+        put :update, params: {id: @comment.to_param,topic_id: @topic.id,post_id: @post.id, comment: {commenter:'commenter', body:nil }}, session: valid_session
+        expect(@comment.body).not_to be_empty
+      end
+
+    end
+  end
+
+
+
+  describe "POST #create" do
+    context "with valid params" do
+      it "creates a new comment" do
+        expect{ post :create, params: {topic_id:@topic.id,post_id:@post.id,comment: {commenter:'user',body:"body"}}
+        }.to change(Comment, :count).by(1)
+      end
+
+      it "new comment with invalid commenter" do
+        expect{ post :create, params: {topic_id:@topic.id,post_id:@post.id,comment: {commenter:nil,body:"body"}}
+        }.to change(Comment, :count).by(0)
+      end
+
+      it "new comment with invalid body" do
+        expect{ post :create, params: {topic_id:@topic.id,post_id:@post.id,comment: {commenter:'user',body:nil}}
+        }.to change(Comment, :count).by(0)
+      end
+
+      it "redirects to the /post" do
+        post :create, params: {id: @comment.to_param,topic_id:@topic.id,post_id:@post.id,comment: {commenter:'user', body:'body'}} , session: valid_session
+        expect(response).to redirect_to(topic_post_path(@topic.id,@post.id))
+      end
+    end
+  end
+
   describe "DELETE #destroy" do
     it "destroys the requested comment" do
 

@@ -1,10 +1,10 @@
 class RatingsController < ApplicationController
-  before_action :set_rating, only: [:show, :edit, :update, :destroy]
-
+  before_action :set_post, only: [:show, :edit, :update, :destroy, :new, :create ]
+  before_action :set_rating, only: [:show, :edit, :update, :destroy ]
   # GET /ratings
   # GET /ratings.json
   def index
-    @ratings = Rating.all
+    @ratings = Rating.preload(:post).where(post_id:1)
   end
 
   # GET /ratings/1
@@ -14,8 +14,8 @@ class RatingsController < ApplicationController
 
   # GET /ratings/new
   def new
-    @rating = Rating.new
-    @post = Post.all
+    @rating = @post.ratings.new
+    @post = @post.ratings
   end
 
   # GET /ratings/1/edit
@@ -25,8 +25,7 @@ class RatingsController < ApplicationController
   # POST /ratings
   # POST /ratings.json
   def create
-    @rating = Rating.new(rating_params)
-    @rating.post_id = params[:post_id]
+    @rating = @post.ratings.new(rating_params)
     respond_to do |format|
       if @rating.save
         format.html { redirect_to topic_post_path(params[:topic_id],params[:post_id]), notice: 'Rating was successfully created.' }
@@ -57,19 +56,25 @@ class RatingsController < ApplicationController
   def destroy
     @rating.destroy
     respond_to do |format|
-      format.html { redirect_to topic_post_ratings_url, notice: 'Rating was successfully destroyed.' }
+      format.html { redirect_to topic_post_url, notice: 'Rating was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
+
+    def set_post
+      @topic = Topic.find(params[:topic_id])
+      @post = @topic.posts.find(params[:post_id])
+    end
+
     def set_rating
       @rating = Rating.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def rating_params
-      params.permit(:rating, :post_id)
+      params.permit(:rating)
     end
 end

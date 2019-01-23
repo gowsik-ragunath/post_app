@@ -17,8 +17,8 @@ class Post < ApplicationRecord
 
 
  ################################validation######################################################################
-	validates :title, presence: true
-	validates :body, presence: true
+	validates :title, presence: true , length:{ minimum: 3 , maximum: 25}
+	validates :body, presence: true , length:{ minimum: 3 , maximum: 250}
 
 
 ###########################SCOPE###########################################################################
