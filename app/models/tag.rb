@@ -7,6 +7,6 @@ class Tag < ApplicationRecord
 	has_and_belongs_to_many :posts
 
  ################################validation######################################################################
-	validates :tag, uniqueness: true
+	validates :tag, uniqueness: true , presence: true
 
 end
