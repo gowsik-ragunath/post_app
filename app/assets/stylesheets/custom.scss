@@ -1,0 +1,49 @@
+body{
+	padding:80px;
+}
+
+
+.post-btn{
+	margin-left:10px;
+	float:right;
+}
+
+.post-list{
+
+	li{
+		list-style:none;
+
+	}
+
+	.list-heading{
+		color:#6b6e72;
+	}
+
+	.list-body{
+		margin-top: 15px;
+		margin-left: 50px;
+	}
+}
+.pagination{
+	justify-content: center;
+	li{
+		border: 1px solid #ddd;
+  		padding: 8px 16px;
+  		text-decoration: none;
+	}
+}
+
+
+.rating-form{
+	float:right;
+	.form-check{
+		float:right;
+	}
+}
+
+
+
+.show-btn{
+	float:left;
+	margin-right:20px;
+}

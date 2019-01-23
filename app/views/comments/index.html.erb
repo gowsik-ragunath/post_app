@@ -22,7 +22,6 @@
         <td><%= comment.commenter %></td>
         <td><%= comment.body %></td>
         <td><%= comment.post.id %></td>
-        <td><%= link_to 'Show', topic_post_comment_path(params[:topic_id],params[:post_id],comment) %></td>
         <td><%= link_to 'Edit', edit_topic_post_comment_path(params[:topic_id],params[:post_id],comment) %></td>
         <td><%= link_to 'Destroy', topic_post_comment_path(params[:topic_id],params[:post_id],comment), method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>

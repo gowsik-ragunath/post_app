@@ -1,6 +1,6 @@
-<%= form_with url: tag_post_members_path do |form| %>
+<%= form_for [@tag] do |form| %>
   <% if tag.errors.any? %>
-    <div id="error_explanation">
+    <div id="error_explanation" class="alert alert-warning">
       <h2><%= pluralize(tag.errors.count, "error") %> prohibited this tag from being saved:</h2>
 
       <ul>
@@ -11,12 +11,12 @@
     </div>
   <% end %>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.label :tag %>
-    <%= form.text_field :tag %>
+    <%= form.text_field :tag,class: "form-control" %>
   </div>
 
-  <div class="actions">
-    <%= form.submit %>
+  <div>
+    <%= form.submit 'submit' , class: "btn btn-primary"  %>
   </div>
 <% end %>

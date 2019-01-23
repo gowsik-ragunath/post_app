@@ -1,5 +1,49 @@
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  
+  before{
+	    Topic.create!(name:"topic")
+	    Tag.create!(tag:'check1')
+	    Post.create!(title:'post1',body:'body of post1',tag_ids:[1],topic_id:1)
+	}
+
+  subject { described_class.create!(commenter:'user',body:'comment of user',post_id:1) }
+
+  describe "validations" do
+	
+    it "commenter validation" do
+	  	expect(subject).to be_valid
+	  	subject.commenter = nil
+	  	expect(subject).to_not be_valid
+	end
+  
+    it "body validation" do
+      expect(subject).to be_valid
+      subject.body = nil
+      expect(subject).to_not be_valid
+    end
+  
+    it "post_id validation" do
+      expect(subject).to be_valid
+      subject.post_id = nil
+      expect(subject).to_not be_valid
+    end
+
+  end
+
+  describe "destroy" do
+
+  	it "comment deletion" do
+      expect(subject).to be_valid
+	  
+	  puts "before deleting comment post count: " + Comment.count.to_s
+      
+      expect { subject.destroy }.to change{ Comment.count}
+	  
+	  puts "after comment post count: " + Comment.count.to_s
+  	end
+
+  end
+
 end

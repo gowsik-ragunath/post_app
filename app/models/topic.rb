@@ -1,3 +1,12 @@
 class Topic < ApplicationRecord
-	has_many :posts
+
+
+
+######################ASSOCIATION################################################################################
+	has_many :posts, dependent: :destroy
+
+
+
+ ################################validation######################################################################
+	validates :name, presence: true
 end

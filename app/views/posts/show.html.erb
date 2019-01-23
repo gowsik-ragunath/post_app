@@ -1,22 +1,51 @@
 <div class="container">
 	<div class="row">
-		<div class="col-md-8">
-			<h1> <%= @post.title %> </h1>
+		<div class="col-md-12">
+		  
 
-			
-			<p> <strong> Tags:  
-			<% @tags.each do |p| %>
-				 <%= p.tag %>
-			<% end %>
-			</strong>
+
+		  <% flash.each do |key, value| %>
+		    <div class="<%= flash_class(key) %>">
+
+		    <%= content_tag :div, class: "alert alert-#{['success','notice'].include?(key) ? 'success' : 'danger'}" do %>
+		      <%= value %>
+		    <% end %>
+		 <% end %>
+
+		
+
+			<h1 class="d-inline-block"> <%= @post.title %> </h1>
+			<%= link_to 'Back', topic_posts_path(params[:topic_id]),class: "btn btn-dark d-inline-block post-btn" %>
+			<%= link_to 'Edit', edit_topic_post_path(params[:topic_id],@post),class: "btn btn-warning d-inline-block post-btn" %>
+			<%= link_to 'Delete', topic_post_path(params[:topic_id],@post), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger d-inline-block post-btn" %>
+
+			<p>
+				<%#= @post.ratings.group(:post_id).count %>
+				<%# @rating_post.each do |rp| %>
+					<%#= rp.rating %>
+				<%# end %>
 			</p>
-			<p> <%= @post.body %> </p>
-			
-			<%= render 'comments/form' %>
+			<p><%#= render 'ratings/form', rating: @rating%></p> 
+			<p><strong> Tags:  
+					<% @tag_relation.each do |t|%>
+						<%= t.tag %>
+					<% end %>
+			</strong></p>
+
+			<p><%= @post.body %></p>
+
+			<%= render 'comments/form', comment:@comment%>
+			<table class="table table-borderless">
 			<% @comments.each do |c| %>
-				<p> <strong>Commenter:</strong> <%= c.commenter %> </p>
-				<p> <%= c.body %></p>
+				<tr>
+				<td> <strong>Commenter:</strong> <%= c.commenter %> </td>
+				<td> <strong>Body:</strong> <%= c.body %> </td>
+				<td><%= link_to 'edit', edit_topic_post_comment_path(params[:topic_id],params[:id],c), comment:c , method_task: ':patch',class: "btn btn-warning btn-sm" %></td>
+				 <td><%= link_to 'delete', topic_post_comment_path(params[:topic_id],params[:id],c), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger btn-sm" %>
+				 </td>
+				 </tr>
 			<% end %>
+			</table>
 		</div>
 		<div class="col-md-4"></div>
 	</div>

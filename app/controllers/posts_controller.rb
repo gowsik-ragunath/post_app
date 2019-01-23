@@ -1,59 +1,83 @@
 class PostsController < ApplicationController
+	before_action :set_topic,:set_post, only: [:new, :create,  :show, :edit, :update, :destroy ]
+	before_action :set_post , only: [ :show, :edit, :update, :destroy]
+
 
 	def index
-		@post = Post.includes(:topic).where(topic_id: params[:topic_id]).paginate(page: params[:page], per_page: 10)
+
+		if params[:topic_id].nil?
+    		@topic_posts = Post.includes(:topic).topic_post.group_by{ |t| t.topic_id }
+		else
+			@posts = Post.includes(:topic).where(topic_id: params[:topic_id]).paginate(page: params[:page], per_page: 10)
+		end
+
 	end
 
 	def new
-		@post = Post.new
-		@topic = Topic.all
-		@tag = Tag.all
+		@post = @topic.posts.new
+		# @tag.each do |t|
+		# 	t.tag.bulid
+		# end
 	end
 
 	def create
-		@post = Post.new(post_paramas)
-		@post.save
-		redirect_to(topic_posts_path)
-	end
-
-	def show
-		@post = Post.find(params[:id])
-		@comments = Comment.where(post_id: params[:id])
-		@comment = Comment.new
-		@tag_relation = TagPostMember.where(post_id: params[:id])
-		@tags = []
-		@tag_relation.each do |p|
-			@var = Tag.find_by(id: p.tag_id)
-			puts p.tag_id
-			@tags.push(@var)
+		@post = @topic.posts.new(post_params)
+		if @post.save
+		    respond_to do |format|
+		      format.html { redirect_to topic_posts_path(@topic), notice: 'Post was successfully created.' }
+		    end
+		else
+			render action: :new, object: @tag
 		end
 	end
 
+	def show
+		
+		# @rating = Rating.new
+		# @rating_post = @post.ratings
+		# @post.ratings.each do |p|
+		# 	if p.rating is 1
+				
+		# end
+		@comments = @post.comments
+		@comment = Comment.new
+		@tag_relation = @post.tags
+	end
+
 	def destroy
-		@post = Post.find(params[:id])
 		@post.destroy
-		redirect_to(topic_posts_path)
+	    respond_to do |format|
+	      flash[:destroy] = 'Post was successfully destroyed.'
+	      format.html { redirect_to topic_posts_path }
+	      format.json { head :no_content }
+	    end
 	end
 
 	def edit
-		@post = Post.find(params[:id])
-		@tag = Tag.all
 	end
 
 	def update
-		@post = Post.find(params[:id])
-		if @post.update_attributes(post_paramas)
-			redirect_to(topic_posts_path)
+		if @post.update_attributes(post_params)
+			flash[:notice] = 'Post was successfully updated.'
+			redirect_to(topic_post_path(params[:topic_id],params[:id]))
 		else
-			@post = Post.find(params[:id])
 			render action: :edit
 		end	
 	end
 
 	private
 
-	def post_paramas
-		params.require(:post).permit(:title,:body,:topic_id, tag_ids: [])
+    def set_topic
+      @topic = Topic.find(params[:topic_id])
+      @tags = Tag.all
+    end
+
+    def set_post
+      @post = @topic.posts.find(params[:id])
+    end
+
+	def post_params
+		params.require(:post).permit(:title,:body, tag_ids: [],tags_attributes: [:tag])
 	end
 
 

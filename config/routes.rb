@@ -1,10 +1,11 @@
 Rails.application.routes.draw do
   
   resources :tags
-  resources :tag_post_members
+  # resources :tag_post_members
   resources :topics do
     resources :posts do
       resources :comments    
+      resources :ratings
     end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
@@ -15,7 +16,7 @@ Rails.application.routes.draw do
   # get '/posts/:id', to: 'posts#show' ,as: 'post'
   # delete '/posts/:id', to: 'posts#delete'
   # post 'posts/:id', to: 'posts#edit'
-  get '/posts', to: "topics#home"
+   get '/posts', to: "posts#index"
   root to:"topics#index"
 end
 	

@@ -2,13 +2,8 @@
 	<div class="row">
 		<div class="offset-md-3 col-md-5">
 
-			<%= bootstrap_form_for @post, url: topic_posts_path do |p| %>
-				<%= p.text_field(:title) %>
-				<%= p.text_area(:body) %>
-				<%= p.collection_select :topic_id, @topic , :id ,:name %>
-				<%= p.collection_select :tag_ids, @tag, :id, :tag,{}, {multiple: true} %>
-				<%= p.submit('create') %>
-			<% end %>
+			<%= render 'form', post: @post %>
+
 		</div>
 		<div class="col-md-offset-8"></div>
 	</div>

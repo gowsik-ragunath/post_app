@@ -7,16 +7,12 @@ class TopicsController < ApplicationController
     @topics = Topic.all
   end
 
-  def home
-    @post = Post.preload(:topic).paginate(page: params[:page], per_page: 10)
-    # @topic_name = Post.includes(:topic).to_a
-  end
-
   # GET /topics/1
   # GET /topics/1.json
   def show
     @topic = Topic.find(params[:id])
-    @post = Post.all
+    @post = @topic.posts.paginate(page: params[:page], per_page: 10)
+    @new_post = Post.new
   end
 
   # GET /topics/new
@@ -35,7 +31,7 @@ class TopicsController < ApplicationController
 
     respond_to do |format|
       if @topic.save
-        format.html { redirect_to @topic, notice: 'Topic was successfully created.' }
+        format.html { redirect_to topics_path, notice: 'Topic was successfully created.' }
         format.json { render :show, status: :created, location: @topic }
       else
         format.html { render :new }

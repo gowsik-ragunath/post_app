@@ -1,32 +1,31 @@
 <div class="container">
   <div class="row">
     <div class="col-md-8">
-      <%= bootstrap_form_with url: topic_post_comments_path(params[:topic_id],params[:post_id] || params[:id])  do |form| %>
-        <% if @comment.errors.any? %>
-          <div id="error_explanation">
-            <h2><%= pluralize(comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+      <%= bootstrap_form_for [@topic,@post,@comment] do |form| %>
+        <% if comment.errors.any? %>
+              <div id="error_explanation">
+                <h2><%= pluralize(comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
 
-            <ul>
-            <% @comment.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
+                <ul>
+                <% comment.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+                </ul>
+              </div>
             <% end %>
-            </ul>
-          </div>
-        <% end %>
 
-        <div class="field">
-          <%= form.text_field :commenter %>
-        </div>
+            <div class="field">
+              <%= form.text_field :commenter ,value: @comment.commenter%>
+            </div>
 
-        <div class="field">
-          <%= form.text_area :body %>
-        </div>
+            <div class="field">
+              <%= form.text_area :body,value: @comment.body %>
+            </div>
 
-
-        <div class="actions">
-          <%= form.submit %>
-        </div>
-      <% end %>
+            <div class="actions">
+              <%= form.submit %>
+            </div>
+          <% end %>
       </div>
   </div>
 </div>
