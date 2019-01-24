@@ -6,7 +6,7 @@ class PostsController < ApplicationController
 	def index
 
 		if params[:topic_id].nil?
-    		@topic_posts = Post.includes(:topic).topic_post.group_by{ |t| t.topic_id }
+			@posts = Post.topic_post.includes(:topic).paginate(page: params[:page], per_page: 10)
 		else
 			@posts = Post.includes(:topic).where(topic_id: params[:topic_id]).paginate(page: params[:page], per_page: 10)
 		end

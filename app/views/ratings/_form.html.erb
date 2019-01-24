@@ -1,13 +1,8 @@
 <%= bootstrap_form_with url: topic_post_ratings_path(params[:topic_id],params[:post_id] || params[:id]),html:{class: 'rating-form'}  do |form| %>
   <% if rating.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(rating.errors.count, "error") %> prohibited this rating from being saved:</h2>
+      <h2><%= pluralize(rating.errors.count, "error") %> prohibited this rating from being saved</h2>
 
-      <ul>
-      <% rating.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
     </div>
   <% end %>
 

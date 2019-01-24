@@ -3,11 +3,6 @@
     <div id="error_explanation" class="alert alert-warning">
       <h2><%= pluralize(tag.errors.count, "error") %> prohibited this tag from being saved:</h2>
 
-      <ul>
-      <% tag.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
     </div>
   <% end %>
 
