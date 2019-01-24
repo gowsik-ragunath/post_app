@@ -11,29 +11,44 @@
 			<br>
       <%= will_paginate @posts, renderer: BootstrapPagination::Rails%>
 			 <% if not params[:topic_id].nil? %>
-				 <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-primary btn-lg btn-block' %>
+
+        <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-primary btn-lg btn-block' %>
 				 <br>
-					<ul class="post-list">
+
+        <ul class="post-list">
 						<% @posts.each do |f| %>
 							<h2><%= link_to f.title+" ("+f.topic.name.upcase+")", topic_post_path(f.topic_id,f), class: "list-heading" %></h2>
+
+            <%if f.ratings.present? %>
+            <li class="list-body"> <p class="d-inline"> Rating : <%= f.ratings.average(:rating).truncate(1) %> | Comment : <%= f.comments.count %></p>
+                  </li>
+						<%end %>
 							<li class="list-body"><p><%= f.body %></p></li>
 						<% end %>
-					</ul>
-				<% else %>
+				</ul>
+
+      <% else %>
+
 					<ul class="post-list">
 						<% @posts.group_by{ |t| t.topic_id }.each do |topic , posts| %>
 							<h1 class="text-center"> <%= Topic.find(topic).name %> </h1>
 							<br>
 							<% posts.each do |f| %>
 								<h2><%= link_to f.title+" ("+f.topic.name.upcase+")", topic_post_path(f.topic_id,f), class: "list-heading" %></h2>
+                <% if f.ratings.present? %>
+                  <li class="list-body"> <p class="d-inline"> Rating : <%= f.ratings.average(:rating).truncate(1) %> | Comment : <%= f.comments.count %></p> </li>
+                <% end %>
 								<li class="list-body"><p><%= f.body %></p></li>
 							<% end %>
 						<% end %>
 					</ul>
-			<% end%>
+
+      <% end%>
+
       <br>
-      <%= will_paginate @post, renderer: BootstrapPagination::Rails %>
-		</div>
+      <%= will_paginate @posts, renderer: BootstrapPagination::Rails %>
+
+    </div>
 		<div class="co-md-6"></div>
 	</div>
 </div>

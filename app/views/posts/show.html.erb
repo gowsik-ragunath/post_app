@@ -16,15 +16,18 @@
 			<%= link_to 'Back', topic_posts_path(params[:topic_id]),class: "btn btn-dark d-inline-block post-btn" %>
 			<%= link_to 'Edit', edit_topic_post_path(params[:topic_id],@post),class: "btn btn-warning d-inline-block post-btn" %>
 			<%= link_to 'Delete', topic_post_path(params[:topic_id],@post), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger d-inline-block post-btn" %>
+      <% if @ratings.present? %>
+        <p>
+          <% @ratings.order(rating: :asc).group_by{ |t| t.rating }.each do |rating,collection| %>
+          <div class="rating-view"><%= rating %>-Star:<%= collection.count %></div>
+          <% end %>
+        </p>
+        Rating: <%= @ratings.average(:rating).truncate(1) %>
+			<% end %>
+      <p ><%= render 'ratings/form', rating: @rating %></p>
 
-			<p>
-				<% @post.ratings.order(rating: :asc).group_by{ |t| t.rating }.each do |rating,collection| %>
-        <div class="rating-view"><%= rating %>-Star:<%= collection.count %></div>
-        <% end %>
-			</p>
-			<p><%= render 'ratings/form', rating: @rating%></p>
 			<p><strong> Tags:  
-					<% @tag_relation.each do |t|%>
+					<% @tag_relation.each do |t| %>
 						<%= t.tag %>
 					<% end %>
 			</strong></p>
@@ -33,16 +36,19 @@
 
 			<%= render 'comments/form', comment:@comment%>
 			<table class="table table-borderless">
-			<% @comments.each do |c| %>
-				<tr>
-				<td> <strong>Commenter:</strong> <%= c.commenter %> </td>
-				<td> <strong>Body:</strong> <%= c.body %> </td>
-				<td><%= link_to 'edit', edit_topic_post_comment_path(params[:topic_id],params[:id],c), comment:c , method_task: ':patch',class: "btn btn-warning btn-sm" %></td>
-				 <td><%= link_to 'delete', topic_post_comment_path(params[:topic_id],params[:id],c), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger btn-sm" %>
-				 </td>
-				 </tr>
-			<% end %>
+        <% if @comments.present? %>
+          <% @comments.each do |c| %>
+          <tr>
+          <td> <strong>Commenter:</strong> <%= c.commenter %> </td>
+          <td> <strong>Body:</strong> <%= c.body %> </td>
+          <td><%= link_to 'edit', edit_topic_post_comment_path(params[:topic_id],params[:id],c), comment:c , method_task: ':patch',class: "btn btn-warning btn-sm" %></td>
+           <td><%= link_to 'delete', topic_post_comment_path(params[:topic_id],params[:id],c), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger btn-sm" %>
+           </td>
+           </tr>
+          <% end %>
+			  <% end %>
 			</table>
+
 		</div>
 		<div class="col-md-4"></div>
 	</div>

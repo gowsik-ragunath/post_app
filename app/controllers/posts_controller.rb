@@ -1,14 +1,14 @@
 class PostsController < ApplicationController
-	before_action :set_topic,:set_post, only: [:new, :create,  :show, :edit, :update, :destroy ]
+	before_action :set_topic, only: [ :index, :new, :create,  :show, :edit, :update, :destroy ]
 	before_action :set_post , only: [ :show, :edit, :update, :destroy]
 
 
 	def index
 
 		if params[:topic_id].nil?
-			@posts = Post.topic_post.includes(:topic).paginate(page: params[:page], per_page: 10)
+			@posts = Post.topic_post.paginate(page: params[:page], per_page: 10).includes(:topic).eager_load(:ratings).eager_load(:comments)
 		else
-			@posts = Post.includes(:topic).where(topic_id: params[:topic_id]).paginate(page: params[:page], per_page: 10)
+			@posts = @topic.posts.paginate(page: params[:page], per_page: 10).eager_load(:ratings).eager_load(:comments)
 		end
 
 	end
@@ -29,13 +29,8 @@ class PostsController < ApplicationController
 	end
 
 	def show
-		
 		@rating = Rating.new
-		@rating_post = @post.ratings
-		# @post.ratings.each do |p|
-		# 	if p.rating is 1
-				
-		# end
+		@ratings = @post.ratings
 		@comments = @post.comments
 		@comment = Comment.new
 		@tag_relation = @post.tags
@@ -65,8 +60,10 @@ class PostsController < ApplicationController
 	private
 
     def set_topic
-      @topic = Topic.find(params[:topic_id])
-      @tags = Tag.all
+			if not  params[:topic_id].blank?
+				@topic = Topic.find(params[:topic_id])
+				@tags = Tag.all
+				end
     end
 
     def set_post

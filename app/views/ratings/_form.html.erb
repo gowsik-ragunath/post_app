@@ -13,11 +13,6 @@
     <%= form.radio_button :rating, 4, label: '4' %>
     <%= form.radio_button :rating, 5, label: '5' %>
   </div>
-  <%if not params.has_key?(:topic_id) %>
-    <div class="field">
-      <%= form.collection_select :post_id, @post , :id ,:title %>
-    </div>
-  <% end %>
   <div class="actions">
     <%= form.submit %>
   </div>

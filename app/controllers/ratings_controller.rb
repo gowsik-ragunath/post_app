@@ -15,7 +15,6 @@ class RatingsController < ApplicationController
   # GET /ratings/new
   def new
     @rating = @post.ratings.new
-    @post = @post.ratings
   end
 
   # GET /ratings/1/edit

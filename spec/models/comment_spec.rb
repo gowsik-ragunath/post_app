@@ -16,7 +16,7 @@ RSpec.describe Comment, type: :model do
 	  	expect(subject).to be_valid
 	  	subject.commenter = nil
 	  	expect(subject).to_not be_valid
-	end
+	  end
   
     it "body validation" do
       expect(subject).to be_valid
@@ -33,14 +33,10 @@ RSpec.describe Comment, type: :model do
   end
 
   describe "destroy" do
-
   	it "comment deletion" do
-
       expect(subject).to be_valid
       expect { subject.destroy }.to change{ Comment.count}
-
   	end
-
   end
 
 end

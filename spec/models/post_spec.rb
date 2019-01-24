@@ -61,14 +61,12 @@ RSpec.describe Post, type: :model do
       expect(subject).to be_valid
 	  	Comment.create!(commenter:'user',body:'comment of user',post_id:1)
       Comment.create!(commenter:'user',body:'comment of user',post_id:1)
-      
-      puts "before deleting post comment count: " + Comment.count.to_s
+      Rating.create!(rating:5,post_id:1)
+      Rating.create!(rating:2,post_id:1)
+      Rating.create!(rating:4,post_id:1)
 
-  		expect { subject.destroy }.to change{ Comment.count}
+  		expect { subject.destroy }.to change{ Comment.count }.and change{ Rating.count }
 
-
-      puts "after deleting post comment count: " + Comment.count.to_s
-		
   	end
   end
 

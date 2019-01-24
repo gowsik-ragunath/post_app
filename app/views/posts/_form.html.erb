@@ -2,7 +2,7 @@
       <%#= form_for @post, url: topic_posts_path do |p| %>
         <% if @post.errors.any? %>
           <div id="error_explanation">
-            <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved</h2>
+            <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved</h2>
           </div>
         <% end %>
         <%= p.fields_for :tags,@post.tags.build do |ff| %>
