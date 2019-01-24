@@ -22,7 +22,7 @@
           <div class="rating-view"><%= rating %>-Star:<%= collection.count %></div>
           <% end %>
         </p>
-        Rating: <%= @ratings.average(:rating).truncate(1) %>
+        <p> Rating: <%= @ratings.average(:rating).truncate(1) %> | Comment : <%= @comments.count %> </p>
 			<% end %>
       <p ><%= render 'ratings/form', rating: @rating %></p>
 
