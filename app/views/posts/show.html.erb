@@ -16,6 +16,8 @@
 			<%= link_to 'Back', topic_posts_path(params[:topic_id]),class: "btn btn-dark d-inline-block post-btn" %>
 			<%= link_to 'Edit', edit_topic_post_path(params[:topic_id],@post),class: "btn btn-warning d-inline-block post-btn" %>
 			<%= link_to 'Delete', topic_post_path(params[:topic_id],@post), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger d-inline-block post-btn" %>
+  <div class="row">
+      <div class="col-md-8">
       <% if @ratings.present? %>
         <p>
           <% @ratings.order(rating: :asc).group_by{ |t| t.rating }.each do |rating,collection| %>
@@ -31,7 +33,13 @@
 						<%= t.tag %>
 					<% end %>
 			</strong></p>
-
+      </div>
+      <div class="col-md-4 ">
+        <% if @post.image.present? %>
+          <%= image_tag @post.image.url(:medium) %>
+        <% end %>
+      </div>
+  </div>
 			<p><%= @post.body %></p>
 
 			<%= render 'comments/form', comment:@comment%>

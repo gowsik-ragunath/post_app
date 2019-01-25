@@ -1,3 +1,7 @@
+$state-danger-text: #dc3545;
+
+
+
 body{
 	padding:80px;
 }
@@ -50,4 +54,11 @@ body{
   padding: 2px;
   border: gold 2px solid ;
   display:inline;
+}
+
+.field_with_errors {
+  textarea , input{
+    border: 1px solid  $state-danger-text !important;
+    padding-right: 2.25rem;
+  }
 }

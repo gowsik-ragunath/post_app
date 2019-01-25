@@ -20,9 +20,7 @@ RSpec.describe Topic, type: :model do
 	  	Tag.create!(tag:'sample')
   		Post.create!(title:'post1',body:'body of post1',tag_ids:[1],topic_id:1)
   		Post.create!(title:'post2',body:'body of post2',tag_ids:[1],topic_id:1)
-  		puts "before deleting topic post count: " + Post.count.to_s
   		expect { subject.destroy }.to change{ Post.count }
-  		puts "after deleting topic post count: " + Post.count.to_s
   		
   	end
   end

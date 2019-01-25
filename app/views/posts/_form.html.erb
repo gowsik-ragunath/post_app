@@ -1,17 +1,30 @@
-      <%= bootstrap_form_for [@topic,@post]  do |p| %>
+      <%= form_for [@topic,@post],local:true, html: { multipart: true, class:"form-horizontal center" }  do |p| %>
       <%#= form_for @post, url: topic_posts_path do |p| %>
         <% if @post.errors.any? %>
-          <div id="error_explanation">
+          <div id="error_explanation" class="alert alert-warning">
             <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved</h2>
           </div>
         <% end %>
-        <%= p.fields_for :tags,@post.tags.build do |ff| %>
+        <div class="form-group">
+          <%= p.label :tag %>
+          <%= p.fields_for :tags,@post.tags.build do |ff| %>
                   <div> 
-            <%= ff.text_field :tag %>
+            <%= ff.text_field :tag, class:"form-control" %>
           </div>
         <% end %>
-        <%= p.text_field(:title) %>
-        <%= p.text_area(:body) %>
-        <%= p.collection_select :tag_ids, @tags, :id, :tag,{}, {multiple: true} %>
-        <%= p.submit('submit') %>
+        </div>
+        <div class="form-group">
+          <%= p.label :title %>
+          <br>
+            <%= p.text_field(:title, class:"form-control" ) %></div>
+       <div class="form-group">
+         <%= p.label :body %><br><%= p.text_area(:body, class:"form-control") %> </div>
+        <div class="form-group">
+          <%= p.label :image %><br>
+          <%= p.file_field (:image) %>
+        </div>
+        <div class="form-group">
+          <%= p.label :tag_ids %><br>
+          <%= p.collection_select :tag_ids, @tags, :id, :tag,{}, { class:"custom-select", multiple: true}%></div>
+        <div class="form-group"><%= p.submit('submit' ,class:"btn btn-primary")%></div>
       <% end %>

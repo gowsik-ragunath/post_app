@@ -61,7 +61,6 @@ class CommentsController < ApplicationController
         @post = @topic.posts.find(params[:post_id])
     end
     def set_comment
-
         @comment = @post.comments.find(params[:id])
     end
 

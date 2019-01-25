@@ -54,6 +54,21 @@ RSpec.describe Post, type: :model do
 
   end
 
+  describe "paperclip image" do
+    it { should validate_attachment_content_type(:image).
+        allowing('image/png').
+        allowing('image/jpeg')
+    }
+
+    it { should validate_attachment_size(:image).
+        less_than(2.megabytes) }
+    it{
+      expect(subject).to be_valid
+      subject.image = File.new("spec/support/wizard.gif")
+      expect(subject).not_to be_valid
+    }
+  end
+
   describe "destroy" do
 
   	it "comment , tag delete by post dependency" do
