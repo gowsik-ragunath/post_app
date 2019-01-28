@@ -1,24 +1,15 @@
-<div class="container">
-	<div class="row">
-		<div class="col-md-12">
-			<ul class="post-list">
+<ul class="post-list">
+  <p><%= will_paginate @posts, renderer: BootstrapPagination::Rails%></p>
+    <% @posts.each do |f| %>
+    <div class="container">
+      <div class="row home-content">
+        <h2><%= link_to f.title+' ('+f.topic.name.upcase+") ", topic_post_path(f.topic_id,f), class: "list-heading " %></h2>
+        <p><li class="list-body"><%= f.body %></li></p>
 
-			<p><%= will_paginate @posts, renderer: BootstrapPagination::Rails%></p>
-				<% @posts.each do |f| %>
-					<div class="container">
-					<div class="row home-content">
-						<h2><%= link_to f.title+' ('+f.topic.name.upcase+") ", topic_post_path(f.topic_id,f), class: "list-heading " %></h2>
-						<p><li class="list-body"><%= f.body %></li></p>
+      </div>
+    </div>
+    <% end %>
+  <p><%= will_paginate @posts, renderer: BootstrapPagination::Rails%></p>
+</ul>
 
-					</div>
-					</div>
-				<% end %>
-
-
-			<p><%= will_paginate @posts, renderer: BootstrapPagination::Rails%></p>
-			</ul>
-		</div>
-		<div class="co-md-6"></div>
-	</div>
-</div>
 			

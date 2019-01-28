@@ -5,10 +5,17 @@ RSpec.describe '#post' do
 	before{
 		Topic.create!(name:'check topic')
 		Tag.create!(tag:'check')
+
+		FactoryBot.create(:user, email: 'user@test.com', password: 'password')
+		visit new_user_session_path
+		fill_in :user_email, with: 'user@test.com'
+		fill_in :user_password, with: 'password'
+		click_on 'Log in'
 	}
 
 
 	describe 'post#new' do
+
 		it 'list all the post' do
 			
 			visit('/')

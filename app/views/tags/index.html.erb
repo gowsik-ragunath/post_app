@@ -1,16 +1,4 @@
-
-
-<% flash.each do |key, value| %>
-    <div class="<%= flash_class(key) %>">
-
-    <%= content_tag :div, class: "alert alert-#{['success','notice'].include?(key) ? 'success' : 'danger'}" do %>
-      <%= value %>
-    <% end %>
- <% end %>
-
-
 <h1>Tags</h1>
-
 
 <table class="table table-borderless">
   <thead>

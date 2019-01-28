@@ -7,7 +7,7 @@ class Post < ApplicationRecord
 	has_many :ratings, dependent: :destroy
 	has_and_belongs_to_many :tags
 
-	has_attached_file :image, styles: { large:"600x600>" ,medium: "300x300>", thumb: "100x100>" }
+	has_attached_file :image, styles: { large:"600x600>" ,medium: "300x300>", thumb: "100x100#" }
 	# has_many :tag_post_members
 	# has_many :tags ,through: :tag_post_members, dependent: :destroy
 

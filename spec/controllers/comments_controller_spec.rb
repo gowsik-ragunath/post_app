@@ -19,6 +19,7 @@ RSpec.describe CommentsController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
+    login_user
     it "returns a success response" do
       get :index,params: {id: @comment.to_param, post_id: @post.id,topic_id:@topic.id}
       expect(response).to be_successful
@@ -27,6 +28,7 @@ RSpec.describe CommentsController, type: :controller do
 
 
   describe "GET #edit" do
+    login_user
     it "returns a success response" do
       get :edit, params: {id: @comment.to_param, post_id: @post.id,topic_id:@topic.id}, session: valid_session
       expect(response).to be_successful
@@ -34,6 +36,7 @@ RSpec.describe CommentsController, type: :controller do
   end
 
   describe "PUT #update" do
+    login_user
     context "with valid params" do
       let(:new_attributes) {
         skip("Add a hash of attributes valid for your model")
@@ -67,6 +70,7 @@ RSpec.describe CommentsController, type: :controller do
 
 
   describe "POST #create" do
+    login_user
     context "with valid params" do
       it "creates a new comment" do
         expect{ post :create, params: {topic_id:@topic.id,post_id:@post.id,comment: {commenter:'user',body:"body"}}
@@ -91,6 +95,7 @@ RSpec.describe CommentsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
+    login_user
     it "destroys the requested comment" do
 
       expect {

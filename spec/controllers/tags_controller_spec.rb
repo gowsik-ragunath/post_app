@@ -18,6 +18,7 @@ RSpec.describe TagsController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
+    login_user
     it "returns a success response" do
       get :index, params: {}, session: valid_session
       expect(response).to be_successful
@@ -25,6 +26,7 @@ RSpec.describe TagsController, type: :controller do
   end
 
   describe "GET #show" do
+    login_user
     it "returns a success response" do
       get :show, params: {id: @tag.to_param}, session: valid_session
       expect(response).to be_successful
@@ -32,6 +34,7 @@ RSpec.describe TagsController, type: :controller do
   end
 
   describe "GET #new" do
+    login_user
     it "returns a success response" do
       get :new, params: {}, session: valid_session
       expect(response).to be_successful
@@ -39,6 +42,7 @@ RSpec.describe TagsController, type: :controller do
   end
 
   describe "GET #edit" do
+    login_user
     it "returns a success response" do
       get :edit, params: {id: @tag.to_param}, session: valid_session
       expect(response).to be_successful
@@ -46,6 +50,7 @@ RSpec.describe TagsController, type: :controller do
   end
 
   describe "POST #create" do
+    login_user
     context "with valid params" do
       it "creates a new Tag" do
         expect {
@@ -68,6 +73,7 @@ RSpec.describe TagsController, type: :controller do
   end
 
   describe "PUT #update" do
+    login_user
     context "with valid params" do
       let(:new_attributes) {
         skip("Add a hash of attributes valid for your model")
@@ -94,6 +100,7 @@ RSpec.describe TagsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
+    login_user
     it "destroys the requested tag" do
       expect {
         delete :destroy, params: {id: @tag.to_param}, session: valid_session

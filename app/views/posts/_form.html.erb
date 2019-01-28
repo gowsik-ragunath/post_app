@@ -8,7 +8,7 @@
         <div class="form-group">
           <%= p.label :tag %>
           <%= p.fields_for :tags,@post.tags.build do |ff| %>
-                  <div> 
+          <div>
             <%= ff.text_field :tag, class:"form-control" %>
           </div>
         <% end %>

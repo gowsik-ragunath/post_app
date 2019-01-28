@@ -5,9 +5,12 @@ require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
+require 'devise'
 require 'capybara/rspec'
 
 require "paperclip/matchers"
+require_relative 'support/controller_macros'
+# require 'support/factory_bot'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -65,6 +68,19 @@ RSpec.configure do |config|
 
     Capybara.javascript_driver = :webkit
 
+  config.before(:suite) do
+    DatabaseCleaner[:active_record].strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+
 
   Shoulda::Matchers.configure do |config|
     config.integrate do |with|
@@ -77,5 +93,13 @@ RSpec.configure do |config|
   RSpec.configure do |config|
     config.include Paperclip::Shoulda::Matchers
   end
+
+  RSpec.configure do |config|
+    config.include Devise::Test::ControllerHelpers, type: :controller
+    config.include Devise::Test::ControllerHelpers, type: :view
+    config.extend ControllerMacros, :type => :controller
+  end
+
+
 
 end

@@ -9,6 +9,7 @@ RSpec.describe TopicsController, type: :controller do
   let(:invalid_attributes) {
     skip("Add a hash of attributes invalid for your model")
   }
+
   before{
     @topic = Topic.create!(name:"topic")
   }
@@ -16,6 +17,7 @@ RSpec.describe TopicsController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
+    login_user
     it "returns a success response" do
       get :index, params: {}, session: valid_session
       expect(response).to be_successful
@@ -23,6 +25,7 @@ RSpec.describe TopicsController, type: :controller do
   end
 
   describe "GET #show" do
+    login_user
     it "returns a success response" do
       get :show, params: {id: @topic.to_param}, session: valid_session
       expect(response).to be_successful
@@ -30,6 +33,7 @@ RSpec.describe TopicsController, type: :controller do
   end
 
   describe "GET #new" do
+    login_user
     it "returns a success response" do
       get :new, params: {}, session: valid_session
       expect(response).to be_successful
@@ -37,6 +41,7 @@ RSpec.describe TopicsController, type: :controller do
   end
 
   describe "GET #edit" do
+    login_user
     it "returns a success response" do
       get :edit, params: {id: @topic.to_param}, session: valid_session
       expect(response).to be_successful
@@ -45,6 +50,7 @@ RSpec.describe TopicsController, type: :controller do
 
 
     describe "POST #create" do
+      login_user
     context "with valid params" do
       it "creates a new Topic" do
         expect {
@@ -67,6 +73,7 @@ RSpec.describe TopicsController, type: :controller do
   end
 
   describe "PUT #update" do
+    login_user
     context "with valid params" do
       let(:new_attributes) {
         skip("Add a hash of attributes valid for your model")
@@ -92,6 +99,7 @@ RSpec.describe TopicsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
+    login_user
     it "destroys the requested topic" do
       expect {
         delete :destroy, params: {id: @topic.to_param}, session: valid_session
