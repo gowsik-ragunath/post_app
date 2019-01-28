@@ -32,7 +32,6 @@ class TagsController < ApplicationController
     respond_to do |format|
       if @tag.save
         flash[:success] = 'Tag was successfully created.'
-        puts params
         format.html { redirect_to tags_path }
         format.json { render :show, status: :created, location: @tag }
       else
