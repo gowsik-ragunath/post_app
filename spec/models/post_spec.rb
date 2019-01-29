@@ -3,12 +3,13 @@ require 'rails_helper'
 RSpec.describe Post, type: :model do
   
   before{
+    @user = User.create!(email:"email@email.com",password:"password",password_confirmation:"password")
     Topic.create!(name:"topic")
     Tag.create!(tag:'sample')
     Tag.create!(tag:'check1')
   }
 
-  subject { described_class.create!(title:'post1',body:'body of post1',tag_ids:[1,2],topic_id:1) }
+  subject { described_class.create!(title:'post1',body:'body of post1',tag_ids:[1,2],topic_id:1,user_id:1) }
 
   describe "validations" do
 	
@@ -74,8 +75,8 @@ RSpec.describe Post, type: :model do
   	it "comment , tag delete by post dependency" do
 
       expect(subject).to be_valid
-	  	Comment.create!(commenter:'user',body:'comment of user',post_id:1)
-      Comment.create!(commenter:'user',body:'comment of user',post_id:1)
+	  	Comment.create!(commenter:'user',body:'comment of user',post_id:1,user_id:1)
+      Comment.create!(commenter:'user',body:'comment of user',post_id:1,user_id:1)
       Rating.create!(rating:5,post_id:1)
       Rating.create!(rating:2,post_id:1)
       Rating.create!(rating:4,post_id:1)

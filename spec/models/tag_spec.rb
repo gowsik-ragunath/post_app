@@ -1,8 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Tag, type: :model do
-  
-	subject{described_class.create!(tag:'check_tag')}
+
+  before{
+		@user = User.create!(email:"email@email.com",password:"password",password_confirmation:"password")
+	}
+
+  subject{described_class.create!(tag:'check_tag')}
 
 	before{
 	    Topic.create!(name:"topic")
@@ -24,7 +28,7 @@ RSpec.describe Tag, type: :model do
   describe "destroy" do
   	it "tag delete by tag dependency" do
       expect(subject).to be_valid
-	  	Post.create!(title:'post1',body:'body of post1',tag_ids:[1],topic_id:1)
+	  	Post.create!(title:'post1',body:'body of post1',tag_ids:[1],topic_id:1,user_id:1)
   		expect { subject.destroy }.to change { Tag.count }
     end
   end

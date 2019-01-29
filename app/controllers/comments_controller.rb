@@ -1,6 +1,7 @@
 class CommentsController < ApplicationController
   before_action :set_post, only: [ :new, :create, :show, :edit, :update, :destroy]
   before_action :set_comment, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource param_method: :my_sanitizer
 
 
   def index
@@ -16,7 +17,8 @@ class CommentsController < ApplicationController
   end
 
   def create
-    @comment = @post.comments.new(comment_params)
+    @comment = @post.comments.new(comment_params.merge(user_id: current_user.id))
+    @comment.commenter = current_user.email
     
     respond_to do |format|
       if @comment.save
@@ -32,9 +34,9 @@ class CommentsController < ApplicationController
 
   def update
     @comment.post_id = params[:post_id]
-
+    @comment.commenter = current_user.email
     respond_to do |format|
-      if @comment.update(comment_params)
+      if @comment.update(comment_params.merge(user_id: current_user.id))
         flash[:success] = 'Comment was successfully updated.'
         format.html { redirect_to topic_post_path(params[:topic_id],params[:post_id]) }
         format.json { render :show, status: :ok, location: topic_post_comments_path(params[:topic_id],params[:post_id]||params[:id]) }
@@ -66,6 +68,10 @@ class CommentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def comment_params
-      params.require(:comment).permit(:commenter, :body)
+      params.require(:comment).permit(:body)
+    end
+
+    def my_sanitizer
+      params.require(:comment).permit(:body)
     end
 end

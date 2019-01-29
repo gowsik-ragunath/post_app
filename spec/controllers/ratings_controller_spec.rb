@@ -4,10 +4,12 @@ require 'rails_helper'
 RSpec.describe RatingsController, type: :controller do
 
   before{
+    @user = User.create!(email:"email@email.com",password:"password",password_confirmation:"password")
     @topic = Topic.create!(name:"abc")
     Tag.create!(tag:"sample")
-    @post = @topic.posts.create!(title:"title",body:"body",tag_ids:[1])
+    @post = @topic.posts.create!(title:"title",body:"body",tag_ids:[1],user_id:1)
     @rating = @post.ratings.create!(rating:5)
+    sign_in @user
   }
   let(:valid_attributes) {
     skip("Add a hash of attributes valid for your model")
@@ -21,7 +23,6 @@ RSpec.describe RatingsController, type: :controller do
 
 
   describe "GET #index" do
-    login_user
     it "returns a success response" do
       get :index,params: {id: @rating.to_param,topic_id:@topic.id,post_id:@post.id}
       expect(response).to be_successful
@@ -30,7 +31,6 @@ RSpec.describe RatingsController, type: :controller do
 
 
   describe "GET #edit" do
-    login_user
     it "returns a success response" do
       get :edit, params: {id: @rating.to_param,topic_id:@topic.id,post_id:@post.id}, session: valid_session
       expect(response).to be_successful
@@ -38,7 +38,6 @@ RSpec.describe RatingsController, type: :controller do
   end
 
   describe "POST #create" do
-    login_user
     context "with valid params" do
       it "creates a new rating" do
         expect{ post :create, params: {topic_id:@topic.id,post_id:@post.id,rating: 3}
@@ -69,7 +68,6 @@ RSpec.describe RatingsController, type: :controller do
   end
 
   describe "PUT #update" do
-    login_user
     context "with valid params" do
       let(:new_attributes) {
         skip("Add a hash of attributes valid for your model")
@@ -101,7 +99,6 @@ RSpec.describe RatingsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    login_user
     it "destroys the requested rating" do
       expect {
         delete :destroy, params: {id: @rating.to_param,topic_id:@topic.id,post_id:@post.id}, session: valid_session

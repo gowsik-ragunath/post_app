@@ -2,6 +2,11 @@ require 'rails_helper'
 
 RSpec.describe TopicsController, type: :controller do
 
+  before{
+    @user = User.create!(email:"email@email.com",password:"password",password_confirmation:"password")
+    sign_in @user
+  }
+
   let(:valid_attributes) {
     skip("Add a hash of attributes valid for your model")
   }
@@ -17,7 +22,6 @@ RSpec.describe TopicsController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
-    login_user
     it "returns a success response" do
       get :index, params: {}, session: valid_session
       expect(response).to be_successful
@@ -33,7 +37,6 @@ RSpec.describe TopicsController, type: :controller do
   end
 
   describe "GET #new" do
-    login_user
     it "returns a success response" do
       get :new, params: {}, session: valid_session
       expect(response).to be_successful
@@ -41,7 +44,6 @@ RSpec.describe TopicsController, type: :controller do
   end
 
   describe "GET #edit" do
-    login_user
     it "returns a success response" do
       get :edit, params: {id: @topic.to_param}, session: valid_session
       expect(response).to be_successful
@@ -49,8 +51,7 @@ RSpec.describe TopicsController, type: :controller do
   end
 
 
-    describe "POST #create" do
-      login_user
+  describe "POST #create" do
     context "with valid params" do
       it "creates a new Topic" do
         expect {
@@ -69,7 +70,6 @@ RSpec.describe TopicsController, type: :controller do
         expect(response).to redirect_to(topics_path)
       end
     end
-
   end
 
   describe "PUT #update" do

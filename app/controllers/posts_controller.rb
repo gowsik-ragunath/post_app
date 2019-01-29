@@ -1,10 +1,10 @@
 class PostsController < ApplicationController
 	before_action :set_topic, only: [ :index, :new, :create,  :show, :edit, :update, :destroy ]
 	before_action :set_post , only: [ :show, :edit, :update, :destroy]
+	load_and_authorize_resource
 
 
 	def index
-
 		if params[:topic_id].nil?
 			@posts = Post.topic_post.paginate(page: params[:page], per_page: 10).includes(:topic).eager_load(:ratings).eager_load(:comments)
 		else
@@ -18,7 +18,7 @@ class PostsController < ApplicationController
 	end
 
 	def create
-		@post = @topic.posts.new(post_params)
+		@post = @topic.posts.new(post_params.merge(user_id: current_user.id))
 		if @post.save
 		    respond_to do |format|
 		      format.html { redirect_to topic_posts_path(@topic), notice: 'Post was successfully created.' }
@@ -31,12 +31,13 @@ class PostsController < ApplicationController
 	def show
 		@rating = Rating.new
 		@ratings = @post.ratings
-		@comments = @post.comments
+		@comments = @post.comments.eager_load(:user)
 		@comment = Comment.new
 		@tag_relation = @post.tags
 	end
 
 	def destroy
+		authorize! :destroy, @post
 		@post.destroy
 	    respond_to do |format|
 	      flash[:destroy] = 'Post was successfully destroyed.'
@@ -46,10 +47,12 @@ class PostsController < ApplicationController
 	end
 
 	def edit
+		authorize! :update, @post
 	end
 
 	def update
-		if @post.update_attributes(post_params)
+		authorize! :update, @post
+		if @post.update_attributes(post_params.merge(user_id: current_user.id))
 			flash[:notice] = 'Post was successfully updated.'
 			redirect_to(topic_post_path(params[:topic_id],params[:id]))
 		else

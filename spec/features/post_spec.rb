@@ -6,7 +6,7 @@ RSpec.describe '#post' do
 		Topic.create!(name:'check topic')
 		Tag.create!(tag:'check')
 
-		FactoryBot.create(:user, email: 'user@test.com', password: 'password')
+		@user = FactoryBot.create(:user, email: 'user@test.com', password: 'password')
 		visit new_user_session_path
 		fill_in :user_email, with: 'user@test.com'
 		fill_in :user_password, with: 'password'
@@ -84,8 +84,8 @@ RSpec.describe '#post' do
 
 	describe 'post#show' do
 		before{
-			Post.create!(title:'post1',body:'body of post1',topic_id:1,tag_ids:[1])
-			Post.create!(title:'post2',body:'body of post2',topic_id:1,tag_ids:[1])
+			Post.create!(title:'post1',body:'body of post1',topic_id:1,tag_ids:[1],user_id:@user.id)
+			Post.create!(title:'post2',body:'body of post2',topic_id:1,tag_ids:[1],user_id:@user.id)
 		}
 
 
@@ -137,8 +137,8 @@ RSpec.describe '#post' do
 	describe "posts#delete" do
 
 		before{
-			Post.create!(title:'post1',body:'body of post1',topic_id:1,tag_ids:[1])
-			Post.create!(title:'post2',body:'body of post2',topic_id:1,tag_ids:[1])
+			Post.create!(title:'post1',body:'body of post1',topic_id:1,tag_ids:[1],user_id:@user.id)
+			Post.create!(title:'post2',body:'body of post2',topic_id:1,tag_ids:[1],user_id:@user.id)
 			
 			visit('/')
 			expect(page).to have_content('check topic')

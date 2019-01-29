@@ -4,9 +4,11 @@ RSpec.describe CommentsController, type: :controller do
 
 
   before{
+    @user = User.create!(email:"email@email.com",password:"password",password_confirmation:"password")
     @topic = Topic.create!(name:"abc")
-    @post = @topic.posts.create!(title:"title",body:"body")
-    @comment = @post.comments.create!(commenter:"user",body:"comment")
+    @post = @topic.posts.create!(title:"title",body:"body",user_id:1)
+    @comment = @post.comments.create!(body:"comment",user_id:1)
+    sign_in @user
   }
   let(:valid_attributes) {
     skip("Add a hash of attributes valid for your model")
@@ -19,7 +21,6 @@ RSpec.describe CommentsController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
-    login_user
     it "returns a success response" do
       get :index,params: {id: @comment.to_param, post_id: @post.id,topic_id:@topic.id}
       expect(response).to be_successful
@@ -28,7 +29,6 @@ RSpec.describe CommentsController, type: :controller do
 
 
   describe "GET #edit" do
-    login_user
     it "returns a success response" do
       get :edit, params: {id: @comment.to_param, post_id: @post.id,topic_id:@topic.id}, session: valid_session
       expect(response).to be_successful
@@ -36,7 +36,6 @@ RSpec.describe CommentsController, type: :controller do
   end
 
   describe "PUT #update" do
-    login_user
     context "with valid params" do
       let(:new_attributes) {
         skip("Add a hash of attributes valid for your model")
@@ -54,11 +53,6 @@ RSpec.describe CommentsController, type: :controller do
     end
 
     context "with invalid params" do
-      it "returns response with invalid commenter" do
-        put :update, params: {id: @comment.to_param,topic_id: @topic.id,post_id: @post.id, comment: {commenter:nil, body:"body"}}, session: valid_session
-        expect(@comment.commenter).not_to be_empty
-      end
-
       it "returns response with string" do
         put :update, params: {id: @comment.to_param,topic_id: @topic.id,post_id: @post.id, comment: {commenter:'commenter', body:nil }}, session: valid_session
         expect(@comment.body).not_to be_empty
@@ -70,16 +64,10 @@ RSpec.describe CommentsController, type: :controller do
 
 
   describe "POST #create" do
-    login_user
     context "with valid params" do
       it "creates a new comment" do
         expect{ post :create, params: {topic_id:@topic.id,post_id:@post.id,comment: {commenter:'user',body:"body"}}
         }.to change(Comment, :count).by(1)
-      end
-
-      it "new comment with invalid commenter" do
-        expect{ post :create, params: {topic_id:@topic.id,post_id:@post.id,comment: {commenter:nil,body:"body"}}
-        }.to change(Comment, :count).by(0)
       end
 
       it "new comment with invalid body" do
@@ -95,7 +83,6 @@ RSpec.describe CommentsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    login_user
     it "destroys the requested comment" do
 
       expect {

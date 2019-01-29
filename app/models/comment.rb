@@ -3,9 +3,9 @@ class Comment < ApplicationRecord
 
 ######################ASSOCIATION################################################################################
   belongs_to :post
+	belongs_to :user
 
  ################################validation######################################################################
-	validates :commenter, presence: true
+	# validates :commenter, presence: true
 	validates :body, presence: true
-  	validates :post_id, presence: true
 end

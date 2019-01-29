@@ -1,7 +1,11 @@
 <p> <%= will_paginate @post, renderer: BootstrapPagination::Rails%>
-  <%= link_to 'New Post' , new_topic_post_path(@topic),class: 'btn btn-primary btn-lg' %>
+  <% if not current_user.nil? %>
+    <%= link_to 'New Post' , new_topic_post_path(@topic),class: 'btn btn-primary btn-lg' %>
+  <% end %>
   <%= link_to 'All Posts', topic_posts_path(@topic),class: 'btn btn-dark' %>
-  <%= link_to 'Edit', edit_topic_path(@topic),class: 'btn btn-warning' %>
+  <% if can? :edit, @topic %>
+    <%= link_to 'Edit', edit_topic_path(@topic),class: 'btn btn-warning' %>
+  <% end %>
   <%= link_to 'Back', topics_path,class: 'btn btn-secondary post-btn' %>
 </p>
 
@@ -13,8 +17,10 @@
 <ul class="list-group">
   <% @post.each do |f| %>
       <li class="list-group-item"><%= link_to f.title , topic_post_path(@topic,f) %>
-       <%= link_to 'edit' , edit_topic_post_path(@topic,f),class: 'btn btn-warning post-btn' %>
-      <%= link_to 'show' , topic_post_path(@topic,f),class: 'btn btn-primary post-btn' %>
+        <% if can? :edit, f %>
+         <%= link_to 'edit' , edit_topic_post_path(@topic,f),class: 'btn btn-warning post-btn' %>
+        <% end %>
+        <%= link_to 'show' , topic_post_path(@topic,f),class: 'btn btn-primary post-btn' %>
        </li>
   <% end %>
 </ul>

@@ -4,18 +4,23 @@
 			<br>
       <%= will_paginate @posts, renderer: BootstrapPagination::Rails%>
 			 <% if not params[:topic_id].nil? %>
-
-        <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-primary btn-lg btn-block' %>
-				 <br>
+        <% if not  current_user.nil? %>
+          <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-primary btn-lg btn-block' %>
+        <% end %>
+        <br>
 
         <ul class="post-list">
 						<% @posts.each do |f| %>
 							<h2><%= link_to f.title+" ("+f.topic.name.upcase+")", topic_post_path(f.topic_id,f), class: "list-heading" %></h2>
 
             <%if f.ratings.present? %>
-            <li class="list-body"> <p class="d-inline"> Rating : <%= f.ratings.average(:rating).truncate(1) %> | Comment : <%= f.comments.count %></p>
+            <li class="list-body"> <p class="d-inline"> Rating : <%= f.ratings.average(:rating).truncate(1) %></p>
                   </li>
-						<%end %>
+						<% end %>
+            <%if f.comments.present? %>
+              <li class="list-body"> <p class="d-inline"> Comment : <%= f.comments.count %></p>
+              </li>
+            <% end %>
 							<li class="list-body"><p><%= f.body %></p></li>
 						<% end %>
 				</ul>
@@ -28,8 +33,13 @@
 							<br>
 							<% posts.each do |f| %>
 								<h2><%= link_to f.title+" ("+f.topic.name.upcase+")", topic_post_path(f.topic_id,f), class: "list-heading" %></h2>
-                <% if f.ratings.present? %>
-                  <li class="list-body"> <p class="d-inline"> Rating : <%= f.ratings.average(:rating).truncate(1) %> | Comment : <%= f.comments.count %></p> </li>
+                <%if f.ratings.present? %>
+                  <li class="list-body"> <p class="d-inline"> Rating : <%= f.ratings.average(:rating).truncate(1) %></p>
+                  </li>
+                <% end %>
+                <%if f.comments.present? %>
+                  <li class="list-body"> <p class="d-inline"> Comment : <%= f.comments.count %></p>
+                  </li>
                 <% end %>
 								<li class="list-body"><p><%= f.body %></p></li>
 							<% end %>
@@ -45,4 +55,4 @@
 		<div class="co-md-6"></div>
 	</div>
 </div>
-			
+

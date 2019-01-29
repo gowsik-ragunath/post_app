@@ -1,5 +1,6 @@
 class TopicsController < ApplicationController
   before_action :set_topic, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
 
   # GET /topics
   # GET /topics.json
@@ -11,7 +12,7 @@ class TopicsController < ApplicationController
   # GET /topics/1.json
   def show
     @topic = Topic.find(params[:id])
-    @post = @topic.posts.paginate(page: params[:page], per_page: 10)
+    @post = @topic.posts.paginate(page: params[:page], per_page: 10).includes(:user)
     @new_post = Post.new
   end
 

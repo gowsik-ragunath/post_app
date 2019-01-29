@@ -1,10 +1,19 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			<h1 class="d-inline-block"> <%= @post.title %> </h1>
-			<%= link_to 'Back', topic_posts_path(params[:topic_id]),class: "btn btn-dark d-inline-block post-btn" %>
-			<%= link_to 'Edit', edit_topic_post_path(params[:topic_id],@post),class: "btn btn-warning d-inline-block post-btn" %>
-			<%= link_to 'Delete', topic_post_path(params[:topic_id],@post), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger d-inline-block post-btn" %>
+			<div>
+        <h1 class="d-inline-block"> <%= @post.title %> </h1>
+        <%= link_to 'Back', topic_posts_path(params[:topic_id]),class: "btn btn-dark d-inline-block post-btn" %>
+        <%if can? :update, @post %>
+          <%= link_to 'Edit', edit_topic_post_path(params[:topic_id],@post),class: "btn btn-warning d-inline-block post-btn" %>
+        <% end %>
+        <%if can? :destroy, @post %>
+          <%= link_to 'Delete', topic_post_path(params[:topic_id],@post), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger d-inline-block post-btn" %>
+        <% end %>
+        <% if @post.user.present? %>
+          <h6> Author: <%= @post.user.email %></h6>
+        <% end %>
+      </div>
   <div class="row">
       <div class="col-md-8">
       <% if @ratings.present? %>
@@ -13,8 +22,13 @@
           <div class="rating-view"><%= rating %>-Star:<%= collection.count %></div>
           <% end %>
         </p>
-        <p> Rating: <%= @ratings.average(:rating).truncate(1) %> | Comment : <%= @comments.count %> </p>
 			<% end %>
+        <%if @ratings.present? %>
+          <p class="d-inline"> Rating : <%= @ratings.average(:rating).truncate(1) %></p>
+        <% end %>
+        <%if @comments.present? %>
+          <p class="d-inline"> Comment : <%= @comments.count %></p>
+        <% end %>
       <p ><%= render 'ratings/form', rating: @rating %></p>
 
 			<p><strong> Tags:  
@@ -33,14 +47,21 @@
 
 			<%= render 'comments/form', comment:@comment%>
 			<table class="table table-borderless">
+        <th>   <strong>Comments: </strong> </th>
         <% if @comments.present? %>
-          <% @comments.each do |c| %>
+          <% @comments.order(commenter: :asc).each do |c| %>
           <tr>
-          <td> <strong>Commenter:</strong> <%= c.commenter %> </td>
-          <td> <strong>Body:</strong> <%= c.body %> </td>
+
+          <td>
+            <div class="col-md-4"> <small> <%= c.commenter %></small></div>
+            <div class="offset-md-1 col-md-8"> <%= c.body %></div>
+          </td>
+          <%if can? :update, c %>
           <td><%= link_to 'edit', edit_topic_post_comment_path(params[:topic_id],params[:id],c), comment:c , method_task: ':patch',class: "btn btn-warning btn-sm" %></td>
-           <td><%= link_to 'delete', topic_post_comment_path(params[:topic_id],params[:id],c), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger btn-sm" %>
-           </td>
+           <% end %>
+          <%if can? :update, c %>
+              <td><%= link_to 'delete', topic_post_comment_path(params[:topic_id],params[:id],c), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger btn-sm" %></td>
+          <% end %>
            </tr>
           <% end %>
 			  <% end %>
