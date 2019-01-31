@@ -12,8 +12,12 @@ class TopicsController < ApplicationController
   # GET /topics/1.json
   def show
     @topic = Topic.find(params[:id])
-    @post = @topic.posts.paginate(page: params[:page], per_page: 10).includes(:user)
-    @new_post = Post.new
+    if current_user.nil? or not current_user.admin?
+      @post = @topic.posts.paginate(page: params[:page], per_page: 10).includes(:user)
+    else
+      @post = @topic.posts.paginate(page: params[:page], per_page: 10)
+    end
+      @new_post = Post.new
   end
 
   # GET /topics/new

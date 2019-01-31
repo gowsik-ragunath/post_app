@@ -1,24 +1,15 @@
 class RatingsController < ApplicationController
-  before_action :set_post, only: [:show, :edit, :update, :destroy, :new, :create ]
+  before_action :set_post, only: [:index, :show, :edit, :update, :destroy, :new, :create ]
   before_action :set_rating, only: [:show, :edit, :update, :destroy ]
   # GET /ratings
   # GET /ratings.json
   def index
-    @ratings = Rating.preload(:post).where(post_id:1)
-  end
-
-  # GET /ratings/1
-  # GET /ratings/1.json
-  def show
+    @ratings = @post.ratings
   end
 
   # GET /ratings/new
   def new
     @rating = @post.ratings.new
-  end
-
-  # GET /ratings/1/edit
-  def edit
   end
 
   # POST /ratings
@@ -31,20 +22,6 @@ class RatingsController < ApplicationController
         format.json { render :show, status: :created, location: @rating }
       else
         format.html { render :new }
-        format.json { render json: @rating.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /ratings/1
-  # PATCH/PUT /ratings/1.json
-  def update
-    respond_to do |format|
-      if @rating.update(rating_params)
-        format.html { redirect_to topic_post_path(params[:topic_id],params[:post_id]), notice: 'Rating was successfully updated.' }
-        format.json { render :show, status: :ok, location: @rating }
-      else
-        format.html { render :edit }
         format.json { render json: @rating.errors, status: :unprocessable_entity }
       end
     end

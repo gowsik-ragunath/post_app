@@ -9,4 +9,8 @@ module ApplicationHelper
 	    end
 	end
 
+	def topic_name(topic)
+		Topic.find(topic).name
+	end
+
 end

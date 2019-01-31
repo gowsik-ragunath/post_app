@@ -18,16 +18,16 @@
       <div class="col-md-8">
       <% if @ratings.present? %>
         <p>
-          <% @ratings.order(rating: :asc).group_by{ |t| t.rating }.each do |rating,collection| %>
-          <div class="rating-view"><%= rating %>-Star:<%= collection.count %></div>
+          <% @check_rating.each do |rating,count| %>
+            <div class="rating-view"><%= rating %>-Star:<%= count %></div>
           <% end %>
         </p>
 			<% end %>
         <%if @ratings.present? %>
-          <p class="d-inline"> Rating : <%= @ratings.average(:rating).truncate(1) %></p>
+          <p class="d-inline"> Rating : <%= @ratings.rating_average %></p>
         <% end %>
         <%if @comments.present? %>
-          <p class="d-inline"> Comment : <%= @comments.count %></p>
+          <p class="d-inline"> Comment : <%= @comments.size %></p>
         <% end %>
       <p ><%= render 'ratings/form', rating: @rating %></p>
 
@@ -49,7 +49,7 @@
 			<table class="table table-borderless">
         <th>   <strong>Comments: </strong> </th>
         <% if @comments.present? %>
-          <% @comments.order(commenter: :asc).each do |c| %>
+          <% @comments.comment_order.each do |c| %>
           <tr>
 
           <td>

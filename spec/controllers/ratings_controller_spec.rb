@@ -29,73 +29,42 @@ RSpec.describe RatingsController, type: :controller do
     end
   end
 
-
-  describe "GET #edit" do
-    it "returns a success response" do
-      get :edit, params: {id: @rating.to_param,topic_id:@topic.id,post_id:@post.id}, session: valid_session
-      expect(response).to be_successful
-    end
-  end
-
   describe "POST #create" do
     context "with valid params" do
       it "creates a new rating" do
         expect{ post :create, params: {topic_id:@topic.id,post_id:@post.id,rating: 3}
         }.to change(Rating, :count).by(1)
+        expect(response).to redirect_to(topic_post_path(id:@post.id))
+        expect(flash[:notice]).to eq "Rating was successfully created."
       end
 
       it "new rating with invalid params positive" do
         expect{ post :create, params: {id: @rating.to_param,topic_id:@topic.id,post_id:@post.id,rating: 6}
         }.to change(Rating, :count).by(0)
+        expect(response).to be_successful
+
       end
 
       it "new rating with invalid params negative" do
         expect{ post :create, params: {id: @rating.to_param,topic_id:@topic.id,post_id:@post.id,rating: -6}
         }.to change(Rating, :count).by(0)
+        expect(response).to be_successful
       end
 
       it "new rating with invalid params string" do
         expect{ post :create, params: {id: @rating.to_param,topic_id:@topic.id,post_id:@post.id,rating: '-6'}
         }.to change(Rating, :count).by(0)
+        expect(response).to be_successful
       end
 
       it "redirects to the /ratings" do
-        post :create, params: {id: @rating.to_param,topic_id:@topic.id,post_id:@post.id,rating: {rating:5, post_id:1}} , session: valid_session
-        expect(response).to be_successful
+        expect{ post :create, params: {topic_id:@topic.id,post_id:@post.id,rating: 3}
+        }.to change(Rating, :count).by(1)
+        expect(response).to redirect_to(topic_post_path(id:@post.id))
+        expect(flash[:notice]).to eq "Rating was successfully created."
       end
     end
 
-  end
-
-  describe "PUT #update" do
-    context "with valid params" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
-
-      it "updates the requested rating" do
-        put :update, params: {id: @rating.to_param,topic_id: @topic.id,post_id: @post.id, rating: {rating:3, post_id:1}}, session: valid_session
-        @rating.reload
-      end
-
-      it "redirects to the rating" do
-        put :update, params: {id: @rating.to_param,topic_id: @topic.id,post_id: @post.id,rating: {rating:3, post_id:1}}, session: valid_session
-        expect(response).to redirect_to(topic_post_path)
-      end
-    end
-
-    context "with invalid params" do
-      it "returns response with invalid int" do
-        put :update, params: {id: @rating.to_param,topic_id: @topic.id,post_id: @post.id, rating:10}, session: valid_session
-        expect(response).to be_successful
-      end
-
-      it "returns response with string" do
-        put :update, params: {id: @rating.to_param,topic_id: @topic.id,post_id: @post.id, rating:"10"}, session: valid_session
-        expect(response).to be_successful
-      end
-
-    end
   end
 
   describe "DELETE #destroy" do
@@ -108,7 +77,9 @@ RSpec.describe RatingsController, type: :controller do
     it "redirects to the comments list" do
       delete :destroy, params: {id: @post.to_param,topic_id:@topic.id,post_id:@post.id}, session: valid_session
       expect(response).to redirect_to(topic_post_path(@topic.id))
+      expect(flash[:notice]).to eq "Rating was successfully destroyed."
     end
   end
 
 end
+

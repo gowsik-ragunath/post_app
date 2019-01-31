@@ -1,11 +1,11 @@
 class CommentsController < ApplicationController
   before_action :set_post, only: [ :new, :create, :show, :edit, :update, :destroy]
   before_action :set_comment, only: [:show, :edit, :update, :destroy]
-  load_and_authorize_resource param_method: :my_sanitizer
+  load_and_authorize_resource
 
 
   def index
-    @comments = Post.find(params[:post_id]).comments
+    @comments = Post.find(params[:post_id]).comments.includes(:user)
   end
 
   def new
@@ -71,7 +71,4 @@ class CommentsController < ApplicationController
       params.require(:comment).permit(:body)
     end
 
-    def my_sanitizer
-      params.require(:comment).permit(:body)
-    end
 end

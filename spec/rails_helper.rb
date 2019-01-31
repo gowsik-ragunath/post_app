@@ -100,6 +100,10 @@ RSpec.configure do |config|
     config.extend ControllerMacros, :type => :controller
   end
 
-
+  RSpec.configure do |config|
+    config.expect_with :rspec do |expectations|
+      expectations.syntax = [:expect, :should]
+    end
+  end
 
 end

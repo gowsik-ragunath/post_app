@@ -64,6 +64,7 @@ class TagsController < ApplicationController
       flash[:danger] = 'Tag was successfully destroyed.'
       format.html { redirect_to tags_url }
       format.json { head :no_content }
+      format.js
     end
   end
 

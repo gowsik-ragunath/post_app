@@ -5,8 +5,12 @@ RSpec.describe PostsController, type: :controller do
 
   before{
     @user = User.create!(email:"email@email.com",password:"password",password_confirmation:"password")
+    @user2 = User.create!(email:"iemail@email.com",password:"password",password_confirmation:"password")
     @topic = Topic.create!(name:"abc")
     @post = @topic.posts.create!(title:"title",body:"body",user_id:1)
+    Rating.create!(rating:5,post_id:1)
+    Rating.create!(rating:2,post_id:1)
+    Rating.create!(rating:4,post_id:1)
     @tag = Tag.create!(tag:"sample")
     sign_in @user
   }
@@ -22,7 +26,6 @@ RSpec.describe PostsController, type: :controller do
 
 
   describe "GET #index" do
-
     it "returns a success response" do
       get :index,params: {id: @post.to_param,topic_id:@topic.id}
       expect(response).to be_successful
@@ -34,6 +37,12 @@ RSpec.describe PostsController, type: :controller do
     it "returns a success response" do
       get :edit, params: {id: @post.to_param,topic_id:@topic.id}, session: valid_session
       expect(response).to be_successful
+    end
+
+    it "GET #edit by other user" do
+      sign_in @user2
+      get :edit, params: {id: @post.to_param,topic_id:@topic.id}, session: valid_session
+      expect(flash[:alert]).to eq "You are not authorized to access this page."
     end
   end
 
@@ -67,6 +76,13 @@ RSpec.describe PostsController, type: :controller do
 
   end
 
+  describe "GET #show" do
+    it "returns a success response" do
+      get :show,params: {id: @post.to_param,topic_id:@topic.id}
+      expect(response).to be_successful
+    end
+  end
+
   describe "PUT #update" do
     context "with valid params" do
       let(:new_attributes) {
@@ -96,6 +112,12 @@ RSpec.describe PostsController, type: :controller do
         @post.reload
       end
 
+      it "update requested post by other user" do
+        sign_in @user2
+        put :update, params: {id: @post.to_param,topic_id: @topic.id, post: {title:"update title",body:"update body", tag_ids: [1]}}, session: valid_session
+        expect(flash[:alert]).to eq "You are not authorized to access this page."
+      end
+
       it "redirects to the post" do
         put :update, params: {id: @post.to_param,topic_id: @topic.id,post: {title:"update title",body:"update body", tag_ids: [1]}}, session: valid_session
         expect(response).to redirect_to(topic_post_path)
@@ -111,13 +133,18 @@ RSpec.describe PostsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    it "destroys the requested comment" do
+    it "destroys the requested post" do
 
       expect {
         delete :destroy, params: {id: @post.to_param,topic_id:@topic.id}, session: valid_session
       }.to change(Post, :count).by(-1)
     end
 
+    it "destroys the request by other user" do
+      sign_in @user2
+      delete :destroy, params: {id: @post.to_param,topic_id:@topic.id}, session: valid_session
+      expect(flash[:alert]).to eq "You are not authorized to access this page."
+    end
 
     it "redirects to the comments list" do
       delete :destroy, params: {id: @post.to_param,topic_id:@topic.id}, session: valid_session

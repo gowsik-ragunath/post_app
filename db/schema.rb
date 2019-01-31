@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_29_083635) do
+ActiveRecord::Schema.define(version: 2019_01_30_095636) do
 
   create_table "comments", force: :cascade do |t|
     t.string "commenter"
@@ -43,6 +43,13 @@ ActiveRecord::Schema.define(version: 2019_01_29_083635) do
     t.integer "tag_id"
     t.index ["post_id"], name: "index_posts_tags_on_post_id"
     t.index ["tag_id"], name: "index_posts_tags_on_tag_id"
+  end
+
+  create_table "posts_users_reads", id: false, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "post_id"
+    t.index ["post_id"], name: "index_posts_users_reads_on_post_id"
+    t.index ["user_id"], name: "index_posts_users_reads_on_user_id"
   end
 
   create_table "ratings", force: :cascade do |t|

@@ -7,6 +7,7 @@ class Post < ApplicationRecord
 	has_many :comments, dependent: :destroy
 	has_many :ratings, dependent: :destroy
 	has_and_belongs_to_many :tags
+	has_and_belongs_to_many :users , join_table: :posts_users_reads
 
 	has_attached_file :image, styles: { large:"600x600>" ,medium: "300x300>", thumb: "100x100#" }
 	# has_many :tag_post_members
@@ -23,10 +24,10 @@ class Post < ApplicationRecord
 	validates_attachment :image, content_type:{content_type: ["image/jpeg","image/png"] },
                        size: { in: 0..2.megabytes }
 
-
-###########################SCOPE###########################################################################
+  ###########################SCOPE###########################################################################
 
 	scope :topic_post, -> { order(title: :asc) }
 
-	
+
+
 end

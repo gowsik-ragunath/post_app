@@ -13,15 +13,11 @@
 						<% @posts.each do |f| %>
 							<h2><%= link_to f.title+" ("+f.topic.name.upcase+")", topic_post_path(f.topic_id,f), class: "list-heading" %></h2>
 
-            <%if f.ratings.present? %>
-            <li class="list-body"> <p class="d-inline"> Rating : <%= f.ratings.average(:rating).truncate(1) %></p>
-                  </li>
+            <li class="list-body"><%if f.ratings.present? %><p class="d-inline"> Rating : <%= f.ratings.rating_average %></p>
 						<% end %>
-            <%if f.comments.present? %>
-              <li class="list-body"> <p class="d-inline"> Comment : <%= f.comments.count %></p>
-              </li>
-            <% end %>
-							<li class="list-body"><p><%= f.body %></p></li>
+            <%if f.comments.present? %><p class="d-inline"> Comment : <%= f.comments.size %></p>
+            <% end %></li>
+            <li class="list-body"><p><%= f.body %></p></li>
 						<% end %>
 				</ul>
 
@@ -29,18 +25,15 @@
 
 					<ul class="post-list">
 						<% @posts.group_by{ |t| t.topic_id }.each do |topic , posts| %>
-							<h1 class="text-center"> <%= Topic.find(topic).name %> </h1>
+							<h1 class="text-center"> <%= topic_name(topic) %> </h1>
 							<br>
 							<% posts.each do |f| %>
-								<h2><%= link_to f.title+" ("+f.topic.name.upcase+")", topic_post_path(f.topic_id,f), class: "list-heading" %></h2>
-                <%if f.ratings.present? %>
-                  <li class="list-body"> <p class="d-inline"> Rating : <%= f.ratings.average(:rating).truncate(1) %></p>
-                  </li>
-                <% end %>
-                <%if f.comments.present? %>
-                  <li class="list-body"> <p class="d-inline"> Comment : <%= f.comments.count %></p>
-                  </li>
-                <% end %>
+                <h2><%= link_to f.title+" ("+f.topic.name.upcase+")", topic_post_path(f.topic_id,f), class: "list-heading" %></h2>
+                <li class="list-body"> <%if f.ratings.present? %><p class="d-inline"> Rating : <%= f.ratings.rating_average %></p>
+                  <% end %>
+                  <%if f.comments.present? %>
+                    <p class="d-inline"> Comment : <%= f.comments.size %></p>
+                  <% end %></li>
 								<li class="list-body"><p><%= f.body %></p></li>
 							<% end %>
 						<% end %>

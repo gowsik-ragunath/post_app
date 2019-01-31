@@ -3,16 +3,16 @@ require 'rails_helper'
 RSpec.describe '#topics' do
 
   before{
-		FactoryBot.create(:user, email: 'user@test.com', password: 'password')
+		FactoryBot.create(:user, email: 'user@test.com', password: 'password123',password_confirmation:'password123',admin:true)
 		visit new_user_session_path
 		fill_in :user_email, with: 'user@test.com'
-		fill_in :user_password, with: 'password'
+		fill_in :user_password, with: 'password123'
 		click_on 'Log in'
   }
 
 	describe 'topics#new success'  do
 		it 'visit new topic page' do
-			visit('/')
+			visit topics_path
 			click_link('New Topic')
 
 			expect(current_path).to have_content('/topics/new')

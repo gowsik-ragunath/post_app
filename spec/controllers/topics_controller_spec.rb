@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe TopicsController, type: :controller do
 
   before{
-    @user = User.create!(email:"email@email.com",password:"password",password_confirmation:"password")
+    @user = User.create!(email:"email@email.com",password:"password",password_confirmation:"password",admin:true)
+    @user2 = User.create!(email:"iemail@email.com",password:"password",password_confirmation:"password")
     sign_in @user
   }
 
@@ -41,12 +42,24 @@ RSpec.describe TopicsController, type: :controller do
       get :new, params: {}, session: valid_session
       expect(response).to be_successful
     end
+
+    it "failed" do
+      sign_in @user2
+      get :new, params: {}, session: valid_session
+      expect(flash[:alert]).to eq "You are not authorized to access this page."
+    end
   end
 
   describe "GET #edit" do
     it "returns a success response" do
       get :edit, params: {id: @topic.to_param}, session: valid_session
       expect(response).to be_successful
+    end
+
+    it "failed" do
+      sign_in @user2
+      get :edit, params: {id: @topic.to_param}, session: valid_session
+      expect(flash[:alert]).to eq "You are not authorized to access this page."
     end
   end
 
@@ -57,6 +70,7 @@ RSpec.describe TopicsController, type: :controller do
         expect {
           post :create, params: {topic: {name:"sddsa"} }, session: valid_session
         }.to change(Topic, :count).by(1)
+        expect(response).to redirect_to(topics_path)
       end
 
       it "creates a new Topic invalid param" do
@@ -73,7 +87,6 @@ RSpec.describe TopicsController, type: :controller do
   end
 
   describe "PUT #update" do
-    login_user
     context "with valid params" do
       let(:new_attributes) {
         skip("Add a hash of attributes valid for your model")
@@ -86,7 +99,7 @@ RSpec.describe TopicsController, type: :controller do
 
       it "redirects to the topic" do
         put :update, params: {id: @topic.to_param, topic: {name:"valid_attributes"}}, session: valid_session
-        expect(response).to redirect_to(@topic)
+        expect(response).to redirect_to(topic_path)
       end
     end
 
@@ -99,7 +112,6 @@ RSpec.describe TopicsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    login_user
     it "destroys the requested topic" do
       expect {
         delete :destroy, params: {id: @topic.to_param}, session: valid_session
@@ -108,7 +120,7 @@ RSpec.describe TopicsController, type: :controller do
 
     it "redirects to the topics list" do
       delete :destroy, params: {id: @topic.to_param}, session: valid_session
-      expect(response).to redirect_to(topics_url)
+      expect(response).to redirect_to(topics_path)
     end
   end
 

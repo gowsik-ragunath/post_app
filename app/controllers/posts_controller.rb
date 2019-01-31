@@ -30,7 +30,8 @@ class PostsController < ApplicationController
 
 	def show
 		@rating = Rating.new
-		@ratings = @post.ratings
+		@ratings = @post.ratings.rating_order
+		@check_rating = check_rating_order(@ratings)
 		@comments = @post.comments.eager_load(:user)
 		@comment = Comment.new
 		@tag_relation = @post.tags
@@ -73,9 +74,17 @@ class PostsController < ApplicationController
       @post = @topic.posts.find(params[:id])
     end
 
-	def post_params
-		params.require(:post).permit(:title,:body,:image, tag_ids: [],tags_attributes: [:tag])
-	end
+		def post_params
+			params.require(:post).permit(:title,:body,:image, tag_ids: [],tags_attributes: [:tag])
+		end
+
+		def check_rating_order(ratings)
+			rating_hash = { 1 => 0 , 2 => 0 , 3 => 0, 4=> 0,5=> 0}
+			ratings.group_by{ |t| t.rating }.each do |key,collection|
+				rating_hash[key] = collection.size
+			end
+			rating_hash
+		end
 
 
 
