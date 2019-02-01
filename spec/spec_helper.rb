@@ -48,8 +48,6 @@ RSpec.configure do |config|
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
-  config.example_status_persistence_file_path = "spec/examples.txt"
-
   Capybara.javascript_driver = :webkit
 
 # The settings below are suggested to provide a good initial experience

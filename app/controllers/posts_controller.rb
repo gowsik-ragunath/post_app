@@ -1,14 +1,14 @@
 class PostsController < ApplicationController
-	before_action :set_topic, only: [ :index, :new, :create,  :show, :edit, :update, :destroy ]
-	before_action :set_post , only: [ :show, :edit, :update, :destroy]
-	load_and_authorize_resource
+	before_action :set_topic, only: [ :index, :new, :create,  :show, :edit, :update, :destroy, :read_status]
+	before_action :set_post , only: [ :show, :edit, :update, :destroy,:read_status]
+	# load_and_authorize_resource
 
 
 	def index
 		if params[:topic_id].nil?
-			@posts = Post.topic_post.paginate(page: params[:page], per_page: 10).includes(:topic).eager_load(:ratings).eager_load(:comments)
+			@posts = Post.topic_post.paginate(page: params[:page], per_page: 10).includes(:topic).eager_load(:ratings).eager_load(:comments).includes(:posts_users).includes(:users)
 		else
-			@posts = @topic.posts.paginate(page: params[:page], per_page: 10).eager_load(:ratings).eager_load(:comments)
+			@posts = @topic.posts.paginate(page: params[:page], per_page: 10).eager_load(:ratings).eager_load(:comments).includes(:posts_users).includes(:users)
 		end
 
 	end
@@ -61,10 +61,16 @@ class PostsController < ApplicationController
 		end	
 	end
 
+	def read_status
+		if not @post.users.present?
+			@post.users << current_user
+		end
+	end
+
 	private
 
     def set_topic
-			if not  params[:topic_id].blank?
+			if not params[:topic_id].blank?
 				@topic = Topic.find(params[:topic_id])
 				@tags = Tag.all
 				end

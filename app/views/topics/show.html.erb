@@ -16,7 +16,14 @@
 
 <ul class="list-group">
   <% @post.each do |f| %>
-      <li class="list-group-item"><%= link_to f.title , topic_post_path(@topic,f) %>
+    <li class="list-group-item"><%= link_to f.title , topic_post_path(@topic,f), class:"d-inline" %>
+      <p class="d-inline">
+        <%if not current_user.nil? and current_user.posts.include?(f) %>
+          <span class="read-status">Read</span>
+        <% else %>
+          <span class="unread-status"> Unread </span>
+        <% end %>
+      </p>
         <% if can? :edit, f %>
          <%= link_to 'edit' , edit_topic_post_path(@topic,f),class: 'btn btn-warning post-btn' %>
         <% end %>

@@ -51,6 +51,7 @@ RSpec.describe PostsController, type: :controller do
       it "creates a new Post" do
         expect{ post :create, params: {topic_id:@topic.id , post: {title:"title",body:"body", tag_ids: [1]}}
         }.to change(Post, :count).by(1)
+        expect(response).to redirect_to(topic_posts_path)
       end
 
       it "new Post with title nil" do
@@ -66,6 +67,7 @@ RSpec.describe PostsController, type: :controller do
       it "new Post with tag_ids nil" do
         expect{ post :create, params: {topic_id:@topic.id , post: {title:"title",body:"body", tag_ids: []}}
         }.to change(Post, :count).by(1)
+        expect(response).to redirect_to(topic_posts_path)
       end
 
       it "redirects to the /posts" do
@@ -77,10 +79,21 @@ RSpec.describe PostsController, type: :controller do
   end
 
   describe "GET #show" do
+
     it "returns a success response" do
       get :show,params: {id: @post.to_param,topic_id:@topic.id}
       expect(response).to be_successful
     end
+
+    context "with valid params" do
+      it "updating read based upon user" do
+        get :read_status,params: {id: @post.to_param,topic_id:@topic.id}
+        expect(@user.posts.size).to eql(1)
+        sign_in @user2
+        expect(@user2.posts.size).to eql(0)
+      end
+    end
+
   end
 
   describe "PUT #update" do

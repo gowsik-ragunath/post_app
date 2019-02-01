@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   # delete '/posts/:id', to: 'posts#delete'
   # post 'posts/:id', to: 'posts#edit'
   get '/posts', to: "posts#index"
+  get '/topics/:topic_id/posts/:id/status', to: "posts#read_status"
   root to:"topics#index"
 end
 	
