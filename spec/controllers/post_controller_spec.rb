@@ -57,17 +57,37 @@ RSpec.describe PostsController, type: :controller do
       it "new Post with title nil" do
         expect{ post :create, params: {topic_id:@topic.id , post: {title:"",body:"body", tag_ids: [1]}}
         }.to change(Post, :count).by(0)
+        expect(response).to be_successful
       end
 
       it "new Post with body nil" do
         expect{ post :create, params: {topic_id:@topic.id , post: {title:"title",body:"", tag_ids: [1]}}
         }.to change(Post, :count).by(0)
+        expect(response).to be_successful
       end
 
       it "new Post with tag_ids nil" do
         expect{ post :create, params: {topic_id:@topic.id , post: {title:"title",body:"body", tag_ids: []}}
         }.to change(Post, :count).by(1)
         expect(response).to redirect_to(topic_posts_path)
+      end
+
+      it "ajax creation form successful" do
+        expect{ post :create, params: {topic_id:@topic.id , post: {title:"title",body:"body", tag_ids: [1],
+                                                           tag_attributes: {tag: 'new_tag'}}},format: :js }.to change(Post, :count).by(1)
+        expect(response).to be_successful
+      end
+
+      it "ajax creation form failed title with more than 20 char" do
+        expect{ post :create, params: {topic_id:@topic.id , post: {title:"1234567890123456789012",body:"body", tag_ids: [1],
+                                                                   tag_attributes: {tag: 'new_tag'}}},format: :js }.to change(Post, :count).by(0)
+        expect(response).to be_successful
+      end
+
+      it "ajax creation form failed" do
+        expect{ post :create, params: {topic_id:@topic.id , post: {title:"",body:"", tag_ids: [1],
+                                                                   tag_attributes: {tag: 'new_tag'}}},format: :js }.to change(Post, :count).by(0)
+        expect(response).to be_successful
       end
 
       it "redirects to the /posts" do
@@ -87,7 +107,7 @@ RSpec.describe PostsController, type: :controller do
 
     context "with valid params" do
       it "updating read based upon user" do
-        get :read_status,params: {id: @post.to_param,topic_id:@topic.id}
+        get :read_status,params: {id: @post.to_param,topic_id:@topic.id},format: :json
         expect(@user.posts.size).to eql(1)
         sign_in @user2
         expect(@user2.posts.size).to eql(0)

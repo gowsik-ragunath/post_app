@@ -17,13 +17,11 @@
       </div>
   <div class="row">
       <div class="col-md-8">
-      <% if @ratings.present? %>
         <p>
           <% @check_rating.each do |rating,count| %>
             <div class="rating-view"><%= rating %>-Star:<%= count %></div>
           <% end %>
         </p>
-			<% end %>
         <%if @ratings.present? %>
           <p class="d-inline"> Rating : <%= @ratings.rating_average %></p>
         <% end %>

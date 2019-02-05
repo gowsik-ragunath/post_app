@@ -1,11 +1,5 @@
-<%= bootstrap_form_with url: topic_post_ratings_path(params[:topic_id],params[:post_id] || params[:id]),html:{class: 'rating-form'}  do |form| %>
-  <% if rating.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(rating.errors.count, "error") %> prohibited this rating from being saved</h2>
-
-    </div>
-  <% end %>
-
+<%= bootstrap_form_with url: topic_post_ratings_path(params[:topic_id],params[:post_id] || params[:id]),html:{class: 'rating-form'},local:true  do |form| %>
+  <%= render(partial: "layouts/error_display",locals: {error_display: rating}) %>
   <div class="field">
     <%= form.radio_button :rating, 1, label: '1' %>
     <%= form.radio_button :rating, 2, label: '2' %>

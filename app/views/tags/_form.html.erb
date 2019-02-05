@@ -1,11 +1,5 @@
 <%= form_for [@tag],remote: true do |form| %>
-  <% if tag.errors.any? %>
-    <div id="error_explanation" class="alert alert-warning">
-      <h2><%= pluralize(tag.errors.count, "error") %> prohibited this tag from being saved:</h2>
-
-    </div>
-  <% end %>
-
+  <%= render(partial: "layouts/error_display",locals: {error_display: tag}) %>
   <div class="form-group">
     <%= form.label :tag %>
     <%= form.text_field :tag,class: "form-control" %>

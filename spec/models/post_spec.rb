@@ -24,7 +24,7 @@ RSpec.describe Post, type: :model do
     end
 
     it "title validation for max length" do
-      should validate_length_of(:title).is_at_most(25)
+      should validate_length_of(:title).is_at_most(20)
     end
   
     it "body validation" do

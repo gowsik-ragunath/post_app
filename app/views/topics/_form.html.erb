@@ -1,9 +1,5 @@
 <%= bootstrap_form_with(model: topic, local: true) do |form| %>
-  <% if topic.errors.any? %>
-    <div id="error_explanation" class="alert alert-warning">
-      <h2><%= pluralize(topic.errors.count, "error") %> prohibited this topic from being saved</h2>
-    </div>
-  <% end %>
+  <%= render(partial: "layouts/error_display",locals: {error_display: topic}) %>
 
   <div class="form-group">
     <%= form.text_field :name %>

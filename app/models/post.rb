@@ -19,7 +19,7 @@ class Post < ApplicationRecord
 
 
  ################################validation######################################################################
-	validates :title, presence: true , length:{ minimum: 3 , maximum: 25}
+	validates :title, presence: true , length:{ minimum: 3 , maximum: 20}
 	validates :body, presence: true , length:{ minimum: 3 , maximum: 250}
 	validates_attachment :image, content_type:{content_type: ["image/jpeg","image/png"] },
                        size: { in: 0..2.megabytes }
@@ -27,6 +27,7 @@ class Post < ApplicationRecord
   ###########################SCOPE###########################################################################
 
 	scope :topic_post, -> { order(title: :asc) }
+	scope :post_show, -> { order(created_at: :desc) }
 
 
 

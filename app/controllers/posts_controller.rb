@@ -1,7 +1,8 @@
 class PostsController < ApplicationController
 	before_action :set_topic, only: [ :index, :new, :create,  :show, :edit, :update, :destroy, :read_status]
 	before_action :set_post , only: [ :show, :edit, :update, :destroy,:read_status]
-	# load_and_authorize_resource
+	load_and_authorize_resource
+	skip_authorize_resource only: :read_status
 
 
 	def index
@@ -19,12 +20,17 @@ class PostsController < ApplicationController
 
 	def create
 		@post = @topic.posts.new(post_params.merge(user_id: current_user.id))
-		if @post.save
-		    respond_to do |format|
-		      format.html { redirect_to topic_posts_path(@topic), notice: 'Post was successfully created.' }
-		    end
-		else
-			render action: :new, object: @tag
+		respond_to do |format|
+			if @post.save
+				format.html { redirect_to topic_posts_path(@topic), notice:'Post was successfully created.' }
+				format.json { render :new, status: :created }
+				format.js
+			else
+				flash.now[:error] = @post.errors.full_messages if @post.errors.any?
+				format.js
+				format.html { render :new, object: @tag }
+				format.json { render json: @post.errors, status: :unprocessable_entity }
+			end
 		end
 	end
 
@@ -32,6 +38,7 @@ class PostsController < ApplicationController
 		@rating = Rating.new
 		@ratings = @post.ratings.rating_order
 		@check_rating = check_rating_order(@ratings)
+		puts check_rating_order(@ratings)
 		@comments = @post.comments.eager_load(:user)
 		@comment = Comment.new
 		@tag_relation = @post.tags
@@ -62,7 +69,7 @@ class PostsController < ApplicationController
 	end
 
 	def read_status
-		if not @post.users.present?
+		if not @post.users.include?(current_user)
 			@post.users << current_user
 		end
 	end
@@ -85,7 +92,7 @@ class PostsController < ApplicationController
 		end
 
 		def check_rating_order(ratings)
-			rating_hash = { 1 => 0 , 2 => 0 , 3 => 0, 4=> 0,5=> 0}
+			rating_hash = { 1 => 0 , 2 => 0 , 3 => 0, 4=> 0, 5=> 0 }
 			ratings.group_by{ |t| t.rating }.each do |key,collection|
 				rating_hash[key] = collection.size
 			end

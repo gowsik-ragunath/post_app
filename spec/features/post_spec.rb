@@ -23,9 +23,9 @@ RSpec.describe '#post' do
 
 			click_link('check topic')
 			expect(page).to have_content('Name: check topic')
-			click_link("New Post")
+      click_link("All Post")
 
-			expect(current_path).to have_content('/topics/1/posts/new')
+      click_link("New Post")
 			fill_in('post_title', with:'post1')
 			fill_in('post_body', with:'body of post1')
 			select "check", from: 'post_tag_ids'
@@ -48,9 +48,9 @@ RSpec.describe '#post' do
 
 			click_link('check topic')
 			expect(page).to have_content('Name: check topic')
-			click_link("New Post")
+			click_link("All Post")
 
-			expect(current_path).to have_content('/topics/1/posts/new')
+			click_link("New Post")
 			fill_in('post_title', with:'post1')
 			fill_in('post_body', with:'')
 			select "check", from: 'post_tag_ids'
@@ -67,9 +67,9 @@ RSpec.describe '#post' do
 
 			click_link('check topic')
 			expect(page).to have_content('Name: check topic')
-			click_link("New Post")
+			click_link("All Post")
 
-			expect(current_path).to have_content('/topics/1/posts/new')
+      click_link("New Post")
 			fill_in('post_title', with:'')
 			fill_in('post_body', with:'')
 			select "check", from: 'post_tag_ids'
