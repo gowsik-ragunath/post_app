@@ -50,8 +50,7 @@ gem 'cancancan'
 gem 'mailgun-ruby'
 gem 'sidekiq'
 gem 'sendgrid-ruby'
-# gem 'webpush'
-# gem 'serviceworker-rails'
+gem 'serviceworker-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

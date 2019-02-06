@@ -23,3 +23,22 @@
   </tbody>
 </table>
 <%= link_to 'New Topic', new_topic_path, class: "btn btn-primary" %>
+<input type="button" class="btn btn-secondary webpush-button" value="Send Push" onclick="sendPush()"/>
+
+<script>
+
+    function sendPush() {
+        navigator.serviceWorker.register('/serviceworker.js', {scope: './'})          //5
+            .then(function (registration) {
+                const title = 'Push Notification';
+                const options = {
+                    "notification": {
+                        icon: 'logo.png',
+                        body: "push notification body"
+                    }
+                };
+                registration.showNotification(title, options);
+            })
+    };
+
+</script>
