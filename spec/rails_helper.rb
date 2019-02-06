@@ -106,4 +106,6 @@ RSpec.configure do |config|
     end
   end
 
+  config.render_views = true
+
 end

@@ -38,7 +38,6 @@ class PostsController < ApplicationController
 		@rating = Rating.new
 		@ratings = @post.ratings.rating_order
 		@check_rating = check_rating_order(@ratings)
-		puts check_rating_order(@ratings)
 		@comments = @post.comments.eager_load(:user)
 		@comment = Comment.new
 		@tag_relation = @post.tags

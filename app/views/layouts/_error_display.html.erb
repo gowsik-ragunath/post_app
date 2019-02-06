@@ -1,0 +1,5 @@
+<% if error_display.errors.any? %>
+  <div id="error_explanation" class="alert alert-warning">
+    <h2><%= pluralize(error_display.errors.count, "error") %> prohibited this post from being saved</h2>
+  </div>
+<% end %>

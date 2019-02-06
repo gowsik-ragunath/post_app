@@ -1,0 +1,13 @@
+<h2><%= link_to f.title+" ("+f.topic.name.upcase+")", topic_post_path(f.topic_id,f), class: "list-heading" %></h2>
+<li class="list-body"> <%if f.ratings.present? %><p class="d-inline"> Rating : <%= f.ratings.rating_average %></p>
+  <% end %>
+  <%if f.comments.present? %>
+    <p class="d-inline"> Comment : <%= f.comments.size %></p>
+  <% end %>
+  <p class="d-inline">
+    <% if f.users.include?(current_user) %>
+      <span class="read-status"> Read</span>
+    <% else %>
+      <span class="unread-status"> Unread</span>
+    <% end %></p></li>
+<li class="list-body"><p><%= f.body %></p></li>

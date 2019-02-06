@@ -1,11 +1,13 @@
 class TopicsController < ApplicationController
+  protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format =~ %r{application/json} }
   before_action :set_topic, only: [:show, :edit, :update, :destroy]
+  skip_before_action :authenticate_user!
   load_and_authorize_resource
 
   # GET /topics
   # GET /topics.json
   def index
-    @topics = Topic.all
+    @topics = Topic.paginate(page: params[:page], per_page: 2)
   end
 
   # GET /topics/1
@@ -33,11 +35,10 @@ class TopicsController < ApplicationController
   # POST /topics.json
   def create
     @topic = Topic.new(topic_params)
-
     respond_to do |format|
       if @topic.save
         format.html { redirect_to topics_path, notice: 'Topic was successfully created.' }
-        format.json { render :show, status: :created, location: @topic }
+        format.json { render json:  @topic.as_json(except: [:created_at, :updated_at]) }
       else
         format.html { render :new }
         format.json { render json: @topic.errors, status: :unprocessable_entity }
@@ -64,8 +65,9 @@ class TopicsController < ApplicationController
   def destroy
     @topic.destroy
     respond_to do |format|
-      format.html { redirect_to topics_url, notice: 'Topic was successfully destroyed.' }
-      format.json { head :no_content }
+      flash[:destroy] = 'Topic was successfully destroyed.'
+      format.html { redirect_to topics_url }
+      format.json { render json: { message: 'record deleted' } }
     end
   end
 
