@@ -2,7 +2,7 @@ class PostsController < ApplicationController
 	before_action :set_topic, only: [ :index, :new, :create,  :show, :edit, :update, :destroy, :read_status]
 	before_action :set_post , only: [ :show, :edit, :update, :destroy,:read_status]
 	load_and_authorize_resource
-	skip_authorize_resource only: :read_status
+	skip_authorize_resource only: [:read_status, :rate_comment, :show_comment]
 
 
 	def index
@@ -40,7 +40,24 @@ class PostsController < ApplicationController
 		@check_rating = check_rating_order(@ratings)
 		@comments = @post.comments.eager_load(:user)
 		@comment = Comment.new
+		@comment_rating = UserCommentRating.new
 		@tag_relation = @post.tags
+	end
+
+	def rate_comment
+		UserCommentRating.create!(user_id: current_user.id,comment_id: params[:comment_id],rating: params[:rating])
+		respond_to do |format|
+			format.js
+			format.html { redirect_to topic_post_path(@topic) }
+		end
+	end
+
+	def show_comment
+		@check =  UserCommentRating.where(comment_id: params[:comment])
+		respond_to do |format|
+			format.js
+			format.html { redirect_to topic_post_path(params[:topic_id],params[:id])}
+		end
 	end
 
 	def destroy

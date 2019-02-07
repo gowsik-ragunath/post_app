@@ -1,0 +1,18 @@
+<%= form_with model: @rating_comment, url: post_rate_comment_path(params[:topic_id], params[:id]),html:{class: 'rating-form rating-comment' },
+              remote:true do |form| %>
+  <%#= render(partial: "layouts/error_display",locals: {error_display: @rating_comment}) %>
+  <div class="field">
+    <%= hidden_field_tag :comment_id, comment_id %>
+    <sup><%= form.label '1' %></sup>
+    <%= form.radio_button :rating, 1 %>
+    <sup><%= form.label '2' %></sup>
+    <%= form.radio_button :rating, 2 %>
+    <sup><%= form.label '3' %></sup>
+    <%= form.radio_button :rating, 3 %>
+    <sup><%= form.label '4' %></sup>
+    <%= form.radio_button :rating, 4 %>
+    <sup><%= form.label '5' %></sup>
+    <%= form.radio_button :rating, 5 %>
+    <%= form.submit(class: "btn btn-secondary btn-sm") %>
+  </div>
+<% end %>

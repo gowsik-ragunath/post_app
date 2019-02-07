@@ -22,6 +22,8 @@ Rails.application.routes.draw do
   get '/user', to: "application#authenticate"
   get '/posts', to: "posts#index"
   get '/topics/:topic_id/posts/:id/status', to: "posts#read_status"
+  post '/topics/:topic_id/posts/:id/rate_comment', to: "posts#rate_comment" ,as: 'post_rate_comment'
+  get '/topics/:topic_id/posts/:id/show_comment', to: "posts#show_comment" ,as: 'post_show_comment'
   root to:"topics#index"
 
 
