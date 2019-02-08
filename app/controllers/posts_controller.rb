@@ -3,6 +3,7 @@ class PostsController < ApplicationController
 	before_action :set_post , only: [ :show, :edit, :update, :destroy,:read_status]
 	load_and_authorize_resource
 	skip_authorize_resource only: [:read_status, :rate_comment, :show_comment]
+	protect_from_forgery except: [:show_comment,:read_status]
 
 
 	def index
@@ -45,10 +46,12 @@ class PostsController < ApplicationController
 	end
 
 	def rate_comment
-		UserCommentRating.create!(user_id: current_user.id,comment_id: params[:comment_id],rating: params[:rating])
+		if current_user
+			UserCommentRating.create!(user_id: current_user.id,comment_id: params[:comment_id],rating: params[:rating])
+		end
 		respond_to do |format|
 			format.js
-			format.html { redirect_to topic_post_path(@topic) }
+			format.html { redirect_to topic_post_path(params[:topic_id],params[:id]) }
 		end
 	end
 
@@ -63,15 +66,14 @@ class PostsController < ApplicationController
 	def destroy
 		authorize! :destroy, @post
 		@post.destroy
-	    respond_to do |format|
-	      flash[:destroy] = 'Post was successfully destroyed.'
-	      format.html { redirect_to topic_posts_path }
-	      format.json { head :no_content }
-	    end
+		respond_to do |format|
+			flash[:destroy] = 'Post was successfully destroyed.'
+			format.html { redirect_to topic_posts_path }
+			format.json { head :no_content }
+		end
 	end
 
 	def edit
-		authorize! :update, @post
 	end
 
 	def update
@@ -85,8 +87,11 @@ class PostsController < ApplicationController
 	end
 
 	def read_status
-		if not @post.users.include?(current_user)
-			@post.users << current_user
+		respond_to do |format|
+			if not @post.users.include?(current_user)
+				@post.users << current_user
+			end
+			format.js
 		end
 	end
 
@@ -114,7 +119,5 @@ class PostsController < ApplicationController
 			end
 			rating_hash
 		end
-
-
 
 end

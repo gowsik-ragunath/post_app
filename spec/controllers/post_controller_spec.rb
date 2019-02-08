@@ -12,6 +12,7 @@ RSpec.describe PostsController, type: :controller do
     Rating.create!(rating:2,post_id:1)
     Rating.create!(rating:4,post_id:1)
     @tag = Tag.create!(tag:"sample")
+    @comment = @post.comments.create!(body:"comment",user_id:1)
     sign_in @user
   }
   let(:valid_attributes) {
@@ -107,7 +108,7 @@ RSpec.describe PostsController, type: :controller do
 
     context "with valid params" do
       it "updating read based upon user" do
-        get :read_status,params: {id: @post.to_param,topic_id:@topic.id},format: :json
+        get :read_status,params: {id: @post.to_param,topic_id:@topic.id},format: :js
         expect(@user.posts.size).to eql(1)
         sign_in @user2
         expect(@user2.posts.size).to eql(0)
@@ -165,6 +166,54 @@ RSpec.describe PostsController, type: :controller do
     end
   end
 
+  describe "POST#rate_comment" do
+
+    it "should create comment rating with remote true" do
+      expect{ post :rate_comment, params: {id: @post.to_param,topic_id: @topic.id,comment_id:@comment.id , rating:4},format: :js }.to change(UserCommentRating, :count).by(1)
+      expect(response).to be_successful
+    end
+
+    it "should not create comment rating with remote true" do
+      expect{ post :rate_comment, params: {id: @post.to_param,topic_id: @topic.id,comment_id:@comment.id , rating:10},format: :js }.to raise_error(ActiveRecord::RecordInvalid).and change(UserCommentRating, :count).by(0)
+      expect(response).to be_successful
+    end
+
+    it "should create comment rating with remote true" do
+      expect{ post :rate_comment, params: {id: @post.to_param,topic_id: @topic.id,comment_id:@comment.id , rating:4} }.to change(UserCommentRating, :count).by(1)
+      expect(response).to redirect_to(topic_post_path(@topic,@post))
+    end
+
+    it "should not create comment rating with remote true" do
+      expect{ post :rate_comment, params: {id: @post.to_param,topic_id: @topic.id,comment_id:@comment.id , rating:-1} }.to raise_error(ActiveRecord::RecordInvalid).and change(UserCommentRating, :count).by(0)
+      expect(response).to be_successful
+    end
+
+  end
+
+  describe "GET#show_comment" do
+
+    it "should create comment rating with remote true" do
+      get :show_comment, params: {id: @post.to_param,topic_id: @topic.id,comment:@comment.id},format: :js
+      expect(response).to be_successful
+    end
+
+    it "should not create comment rating with remote true" do
+      get :show_comment, params: {id: @post.to_param,topic_id: @topic.id,comment:@comment.id},format: :js
+      expect(response).to be_successful
+    end
+
+    it "should create comment rating with remote true" do
+      get :show_comment, params: {id: @post.to_param,topic_id: @topic.id,comment:@comment.id }
+      expect(response).to redirect_to(topic_post_path(@topic,@post))
+    end
+
+    it "should create comment rating with remote true" do
+      get :show_comment, params: {id: @post.to_param,topic_id: @topic.id,comment:@comment.id }
+      expect(response).to redirect_to(topic_post_path(@topic,@post))
+    end
+
+  end
+
   describe "DELETE #destroy" do
     it "destroys the requested post" do
 
@@ -179,7 +228,7 @@ RSpec.describe PostsController, type: :controller do
       expect(flash[:alert]).to eq "You are not authorized to access this page."
     end
 
-    it "redirects to the comments list" do
+    it "redirects to the posts list" do
       delete :destroy, params: {id: @post.to_param,topic_id:@topic.id}, session: valid_session
       expect(response).to redirect_to(topic_posts_path(@topic.id))
     end

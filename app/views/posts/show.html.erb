@@ -54,8 +54,12 @@
             <div class="col-md-4"> <small> <%= c.commenter %></small></div>
             <div class="offset-md-1 col-md-8"> <%= c.body %></div>
           </td>
-          <td> <%= render(partial: "comments/rating_comment", locals: { comment_id: c.id }) %> </td>
-          <td> <%= link_to 'show_commenters' ,post_show_comment_path(params[:topic_id],params[:id], comment: c), locals: { comment_id: c.id } , class: 'btn btn-secondary', remote: true, 'data-controls-modal' =>  "modal-window", 'data-backdrop' => true, 'data-keyboard' => true %> </td>
+          <td>
+            <% if current_user.present? %>
+              <%= render(partial: "comments/rating_comment", locals: { comment_id: c.id }) %>
+            <% end %>
+          </td>
+          <td> <%= link_to 'Comment Ratings' ,post_show_comment_path(params[:topic_id],params[:id], comment: c), locals: { comment_id: c.id } , class: 'btn btn-secondary', remote: true, 'data-controls-modal' =>  "modal-window", 'data-backdrop' => true, 'data-keyboard' => true %> </td>
           <%if can? :update, c %>
           <td><%= link_to 'edit', edit_topic_post_comment_path(params[:topic_id],params[:id],c), comment:c , method_task: ':patch',class: "btn btn-warning btn-sm" %></td>
            <% end %>
@@ -95,10 +99,7 @@
     $(document).ready(function (){
         $.ajax({
             method: 'GET',
-            url: '/topics/'+$("#topic_id").val()+'/posts/'+$("#post_id").val()+'/status',
-            success: function () {
-                $("#status").html('<span class="read-status"> Read </span>');
-            }
+            url: '/topics/'+$("#topic_id").val()+'/posts/'+$("#post_id").val()+'/status'
         });
     });
 </script>

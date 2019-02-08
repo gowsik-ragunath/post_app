@@ -60,6 +60,13 @@ ActiveRecord::Schema.define(version: 2019_02_07_072733) do
     t.index ["post_id"], name: "index_ratings_on_post_id"
   end
 
+  create_table "tag_post_members", force: :cascade do |t|
+    t.integer "tag_id"
+    t.integer "post_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "tags", force: :cascade do |t|
     t.string "tag"
     t.datetime "created_at", null: false
