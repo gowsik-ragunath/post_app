@@ -28,7 +28,9 @@ class Post < ApplicationRecord
 
 	scope :topic_post, -> { order(title: :asc) }
 	scope :post_show, -> { order(created_at: :desc) }
+	scope :overlapping, -> (period_start, period_end) { where(created_at: period_start..period_end) }
 
+	##############################FUNCTION###############################################################################
 
 
 end

@@ -2,35 +2,30 @@
 	<div class="row">
 		<div class="col-md-12">
 			<br>
-      <%= will_paginate @posts, renderer: BootstrapPagination::Rails%>
-			 <% if not params[:topic_id].nil? %>
-        <% if not  current_user.nil? %>
-          <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-primary btn-lg btn-block', id: "new_link", remote:true %>
-        <% end %>
-        <br>
+      <%= will_paginate @posts, renderer: BootstrapPagination::Rails,remote: true%>
+      <%= render(partial: 'posts/show_details') %>
 
-        <ul class="post-list" id="list-post">
-          <% @posts.post_show.each do |f| %>
-            <%= render(partial: "post", locals: {f: f}) %>
+        <% if not params[:topic_id].nil? %>
+
+          <% if not  current_user.nil? %>
+            <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-primary btn-lg btn-block', id: "new_link", remote:true %>
           <% end %>
-				</ul>
-
-
-
+          <br>
+          <% @posts.post_show.each do |post| %>
+            <%= render(partial: "post", locals: {post: post}) %>
+          <% end %>
       <% else %>
-
-					<ul class="post-list">
-						<% @posts.post_show.group_by{ |t| t.topic_id }.each do |topic , posts| %>
-							<h1 class="text-center"> <%= topic_name(topic) %> </h1>
-							<br>
-							<% posts.each do |f| %>
-                <%= render(partial: "post", locals: {f: f}) %>
-							<% end %>
-						<% end %>
-					</ul>
-
-      <% end%>
-
+        <div id="exist">
+          <% @posts.post_show.group_by{ |t| t.topic_id }.each do |topic , posts| %>
+            <h1 class="text-center"> <%= topic_name(topic) %> </h1>
+            <br>
+            <% posts.each do |post| %>
+              <%= render(partial: "post", locals: {post: post}) %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+      <div id="generated"></div>
       <br>
       <%= will_paginate @posts, renderer: BootstrapPagination::Rails %>
 

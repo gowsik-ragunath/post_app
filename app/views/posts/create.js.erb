@@ -9,7 +9,7 @@ $('#flash-alert').hide();
 <% else %>
   $('#new_post').remove();
   $('#new_link').show();
-  $('#list-post').prepend("<%= j render(partial: "post", locals: {f: @post})   %>");
+  $('#list-post').prepend("<%= j render(partial: "post", locals: {post: @post})   %>");
   $('#flash-alert').show();
   alert("Post created successfully");
 <% end %>

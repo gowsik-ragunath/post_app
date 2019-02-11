@@ -66,7 +66,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
 
-    Capybara.javascript_driver = :webkit
+  Capybara.javascript_driver = :webkit
 
   config.before(:suite) do
     DatabaseCleaner[:active_record].strategy = :transaction

@@ -3,7 +3,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-  has_many :posts, dependent: :destroy
+  # has_many :posts, dependent: :destroy
   has_and_belongs_to_many :posts, join_table: :posts_users_reads
   has_many :comments,class_name: 'Comment' ,dependent: :destroy
   has_many :user_comment_ratings

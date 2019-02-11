@@ -2,8 +2,8 @@ class PostsController < ApplicationController
 	before_action :set_topic, only: [ :index, :new, :create,  :show, :edit, :update, :destroy, :read_status]
 	before_action :set_post , only: [ :show, :edit, :update, :destroy,:read_status]
 	load_and_authorize_resource
-	skip_authorize_resource only: [:read_status, :rate_comment, :show_comment]
-	protect_from_forgery except: [:show_comment,:read_status]
+	skip_authorize_resource only: [:read_status, :rate_comment, :show_comment, :show_details]
+	protect_from_forgery except: [:show_comment,:read_status, :show_details]
 
 
 	def index
@@ -64,7 +64,6 @@ class PostsController < ApplicationController
 	end
 
 	def destroy
-		authorize! :destroy, @post
 		@post.destroy
 		respond_to do |format|
 			flash[:destroy] = 'Post was successfully destroyed.'
@@ -77,7 +76,6 @@ class PostsController < ApplicationController
 	end
 
 	def update
-		authorize! :update, @post
 		if @post.update_attributes(post_params.merge(user_id: current_user.id))
 			flash[:notice] = 'Post was successfully updated.'
 			redirect_to(topic_post_path(params[:topic_id],params[:id]))
@@ -88,12 +86,19 @@ class PostsController < ApplicationController
 
 	def read_status
 		respond_to do |format|
-			if not @post.users.include?(current_user)
-				@post.users << current_user
-			end
+      unless @post.users.include?(current_user)
+        @post.users << current_user
+      end
 			format.js
 		end
-	end
+  end
+
+  def show_details
+    @posts =  Post.overlapping(params[:datetime_from],params[:datetime_to])
+    respond_to do |format|
+      format.js
+    end
+  end
 
 	private
 
@@ -118,6 +123,6 @@ class PostsController < ApplicationController
 				rating_hash[key] = collection.size
 			end
 			rating_hash
-		end
+    end
 
 end

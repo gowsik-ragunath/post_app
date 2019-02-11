@@ -13,6 +13,7 @@ RSpec.describe PostsController, type: :controller do
     Rating.create!(rating:4,post_id:1)
     @tag = Tag.create!(tag:"sample")
     @comment = @post.comments.create!(body:"comment",user_id:1)
+    @comment = @post.comments.create!(body:"comment new",user_id:2)
     sign_in @user
   }
   let(:valid_attributes) {
@@ -27,9 +28,25 @@ RSpec.describe PostsController, type: :controller do
 
 
   describe "GET #index" do
-    it "returns a success response" do
-      get :index,params: {id: @post.to_param,topic_id:@topic.id}
+
+    it "returns a success response without topic id" do
+      get :index
+      expect(response.request.path_info).to eql("/posts")
       expect(response).to be_successful
+    end
+
+    it "returns a success response with topic id" do
+      get :index,params: {id: @post.to_param,topic_id:@topic.id}
+      expect(response.request.path_info).to eql("/topics/"+@topic.id.to_s+"/posts")
+      expect(response).to be_successful
+    end
+
+    context "GET#show_details" do
+      it "should return active records with posts created in teh given date range" do
+        get :show_details, params: { datetime_from: Date.yesterday, datetime_to: Date.today },format: :js
+        expect(response).to render_template("show_details")
+        expect(assigns.keys).to include('posts')
+      end
     end
   end
 
@@ -194,29 +211,14 @@ RSpec.describe PostsController, type: :controller do
 
     it "should create comment rating with remote true" do
       get :show_comment, params: {id: @post.to_param,topic_id: @topic.id,comment:@comment.id},format: :js
+      expect(assigns.keys).to include('check')
       expect(response).to be_successful
-    end
-
-    it "should not create comment rating with remote true" do
-      get :show_comment, params: {id: @post.to_param,topic_id: @topic.id,comment:@comment.id},format: :js
-      expect(response).to be_successful
-    end
-
-    it "should create comment rating with remote true" do
-      get :show_comment, params: {id: @post.to_param,topic_id: @topic.id,comment:@comment.id }
-      expect(response).to redirect_to(topic_post_path(@topic,@post))
-    end
-
-    it "should create comment rating with remote true" do
-      get :show_comment, params: {id: @post.to_param,topic_id: @topic.id,comment:@comment.id }
-      expect(response).to redirect_to(topic_post_path(@topic,@post))
     end
 
   end
 
   describe "DELETE #destroy" do
     it "destroys the requested post" do
-
       expect {
         delete :destroy, params: {id: @post.to_param,topic_id:@topic.id}, session: valid_session
       }.to change(Post, :count).by(-1)
