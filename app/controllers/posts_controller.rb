@@ -12,7 +12,6 @@ class PostsController < ApplicationController
 		else
 			@posts = @topic.posts.paginate(page: params[:page], per_page: 10).eager_load(:ratings).eager_load(:comments).includes(:posts_users).includes(:users)
 		end
-
 	end
 
 	def new
@@ -94,7 +93,7 @@ class PostsController < ApplicationController
   end
 
   def show_details
-    @posts =  Post.overlapping(params[:datetime_from],params[:datetime_to])
+    @posts =  Post.includes(:topic).eager_load(:comments).eager_load(:ratings).overlapping(params[:datetime_from],params[:datetime_to]).paginate(page: params[:page], per_page: 10)
     respond_to do |format|
       format.js
     end

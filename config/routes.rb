@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   # get '/posts/:id', to: 'posts#show' ,as: 'post'
   # delete '/posts/:id', to: 'posts#delete'
   # post 'posts/:id', to: 'posts#edit'
+  get '/device', to: "application#device_detect"
   get '/user', to: "application#authenticate"
   get '/posts', to: "posts#index", as: 'posts'
   get '/posts/show_details', to: "posts#show_details", as: 'posts_show_details'
