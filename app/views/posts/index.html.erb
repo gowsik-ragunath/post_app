@@ -1,34 +1,41 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <div id="paginate"><%= will_paginate @posts, renderer: BootstrapPagination::Rails,remote: true%></div>
-      <%= render(partial: 'posts/index') %>
-      <% if not params[:topic_id].nil? %>
-        <% if not  current_user.nil? %>
-          <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-primary btn-lg btn-block', id: "new_link", remote:true %>
-        <% end %>
-        <div id="exist">
-        <% @posts.post_show.each do |post| %>
-          <%= render(partial: "post", locals: {post: post}) %>
-        <% end %>
-        </div>
-        <div id="generated"></div>
-      <% else %>
-        <div id="exist">
-          <% @posts.post_show.group_by{ |t| t.topic_id }.each do |topic , posts| %>
-            <h1 class="text-center"> <%= posts.first.topic.name %> </h1>
-            <% posts.each do |post| %>
-              <%= render(partial: "post", locals: {post: post}) %>
-            <% end %>
-          <% end %>
-        </div>
-      <% end %>
-      <div id="generated"></div>
-      <%= will_paginate @posts, renderer: BootstrapPagination::Rails %>
-    </div>
-    <div class="co-md-6 print"></div>
+<div id="paginate"><%= will_paginate @posts, renderer: BootstrapPagination::Rails,remote: true %></div>
+<%= render(partial: 'posts/index') %>
+<% if not params[:topic_id].nil? %>
+  <% if not  current_user.nil? %>
+    <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-primary btn-lg btn-block', id: "new_link", remote:true %>
+    <%= render "new_post_modal" %>
+  <% end %>
+  <div id="exist">
+    <% @posts.post_recent.each do |post| %>
+      <%= render(partial: "post", locals: {post: post}) %>
+    <% end %>
   </div>
-</div>
+  <div id="generated"></div>
+<% else %>
+  <div id="exist">
+    <% @posts.post_recent.group_by{ |t| t.topic_id }.each do |topic , posts| %>
+      <h1 class="text-center"> <%= posts.first.topic.name %> </h1>
+      <% posts.each do |post| %>
+        <%= render(partial: "post", locals: {post: post}) %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+<div id="generated"></div>
+<%= will_paginate @posts, renderer: BootstrapPagination::Rails %>
+
+<script>
+    $(document).ready(function (event) {
+        $("#date_from").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+        $("#date_to").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+</script>
+
+
 
 
 

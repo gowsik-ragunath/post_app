@@ -23,28 +23,42 @@ RSpec.describe PostsController, type: :controller do
     context "with html request" do
       it "returns a success response without topic id" do
         get :index
-        expect(response.request.path_info).to eql("/topics/posts")
+        expect(response).to render_template("index")
+        expect(response.request.path_info).to eql("/posts")
         expect(response).to be_successful
       end
 
       it "returns a success response with topic id" do
         get :index,params: {id: @post.to_param,topic_id:@topic.id}
+        expect(response).to render_template("index")
         expect(response.request.path_info).to eql("/topics/"+@topic.id.to_s+"/posts")
         expect(response).to be_successful
       end
     end
 
-    context "with js request and constraints",js: true do
+    context "with js request and constraints" do
       it "should return active records with posts created in the given date range without topic_id" do
-        get :index, params: { date_from: Date.yesterday, date_to: Date.today }
+        get :index, params: { date_from: Date.yesterday, date_to: Date.today },format: :js
         expect(response).to render_template("index")
-        expect(assigns(:posts).size).to eql(Post.overlapping(Date.yesterday, Date.today).size)
+        expect(assigns(:posts).size).to eql(Post.content_filter(Date.yesterday, Date.today).size)
+      end
+
+      it "should return active records with posts created in the given date range without topic_id" do
+        get :index, params: { date_from:  Date.tomorrow , date_to: Date.yesterday },format: :js
+        expect(response).to render_template("index")
+        expect(response.body).to match("Give date is out of range")
+      end
+
+      it "should return active records with posts created in the given date range without topic_id" do
+        get :index, params: { date_from:  "2007-10-10" , date_to: "2007-11-10"},format: :js
+        expect(response).to render_template("index")
+        expect(response.body).to match("No records were created in given date")
       end
 
       it "should return active records with posts created in the given date range with topic_id" do
-        get :index, params: {topic_id:@topic.id, date_from: Date.yesterday, date_to: Date.today }
+        get :index, params: {topic_id:@topic.id, date_from: Date.yesterday, date_to: Date.today },format: :js
         expect(response).to render_template("index")
-        expect(assigns(:posts).size).to eql(@topic.posts.overlapping(Date.yesterday,Date.today).size)
+        expect(assigns(:posts).size).to eql(@topic.posts.content_filter(Date.yesterday,Date.today).size)
       end
     end
   end
@@ -187,6 +201,14 @@ RSpec.describe PostsController, type: :controller do
         expect(response).to render_template("edit")
         assigns(:post).errors.empty?.should_not be true
       end
+    end
+  end
+
+  describe "POST #rate" do
+    it "Rate a post" do
+      expect{
+        post :rate, params: {id: @post.to_param,topic_id: @topic.id, rating: 4 }
+      }.to change(PolyRate, :count).by(1)
     end
   end
 

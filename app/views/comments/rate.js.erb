@@ -1,0 +1,7 @@
+<% if  @error.present? %>
+  alert("User <%= @error %>");
+  $('.rating-comment :input[type="radio"]').prop('checked', false);
+<% else %>
+  alert("comment rated!");
+  $('.rating-comment :input[type="radio"]').prop('checked', false);
+<% end %>

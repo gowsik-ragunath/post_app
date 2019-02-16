@@ -88,42 +88,40 @@ RSpec.describe CommentsController, type: :controller do
     end
   end
 
-  describe "POST#rate_comment" do
+  describe "POST#rate" do
     it "should create comment rating with remote true" do
-      expect{ post :rate_comment, params: { post_id: @post.to_param,topic_id: @topic.id,
-                                           id:@comment.id , rating:4},format: :js }.to change(UserCommentRating, :count).by(1).and change(Rating, :count).by(1)
+      expect{ post :rate, params: { post_id: @post.to_param,topic_id: @topic.id,
+                                           id:@comment.id , rating:4},format: :js }.to change(PolyRate, :count).by(1)
       expect(response).to be_successful
     end
 
     it "should not create comment rating with remote true" do
-      expect{ post :rate_comment, params: {post_id: @post.to_param,topic_id: @topic.id,
-                                           id:@comment.id , rating:10},format: :js }.to raise_error(ActiveRecord::RecordInvalid).and change(UserCommentRating, :count).by(0).and change(Rating, :count).by(0)
+      expect{ post :rate, params: {post_id: @post.to_param,topic_id: @topic.id,
+                                           id:@comment.id , rating:10},format: :js }.to change(PolyRate, :count).by(0)
       expect(response).to be_successful
     end
 
     it "should create comment rating with remote true" do
-      expect{ post :rate_comment, params: {post_id: @post.to_param,topic_id: @topic.id,
-                                           id:@comment.id , rating:4} }.to change(UserCommentRating, :count).by(1).and change(Rating, :count).by(1)
+      expect{ post :rate, params: {post_id: @post.to_param,topic_id: @topic.id,
+                                           id:@comment.id , rating:4} }.to change(PolyRate, :count).by(1)
       expect(response).to redirect_to(topic_post_path(@topic,@post))
     end
 
     it "should not create comment rating with remote true" do
-      expect{ post :rate_comment, params: {post_id: @post.to_param,topic_id: @topic.id,
-                                           id:@comment.id , rating:-1} }.to raise_error(ActiveRecord::RecordInvalid).and change(UserCommentRating, :count).by(0).and change(Rating, :count).by(0)
-      expect(response).to be_successful
+      expect{ post :rate, params: {post_id: @post.to_param,topic_id: @topic.id,
+                                           id:@comment.id , rating:-1} }.to change(PolyRate, :count).by(0)
+      expect(response).to redirect_to(topic_post_path(@topic,@post))
     end
   end
 
-  describe "GET#show_comment" do
+  describe "GET#show" do
     before{
-      expect{ post :rate_comment, params: {post_id: @post.to_param,topic_id: @topic.id,
-                                           id:@comment.id , rating:4} }.to change(UserCommentRating, :count).by(1).and change(Rating, :count).by(1)
-      expect{ post :rate_comment, params: {post_id: @post.to_param,topic_id: @topic.id,
-                                           id:@comment.id , rating:3} }.to change(UserCommentRating, :count).by(1).and change(Rating, :count).by(1)
+      expect{ post :rate, params: {post_id: @post.to_param,topic_id: @topic.id,
+                                           id:@comment.id , rating:4} }.to change(PolyRate, :count).by(1)
     }
     it "should create comment rating with remote true" do
-      get :show_comment, params: {post_id: @post.to_param,topic_id: @topic.id,id:@comment.id},format: :js
-      expect(assigns(:check).size).to eql UserCommentRating.all.size
+      get :show, params: {post_id: @post.to_param,topic_id: @topic.id,id:@comment.id},format: :js
+      expect(assigns(:check).size).to eql PolyRate.all.size
       expect(response).to be_successful
     end
   end

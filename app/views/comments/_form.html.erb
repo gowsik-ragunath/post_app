@@ -1,10 +1,10 @@
 <div class="container">
   <div class="row">
     <div class="col-md-8">
-      <%= bootstrap_form_for [@topic,@post,@comment] do |form| %>
+      <%= bootstrap_form_for [@topic,@post,comment] do |form| %>
         <%= render(partial: "shared/error_display",locals: {error_display: comment}) %>
         <div class="field">
-          <%= form.text_area :body,value: @comment.body %>
+          <%= form.text_area :body,value: comment.body,label:"Leave a comment" %>
         </div>
         <div class="actions">
           <%= form.submit %>

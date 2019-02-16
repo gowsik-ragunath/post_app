@@ -55,10 +55,25 @@ class CommentsController < ApplicationController
     end
   end
 
-  def rate_comment
+  def rate
     if current_user
-      comment_rating = Rating.create!(rating:params[:rating])
-      UserCommentRating.create!(user_id: current_user.id,comment_id: params[:id],rating_id: comment_rating.id)
+########polymorphic association#######################
+      value = @comment.poly_rates.create(rating: params[:rating],user_id: current_user.id)
+      if value.errors
+        @error = value.errors.messages[:user_id][0]
+      end
+########join table association########################
+      # begin
+      #   comment_rating = Rating.new(rating:params[:rating])
+      #   verify = UserCommentRating.new(user_id: current_user.id,comment_id: params[:id])
+      #   comment_rating.transaction do
+      #     comment_rating.save!
+      #     verify.rating_id = comment_rating.id
+      #     verify.save!
+      #   end
+      # rescue ActiveRecord::RecordInvalid => exception
+      #   @error = exception
+      # end
     end
     respond_to do |format|
       format.js
@@ -66,8 +81,9 @@ class CommentsController < ApplicationController
     end
   end
 
-  def show_comment
-    @check =  UserCommentRating.where(comment_id: params[:id]).eager_load(:user)
+  def show
+    # @check =  UserCommentRating.where(comment_id: params[:id]).eager_load(:user)
+    @check = @comment.poly_rates
     respond_to do |format|
       format.js
       format.html { redirect_to topic_post_path(params[:topic_id],params[:id])}

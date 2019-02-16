@@ -1,6 +1,6 @@
 <ul class="post-list" id="list-post">
   <h2><%= link_to post.title+" ("+post.topic.name.upcase+")", topic_post_path(post.topic_id,post), class: "list-heading" %></h2>
-  <li class="list-body"> <%if post.ratings.present? %><p class="d-inline"> Rating : <%= post.ratings.rating_average %></p>
+  <li class="list-body"> <%if post.poly_rates.present? %><p class="d-inline"> Rating : <%= post.poly_rates.post_average %></p>
     <% end %>
     <%if post.comments.present? %>
       <p class="d-inline"> Comment : <%= post.comments.size %></p>

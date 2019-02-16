@@ -47,30 +47,30 @@ RSpec.feature '#comment' do
     end
   end
 
-  feature 'comment#show_comment',js: true do
-    before{
-      fill_in  :comment_body, with: 'new comment for post1'
-      click_on 'Create Comment'
-      expect(page).to have_content('Comment was successfully created.')
-      within "table" do
-        choose "rating_4"
-        click_button("Save")
-      end
-    }
-    scenario 'should show rating for the comment' do
-      within "table" do
-        # click_on 'Comment Ratings'
-        # page.execute_script("document.querySelector('Comment Ratings').click()")
-        # wnd = window_opened_by { click_on 'Comment Ratings' }
-        # puts wnd
-      end
-
-      # page.evaluate_script("window.location.reload()")
-      # within "#modal-window" do
-      #   expect(page).to have_content("Email sent")
-      # end
-    end
-  end
+  # feature 'comment#show_comment',js: true do
+  #   before{
+  #     fill_in  :comment_body, with: 'new comment for post1'
+  #     click_on 'Create Comment'
+  #     expect(page).to have_content('Comment was successfully created.')
+  #     within "table" do
+  #       choose "rating_4"
+  #       click_button("Save")
+  #     end
+  #   }
+  #   scenario 'should show rating for the comment' do
+  #     within "table" do
+  #       click_on 'Comment Ratings'
+  #       # page.execute_script("document.querySelector('Comment Ratings').click()")
+  #       # wnd = window_opened_by { click_on 'Comment Ratings' }
+  #       # puts wnd
+  #     end
+  #
+  #     # page.evaluate_script("window.location.reload()")
+  #     # within "#modal-window" do
+  #     #   expect(page).to have_content("Email sent")
+  #     # end
+  #   end
+  # end
 
   feature 'comment#delete' do
     scenario 'should create rating for the comment' do

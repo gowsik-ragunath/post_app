@@ -18,8 +18,8 @@ class Ability
         comment.user == user
       end
       can :manage, Topic
-      can [:create ,:status, :filter] , Post
-      can [:create , :rate_comment , :show_comment] , Comment
+      can [:create ,:status, :filter,:rate] , Post
+      can [:create , :rate , :show] , Comment
       can :read, :all
     end
   end

@@ -1,88 +1,90 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <div>
-        <h1 class="d-inline-block"> <%= @post.title %> </h1>
-        <%= link_to 'Back', topic_posts_path(params[:topic_id]),class: "btn btn-dark d-inline-block post-btn" %>
-        <%if can? :update, @post %>
-          <%= link_to 'Edit', edit_topic_post_path(params[:topic_id],@post),class: "btn btn-warning d-inline-block post-btn" %>
-        <% end %>
-        <%if can? :destroy, @post %>
-          <%= link_to 'Delete', topic_post_path(params[:topic_id],@post), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger d-inline-block post-btn" %>
-        <% end %>
-        <% if @post.user.present? %>
-          <h6> Author: <%= @post.user.email %></h6>
-        <% end %>
-        <p class="d-inline" id="status"><span class="unread-status"> Unread </span></p>
-      </div>
-      <div class="row">
-        <div class="col-md-8">
-          <p>
-            <% @check_rating.each do |rating,count| %>
-            <div class="rating-view"><%= rating %>-Star:<%= count %></div>
+<div>
+  <h1 class="d-inline-block"> <%= @post.title %> </h1>
+  <%= link_to 'Back', topic_posts_path(params[:topic_id]),class: "btn btn-dark d-inline-block post-btn" %>
+  <%if can? :update, @post %>
+    <%= link_to 'Edit', edit_topic_post_path(params[:topic_id],@post),class: "btn btn-warning d-inline-block post-btn" %>
+  <% end %>
+  <%if can? :destroy, @post %>
+    <%= link_to 'Delete', topic_post_path(params[:topic_id],@post), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger d-inline-block post-btn" %>
+  <% end %>
+  <% if @post.user.present? %>
+    <h6> Author: <%= @post.user.email %></h6>
+  <% end %>
+  <p class="d-inline" id="status"><span class="unread-status"> Unread </span></p>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <p>
+      <% @check_rating.each do |rating,count| %>
+      <div class="rating-view"><%= rating %>-Star:<%= count %></div>
+    <% end %>
+    </p>
+    <%if @post.poly_rates.present? %>
+      <p class="d-inline"> Rating : <%= @post.poly_rates.post_average %></p>
+    <% end %>
+    <%if @comments.present? %>
+      <p class="d-inline"> Comment : <%= @comments.size %></p>
+    <% end %>
+    <p><strong> Tags:
+      <% @tag_relation.each do |t| %>
+        <%= t.tag %>
+      <% end %>
+    </strong></p>
+    <p ><%= render 'ratings/form', rating: @post.poly_rates.new %></p>
+  </div>
+  <div class="col-md-4 ">
+    <% if @post.image.present? %>
+      <%= image_tag @post.image.url(:medium) %>
+    <% end %>
+  </div>
+</div>
+<p class="post-body text-justify"><%= @post.body %></p>
+<%= render 'comments/form', comment:Comment.new %>
+<table class="table table-borderless">
+  <th>   <strong>Comments: </strong> </th>
+  <% if @comments.present? %>
+    <% @comments.comment_order.each do |c| %>
+      <tr id='<%= c.id %>'>
+        <td>
+          <div class="col-md-4"> <small> <%= c.commenter %></small></div>
+          <div class="offset-md-1 col-md-8"> <%= c.body %></div>
+        </td>
+        <td>
+          <% if current_user.present? %>
+            <%= render(partial: "comments/rating_comment", locals: { comment_id: c.id }) %>
           <% end %>
-          </p>
-          <%if @ratings.present? %>
-            <p class="d-inline"> Rating : <%= @ratings.rating_average %></p>
-          <% end %>
-          <%if @comments.present? %>
-            <p class="d-inline"> Comment : <%= @comments.size %></p>
-          <% end %>
-          <p ><%= render 'ratings/form', rating: @rating %></p>
-          <p><strong> Tags:
-            <% @tag_relation.each do |t| %>
-              <%= t.tag %>
-            <% end %>
-          </strong></p>
+        </td>
+        <td> <%= link_to 'Comment Ratings' ,topic_post_comment_path(params[:topic_id],post_id: params[:id], id: c.id), locals: { comment_id: c.id } , class: 'btn btn-secondary', remote: true, 'data-controls-modal' =>  "modal-window", 'data-backdrop' => true, 'data-keyboard' => true %> </td>
+        <%if can? :update, c %>
+          <td><%= link_to 'edit', edit_topic_post_comment_path(params[:topic_id],params[:id],c), comment:c , method_task: ':patch',class: "btn btn-warning btn-sm" %></td>
+        <% end %>
+        <%if can? :update, c %>
+          <td><%= link_to 'delete', topic_post_comment_path(params[:topic_id],params[:id],c), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger btn-sm" %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  <% end %>
+</table>
+<div class="col-md-4">
+  <div class="modal fade" id="modal-window">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Comment Ratings</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <div class="col-md-4 ">
-          <% if @post.image.present? %>
-            <%= image_tag @post.image.url(:medium) %>
-          <% end %>
-        </div>
-      </div>
-      <p><%= @post.body %></p>
-      <%= render 'comments/form', comment:@comment%>
-      <table class="table table-borderless">
-        <th>   <strong>Comments: </strong> </th>
-        <% if @comments.present? %>
-          <% @comments.comment_order.each do |c| %>
-            <tr id='<%= c.id %>'>
-              <td>
-                <div class="col-md-4"> <small> <%= c.commenter %></small></div>
-                <div class="offset-md-1 col-md-8"> <%= c.body %></div>
-              </td>
-              <td>
-                <% if current_user.present? %>
-                  <%= render(partial: "comments/rating_comment", locals: { comment_id: c.id }) %>
-                <% end %>
-              </td>
-              <td> <%= link_to 'Comment Ratings' ,show_comment_topic_post_comment_path(params[:topic_id],post_id: params[:id], id: c.id), locals: { comment_id: c.id } , class: 'btn btn-secondary', remote: true, 'data-controls-modal' =>  "modal-window", 'data-backdrop' => true, 'data-keyboard' => true %> </td>
-              <%if can? :update, c %>
-                <td><%= link_to 'edit', edit_topic_post_comment_path(params[:topic_id],params[:id],c), comment:c , method_task: ':patch',class: "btn btn-warning btn-sm" %></td>
-              <% end %>
-              <%if can? :update, c %>
-                <td><%= link_to 'delete', topic_post_comment_path(params[:topic_id],params[:id],c), method: :delete , data: { confirm: 'Are you sure?' },class: "btn btn-danger btn-sm" %></td>
-              <% end %>
-            </tr>
-          <% end %>
-        <% end %>
-      </table>
-    </div>
-    <div class="col-md-4">
-      <div class="modal fade" id="modal-window">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-body center">
-            </div>
-          </div>
+        <div class="modal-body">
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <%= hidden_field_tag :topic_id, params[:topic_id]  %>
 <%= hidden_field_tag :post_id, params[:id] %>
+
 <script>
     $(document).ready(function (){
         $.ajax({

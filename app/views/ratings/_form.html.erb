@@ -1,4 +1,4 @@
-<%= bootstrap_form_with url: topic_post_ratings_path(params[:topic_id],params[:post_id] || params[:id]),html:{class: 'rating-form',id:'rating-form'},local:true  do |form| %>
+<%= bootstrap_form_with url: rate_topic_post_path(params[:topic_id],params[:id]),html:{class: 'rating-form',id:'rating-form'},local:true  do |form| %>
   <%= render(partial: "shared/error_display",locals: {error_display: rating}) %>
   <div class="field">
     <%= form.radio_button :rating, 1, label: '1' %>

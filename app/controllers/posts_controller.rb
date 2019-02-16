@@ -1,21 +1,25 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_topic, only: [ :index, :new, :create,  :show, :edit, :update, :destroy, :status]
-  before_action :set_post , only: [ :show, :edit, :update, :destroy,:status]
+  before_action :set_topic, only: [ :index, :new, :create,  :show, :edit, :update, :destroy, :status,:rate]
+  before_action :set_post , only: [ :show, :edit, :update, :destroy,:status,:rate]
   load_and_authorize_resource
 
   def index
     if params[:topic_id].nil?
       if params[:date_to].present? and params[:date_from].present?
-        @posts =  pagination(Post.includes(:topic).eager_load(:comments).eager_load(:ratings).includes(:users).overlapping(params[:date_from],params[:date_to]))
+        if params[:date_to] > params[:date_from]
+          @posts =  pagination(Post.includes([:topic,:users]).eager_load([:comments,:ratings,:poly_rates]).content_filter(params[:date_from],params[:date_to]))
+        end
       else
-        @posts = pagination(Post.topic_post).includes(:topic).eager_load(:ratings).eager_load(:comments).includes(:posts_users).includes(:users)
+        @posts = pagination(Post.post_order).includes([:topic,:posts_users,:users]).eager_load([:ratings,:comments,:poly_rates])
       end
     else
       if params[:date_to].present? and params[:date_from].present?
-        @posts =  pagination(@topic.posts.eager_load(:comments).eager_load(:ratings).includes(:users).overlapping(params[:date_from],params[:date_to]))
+        if params[:date_to] > params[:date_from]
+          @posts =  pagination(@topic.posts.eager_load([:comments,:ratings,:poly_rates]).includes(:users).content_filter(params[:date_from],params[:date_to]))
+        end
       else
-        @posts = pagination(@topic.posts).eager_load(:ratings).eager_load(:comments).includes(:posts_users).includes(:users)
+        @posts = pagination(@topic.posts).eager_load([:ratings,:comments,:poly_rates]).includes([:posts_users,:users])
       end
     end
     respond_to do |format|
@@ -26,6 +30,14 @@ class PostsController < ApplicationController
 
   def new
     @post = @topic.posts.new
+  end
+
+  def rate
+    @post.poly_rates.create(rating:params[:rating],user_id: current_user.id)
+    respond_to do |format|
+      format.html { redirect_to topic_post_path(@topic,@post), notice:'Post rated successfully.' }
+      format.js
+    end
   end
 
   def create
@@ -45,11 +57,9 @@ class PostsController < ApplicationController
   end
 
   def show
-    @rating = Rating.new
     @ratings = @post.ratings.rating_order
     @check_rating = check_rating_order(@ratings)
     @comments = @post.comments.eager_load(:user)
-    @comment = Comment.new
     @comment_rating = UserCommentRating.new
     @tag_relation = @post.tags
   end

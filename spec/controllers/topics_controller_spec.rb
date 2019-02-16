@@ -12,47 +12,91 @@ RSpec.describe TopicsController, type: :controller do
   }
 
   describe "GET #index" do
-    it "returns a success response" do
-      get :index, params: {}
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET #index json" do
-    it "returns a json response page1" do
-      get :index, params:{} , format: :json
-      expect(response.status).to eql 200
-      expect(json).to match([{"id"=>1, "name"=>"topic_name", "url"=>"http://test.host/topics/1.json"},
-                                                {"id"=>2, "name"=>"topic2", "url"=>"http://test.host/topics/2.json"}])
+    context "with html request" do
+      it "returns a success response" do
+        get :index, params: {}
+        expect(response).to render_template("index")
+        expect(response).to be_successful
+        expect(assigns(:topics).size).to eql(2)
+      end
     end
 
-    it "returns a json response page2" do
-      get :index  , params:{ page: 2 } , format: :json
-      expect(response.status).to eql 200
-      expect(json).to match([{"id"=>3, "name"=>"topic3", "url"=>"http://test.host/topics/3.json"},
-                                                {"id"=>4, "name"=>"topic4", "url"=>"http://test.host/topics/4.json"}])
+    context "with json request auth failed" do
+      it "returns a json response page1" do
+        sign_out @user
+        get :index, params:{} , format: :json
+        expect(json).to match({ "error" => "You need to sign in or sign up before continuing." })
+        expect(response.status).to eql 401
+      end
     end
 
-    it "returns a json response page3" do
-      get :index, params:{ page: 3 } , format: :json
-      expect(response.status).to eql 200
-      expect(json).to match([{"id"=>5, "name"=>"topic5", "url"=>"http://test.host/topics/5.json"}])
+    context "with json request auth passed" do
+      before{
+        @request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials('email@email.com','password')
+      }
+
+      it "returns a json response page1" do
+        get :index, params:{} , format: :json
+        expect(response.status).to eql 200
+        expect(json).to match([{"id"=>1, "name"=>"topic_name"},
+                               {"id"=>2, "name"=>"topic2"}])
+      end
+
+      it "returns a json response page2" do
+        get :index  , params:{ page: 2 } , format: :json
+        expect(response.status).to eql 200
+        expect(json).to match([{"id"=>3, "name"=>"topic3"},
+                               {"id"=>4, "name"=>"topic4"}])
+      end
+
+      it "returns a json response page3" do
+        get :index, params:{ page: 3 } , format: :json
+        expect(response.status).to eql 200
+        expect(json).to match([{"id"=>5, "name"=>"topic5"}])
+      end
     end
   end
 
   describe "GET #show" do
-    it "returns a success response" do
-      get :show, params: {id: @topic.to_param}
-      expect(response).to be_successful
-    end
-  end
+    context "with html request" do
+      it "returns a success response" do
+        get :show, params: {id: @topic.to_param}
+        expect(response).to render_template("show")
+        expect(response).to be_successful
+      end
 
-  describe "GET #show json" do
-    it "returns a json response" do
-      get :show, params: {id: @topic.to_param}, format: :json
-      expect(response.status).to eql 200
-      expect(json.keys).to contain_exactly('id', 'name', 'url')
-      expect(json).to match("id"=>1, "name"=>"topic_name", "url"=>"http://test.host/topics/1.json")
+      it "returns a success response" do
+        sign_out @user
+        get :show, params: {id: @topic.to_param}
+        expect(response).to redirect_to(new_user_session_path)
+        expect(flash[:alert]).to eq "You need to sign in or sign up before continuing."
+      end
+    end
+
+    context "with json request auth failed" do
+      before{
+        sign_out @user
+      }
+
+      it "returns a json response" do
+        get :show, params: {id: @topic.to_param}, format: :json
+        expect(response.status).to eql 401
+        expect(json.keys).to contain_exactly('error')
+        expect(json).to match("error" => "You need to sign in or sign up before continuing.")
+      end
+    end
+
+    context "with json request auth passed" do
+      before{
+        @request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials('email@email.com','password')
+      }
+
+      it "returns a json response" do
+        get :show, params: {id: @topic.to_param}, format: :json
+        expect(response.status).to eql 200
+        expect(json.keys).to contain_exactly('id', 'name')
+        expect(json).to match("id"=>1, "name"=>"topic_name")
+      end
     end
   end
 
@@ -98,7 +142,24 @@ RSpec.describe TopicsController, type: :controller do
       end
     end
 
-    context "create json api call" do
+    context "create json api call auth failed" do
+      before{
+        sign_out @user
+      }
+
+      it "returns a json response" do
+        post :create, params: {topic: {name:"new"}} , format: :json
+        expect(response.status).to eql 401
+        expect(json.keys).to contain_exactly('error')
+        expect(json).to match("error" => "You need to sign in or sign up before continuing.")
+      end
+    end
+
+    context "create json api call auth passed" do
+      before{
+        @request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials('email@email.com','password')
+      }
+
       it "returns a json response" do
         post :create, params: {topic: {name:"new"}} , format: :json
         expect(response.status).to eql 200
@@ -122,15 +183,6 @@ RSpec.describe TopicsController, type: :controller do
         expect(response).to redirect_to(topic_path)
         expect(flash[:notice]).to eq "Topic was successfully updated."
       end
-
-      it "returns a json response" do
-        put :update, params: {id: @topic.to_param, topic:{name:'update topic'}} , format: :json
-        expect(response.status).to eql 200
-        expect(json.keys).to contain_exactly('id','name','url')
-        expect(json).to match({"id"=>1, "name"=>"update topic",
-                                                  "url" => "http://test.host/topics/1.json"})
-      end
-
       it "redirects to the topic" do
         put :update, params: {id: @topic.to_param, topic: {name:"valid_attributes"}}
         expect(response).to redirect_to(topic_path)
@@ -144,6 +196,19 @@ RSpec.describe TopicsController, type: :controller do
         expect(response).to render_template("edit")
         assigns(:topic).errors.empty?.should_not be true
       end
+    end
+
+    context "with json request auth passed" do
+      before{
+        @request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials('email@email.com','password')
+      }
+
+      it "returns a json response" do
+        put :update, params: {id: @topic.to_param, topic:{name:'update topic'}} , format: :json
+        expect(response.status).to eql 200
+        expect(json.keys).to contain_exactly('id','name')
+        expect(json).to match({"id"=>1, "name"=>"update topic"})
+      end
 
       it "returns a invalid json response" do
         put :update, params: {id: @topic.to_param, topic:{name:''}} , format: :json
@@ -152,27 +217,61 @@ RSpec.describe TopicsController, type: :controller do
         expect(json).to match("name" => ["can't be blank", "is too short (minimum is 3 characters)"])
       end
     end
+
+    context "with json request auth failed" do
+      before{
+        sign_out @user
+      }
+
+      it "returns a json response" do
+        put :update, params: {id: @topic.to_param, topic:{name:''}} , format: :json
+        expect(response.status).to eql 401
+        expect(json.keys).to contain_exactly('error')
+        expect(json).to match("error" => "You need to sign in or sign up before continuing.")
+      end
+    end
   end
 
   describe "DELETE #destroy" do
-    it "destroys the requested topic" do
-      expect {
+    context "with html request" do
+      it "destroys the requested topic" do
+        expect {
+          delete :destroy, params: {id: @topic.to_param}
+        }.to change(Topic, :count).by(-1)
+        expect(flash[:destroy]).to eq "Topic was successfully destroyed."
+      end
+
+      it "redirects to the topics list" do
         delete :destroy, params: {id: @topic.to_param}
-      }.to change(Topic, :count).by(-1)
-      expect(flash[:destroy]).to eq "Topic was successfully destroyed."
+        expect(response).to redirect_to(topics_path)
+        expect(flash[:destroy]).to eq "Topic was successfully destroyed."
+      end
     end
 
-    it "delete with a json response" do
-      delete :destroy, params: {id: @topic.to_param} , format: :json
-      expect(response.status).to eql 200
-      expect(json.keys).to contain_exactly('message')
-      expect(json).to match( {"message" => "record deleted"} )
+    context "with json" do
+      before{
+        @request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials('email@email.com','password')
+      }
+
+      it "delete with a json response" do
+        delete :destroy, params: {id: @topic.to_param} , format: :json
+        expect(response.status).to eql 200
+        expect(json.keys).to contain_exactly('message')
+        expect(json).to match( {"message" => "record deleted"} )
+      end
     end
 
-    it "redirects to the topics list" do
-      delete :destroy, params: {id: @topic.to_param}
-      expect(response).to redirect_to(topics_path)
-      expect(flash[:destroy]).to eq "Topic was successfully destroyed."
+    context "with json request auth failed" do
+      before{
+        sign_out @user
+      }
+
+      it "returns a json response" do
+        delete :destroy, params: {id: @topic.to_param} , format: :json
+        expect(response.status).to eql 401
+        expect(json.keys).to contain_exactly('error')
+        expect(json).to match("error" => "You need to sign in or sign up before continuing.")
+      end
     end
   end
 end

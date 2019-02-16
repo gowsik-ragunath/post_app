@@ -2,12 +2,9 @@ $('#flash-notice').hide();
 $('#flash-alert').hide();
 <% if @post.errors.any? %>
   $("#error_explanation").remove();
-  $(document).find("#new_post").prepend('<%= j render(partial: "shared/error_display",locals: {error_display: @post  }, :formats => [:html]) %>');
-  $('#errortitle').html(' <%=  @post.errors.full_messages_for(:title).join(', ') %> ');
-  $('#errorbody').html(' <%=  @post.errors.full_messages_for(:body).join(', ') %> ');
-  $('#errorimage').html(' <%=  @post.errors.full_messages_for(:image).join(', ') %> ');
+  $('#new_post').html("<%= j render "form", locals: {post: @post} %>");
 <% else %>
-  $('#new_post').remove();
+  $("#new-post-modal-window").modal('toggle');
   $('#new_link').show();
   $('#list-post').prepend("<%= j render(partial: "post", locals: {post: @post})   %>");
   $('#flash-alert').show();

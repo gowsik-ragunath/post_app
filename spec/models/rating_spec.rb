@@ -27,7 +27,7 @@ RSpec.describe Rating, type: :model do
     end
   end
 
-  describe "scope funtion validation" do
+  describe "scope function validation" do
     it "order in rating" do
       Rating.rating_order.should eq(Rating.order(rating: :asc))
     end

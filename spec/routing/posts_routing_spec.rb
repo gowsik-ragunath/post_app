@@ -7,7 +7,7 @@ RSpec.describe PostsController, type: :routing do
     end
 
     it "routes to #index" do
-      expect(:get => "/topics/posts").to route_to("posts#index")
+      expect(:get => "/posts").to route_to("posts#index")
     end
 
     it "routes to #new" do

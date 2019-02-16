@@ -1,5 +1,5 @@
 <ul class="list-group">
   <% c.each do |commenters| %>
-    <li class="list-group-item"><%= commenters.user.email %> <br> Rating: <%= commenters.rating.rating %></li>
+    <li class="list-group-item"><%= user_mail(commenters.user_id) %> <br> Rating: <%= commenters.rating %></li>
   <% end %>
 </ul>

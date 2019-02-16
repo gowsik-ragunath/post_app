@@ -2,11 +2,7 @@ $('#flash-notice').hide();
 $('#flash-alert').hide();
 <% if resource.errors.any? %>
   $("#error_explanation").remove();
-  $("#profile-form-error").html('<%= j render(partial: "shared/error_display",locals: {error_display: resource }, :formats => [:html]) %>');
-  $('#error_email').html(' <%=  resource.errors.full_messages_for(:email).join(', ') %> ');
-  $('#error_password').html(' <%=  resource.errors.full_messages_for(:password).join(', ') %> ');
-  $('#error_password_confirmation').html(' <%=  resource.errors.full_messages_for(:password_confirmation).join(', ') %> ');
-  $('#error_current_password').html(' <%=  resource.errors.full_messages_for(:current_password).join(', ') %> ');
+  $("#profile-modal-window").find(".modal-body").html("<%= j render('devise/registrations/edit') %>");
 <% else %>
   $("#profile-modal-window").modal('toggle');
   $('#flash-alert').show().html('<div id="flash-notice" class="alert alert-success">Your account has been updated successfully.</div>');

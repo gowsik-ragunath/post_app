@@ -31,11 +31,11 @@ RSpec.describe CommentsController, type: :routing do
     end
 
     it "routes to #rate_comment" do
-      expect(:post => "/topics/1/posts/1/comments/1/rate_comment").to route_to("comments#rate_comment",topic_id:'1',post_id:'1',id:'1')
+      expect(:post => "/topics/1/posts/1/comments/1/rate").to route_to("comments#rate", topic_id:'1', post_id:'1', id:'1')
     end
 
     it "routes to #show_comment" do
-      expect(:get => "/topics/1/posts/1/comments/1/show_comment").to route_to("comments#show_comment",topic_id:'1',post_id:'1',id:'1')
+      expect(:get => "/topics/1/posts/1/comments/1/").to route_to("comments#show", topic_id:'1', post_id:'1', id:'1')
     end
   end
 end

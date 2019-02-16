@@ -15,13 +15,13 @@ RSpec.feature '#rating' do
     click_link("post1 (CHECK TOPIC)")
   }
 
-  feature 'rating#new' do
+  feature 'post#rate' do
     scenario 'should create new comment' do
       within('#rating-form') do
         choose "rating_4"
         click_button "save"
       end
-      expect(page).to have_content('Rating was successfully created.')
+      expect(page).to have_content('Post rated successfully.')
     end
   end
 end

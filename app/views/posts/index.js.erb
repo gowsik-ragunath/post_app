@@ -1,10 +1,19 @@
 $('.pagination').remove();
 $('#exist').empty();
 $('#generated').empty();
-$('#paginate').html('<%= j will_paginate @posts, renderer: BootstrapPagination::Rails %>');
-$str = ""
-<% @posts.each do |post| %>
-  $str += '<%= j render(partial: "posts/post",locals: {post: post}) %>';
+<%= params[:date_to] > params[:date_from] %>
+<% if params[:date_to] > params[:date_from] %>
+  $('#paginate').html('<%= j will_paginate @posts, renderer: BootstrapPagination::Rails %>');
+  $str = ""
+  <% if @posts.exists? %>
+    <% @posts.each do |post| %>
+      $str += '<%= j render(partial: "posts/post",locals: {post: post}) %>';
+    <% end %>
+  <% else %>
+    $str = '<h2 class=\"text-center\">No records were created in given date</h2>';
+  <% end %>
+  $('#generated').html($str);
+  $('.pagination a').attr('data-remote', 'true');
+<% else %>
+  $('#generated').html("<h2 class=\"text-center\"> Give date is out of range</h2>");
 <% end %>
-$('#generated').html($str);
-$('.pagination a').attr('data-remote', 'true');

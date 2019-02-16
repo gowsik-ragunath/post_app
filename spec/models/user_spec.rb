@@ -5,7 +5,7 @@ RSpec.describe User, type: :model do
     @topic = create(:topic,name:"topic")
   }
 
-  subject{ described_class.create!(email:"example@example.com",password:"password123",password_confirmation:"password123") }
+  subject{ described_class.create!(email:"example1@example.com",password:"password123",password_confirmation:"password123") }
 
   describe "validation" do
     it "creation check" do

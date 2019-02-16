@@ -54,7 +54,7 @@ RSpec.feature '#post' do
 			expect(page).to have_content('post2 (CHECK TOPIC)')
 		end
 
-		scenario 'show post1' , js: true  do
+		scenario 'show post1'  do
 			visit('/topics/1/posts')
 			expect(current_path).to have_content('/topics/1/posts')
 			click_link('post1 (CHECK TOPIC)')
@@ -72,7 +72,6 @@ RSpec.feature '#post' do
 			expect(page).to have_content('post2')
 			expect(page).to have_content('Tags: check')
 			expect(page).to have_content('body of post2')
-			# wait_for_ajax
 		end
   end
 
@@ -91,7 +90,7 @@ RSpec.feature '#post' do
 			expect(page).to have_content('body of new_title')
 		end
 
-		scenario 'edit post with invaild field data' do
+		scenario 'edit post with invalid field data' do
 			click_link('post2 (CHECK TOPIC)')
 			expect(current_path).to have_content('/topics/1/posts/2')
 			click_link('Edit')

@@ -1,4 +1,4 @@
-<%= form_with model: @rating_comment, url: rate_comment_topic_post_comment_path(params[:topic_id], post_id: params[:id],id: comment_id),html:{class: 'rating-form rating-comment' },
+<%= form_with model: @rating_comment, url: rate_topic_post_comment_path(params[:topic_id], post_id: params[:id],id: comment_id),html:{class: 'rating-form rating-comment' },
               remote:true do |form| %>
   <%#= render(partial: "layouts/error_display",locals: {error_display: @rating_comment}) %>
   <div class="field">

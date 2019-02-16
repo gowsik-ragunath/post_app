@@ -11,7 +11,7 @@
   <%= @topic.name %>
 </div>
 <ul class="list-group">
-  <% @post.post_show.each do |f| %>
+  <% @post.post_recent.each do |f| %>
     <li class="list-group-item"><%= link_to f.title , topic_post_path(@topic,f), class:"d-inline" %>
       <p class="d-inline">
         <%if f.users.include?(current_user) %>

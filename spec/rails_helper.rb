@@ -9,6 +9,7 @@ require 'devise'
 require 'capybara/rspec'
 require 'capybara/webkit/matchers'
 require "paperclip/matchers"
+require 'sidekiq/testing'
 
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 # require_relative 'support/controller_macros'
@@ -110,5 +111,9 @@ RSpec.configure do |config|
   config.include Requests::JsonHelpers, :type => :controller
 
   # config.include(Capybara::Webkit::RspecMatchers, :type => :feature)
-
+  #
+  config.before(:each) do
+      Sidekiq::Worker.clear_all
+  end
+  Sidekiq::Testing.fake!
 end

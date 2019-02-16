@@ -1,37 +1,31 @@
-Rails.application.routes.draw do
-  root to:"topics#index"
-  devise_for :users , controllers: {
-      registrations: 'users/registrations'
-  }
+require 'sidekiq/web'
 
+Rails.application.routes.draw do
+  mount Sidekiq::Web => '/sidekiq'
   resources :tags
-  resource :authentications, only: [:authenticate],path: '' do
-    collection do
-      post :authenticate, path: '/user'
-    end
-  end
-  resource :devices, only: [:device_detect],path: '' do
-    collection do
+  scope controller: :devices do
       get :device_detect, path: '/device'
-    end
+      post :authenticate_user, path: '/user'
   end
+  resources :posts , only: [:index]
   resources :topics do
-    collection do
-      get :index , controller: :posts , path: '/posts' , as: 'posts'
-    end
     resources :posts do
       member do
         post :status
+        post :rate
       end
       resources :comments do
         member do
-          post :rate_comment
-          get :show_comment
+          post :rate
         end
       end
       resources :ratings
     end
   end
+  devise_for :users , controllers: {
+      registrations: 'users/registrations'
+  }
+  root to:"topics#index"
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   # root to: 'posts#index'
