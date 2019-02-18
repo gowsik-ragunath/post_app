@@ -10,7 +10,7 @@
   </head>
 
   <body>
-    <%= render 'layouts/navigation' %>
+    <%= render 'shared/navigation' %>
     <div id="main_content">
       <div class="container">
         <div class="row">
@@ -21,7 +21,8 @@
                   <%= value %>
                 <% end %>
             <% end %>
-            <%= yield %>
+          <%= yield %>
+          <%= render 'shared/profile_modal' %>
           </div>
         </div>
       </div>

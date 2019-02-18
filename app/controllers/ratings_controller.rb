@@ -1,19 +1,17 @@
 class RatingsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_topic, only: [:index, :show, :edit, :update, :destroy, :new, :create ]
   before_action :set_post, only: [:index, :show, :edit, :update, :destroy, :new, :create ]
   before_action :set_rating, only: [:show, :edit, :update, :destroy ]
-  # GET /ratings
-  # GET /ratings.json
+
   def index
     @ratings = @post.ratings
   end
 
-  # GET /ratings/new
   def new
     @rating = @post.ratings.new
   end
 
-  # POST /ratings
-  # POST /ratings.json
   def create
     @rating = @post.ratings.new(rating_params)
     respond_to do |format|
@@ -27,8 +25,6 @@ class RatingsController < ApplicationController
     end
   end
 
-  # DELETE /ratings/1
-  # DELETE /ratings/1.json
   def destroy
     @rating.destroy
     respond_to do |format|
@@ -38,19 +34,19 @@ class RatingsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+  def set_topic
+    @topic = Topic.find(params[:topic_id])
+  end
 
-    def set_post
-      @topic = Topic.find(params[:topic_id])
-      @post = @topic.posts.find(params[:post_id])
-    end
+  def set_post
+    @post = @topic.posts.find(params[:post_id])
+  end
 
-    def set_rating
-      @rating = Rating.find(params[:id])
-    end
+  def set_rating
+    @rating = Rating.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def rating_params
-      params.permit(:rating)
-    end
+  def rating_params
+    params.permit(:rating)
+  end
 end

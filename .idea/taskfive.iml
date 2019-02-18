@@ -50,6 +50,7 @@
     <orderEntry type="library" scope="PROVIDED" name="byebug (v10.0.2, RVM: ruby-2.5.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="cancancan (v2.3.0, RVM: ruby-2.5.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="capybara (v3.12.0, RVM: ruby-2.5.1) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="capybara-webkit (v1.15.1@77fdac, RVM: ruby-2.5.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="childprocess (v0.9.0, RVM: ruby-2.5.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="chromedriver-helper (v2.1.0, RVM: ruby-2.5.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="climate_control (v0.2.0, RVM: ruby-2.5.1) [gem]" level="application" />
@@ -71,6 +72,7 @@
     <orderEntry type="library" scope="PROVIDED" name="io-like (v0.3.0, RVM: ruby-2.5.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jbuilder (v2.8.0, RVM: ruby-2.5.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jquery-rails (v4.3.3, RVM: ruby-2.5.1) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="json (v2.1.0, RVM: ruby-2.5.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="listen (v3.1.5, RVM: ruby-2.5.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="loofah (v2.2.3, RVM: ruby-2.5.1) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="mail (v2.7.1, RVM: ruby-2.5.1) [gem]" level="application" />

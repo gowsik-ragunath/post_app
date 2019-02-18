@@ -1,23 +1,23 @@
 <%= form_for [@topic,@post], remote: true, html: { multipart: true, class:"form-horizontal center" }  do |p| %>
-  <%= render(partial: "layouts/error_display",locals: {error_display: @post}) %>
+  <%= render(partial: "shared/error_display",locals: {error_display: @post}) %>
   <div class="form-group">
     <%= p.label :tag %>
-    <%= p.fields_for :tags,@post.tags.build do |ff| %>
-    <div>
-      <%= ff.text_field :tag, class:"form-control" %>
-    </div>
-  <% end %>
+    <%= p.fields_for :tags, @post.tags.build do |ff| %>
+      <div>
+        <%= ff.text_field :tag, class:"form-control" %>
+      </div>
+    <% end %>
   </div>
   <div class="form-group">
     <%= p.label :title %>
     <br>
-      <%= p.text_field(:title, class:"form-control" ) %>
-      <small class="error_small" id="errortitle"><%= @post.errors.full_messages_for(:title).join(', ') if @post.errors.has_key?(:title) %></small>
+    <%= p.text_field(:title, class:"form-control" ) %>
+    <small class="error_small" id="errortitle"><%= @post.errors.full_messages_for(:title).join(', ') if @post.errors.has_key?(:title) %></small>
   </div>
- <div class="form-group">
-   <%= p.label :body %><br><%= p.text_area(:body, class:"form-control") %>
-   <small class="error_small" id="errorbody"><%= @post.errors.full_messages_for(:body).join(', ') if @post.errors.has_key?(:body) %></small>
- </div>
+  <div class="form-group">
+    <%= p.label :body %><br><%= p.text_area(:body, class:"form-control") %>
+    <small class="error_small" id="errorbody"><%= @post.errors.full_messages_for(:body).join(', ') if @post.errors.has_key?(:body) %></small>
+  </div>
   <div class="form-group">
     <%= p.label :image %><br>
     <%= p.file_field (:image) %>

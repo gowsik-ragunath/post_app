@@ -1,0 +1,10 @@
+<%= form_with url: posts_topics_path , html: {method: "GET"} do |f| %>
+  <div class="text-center">
+    <label>From date</label> <%= date_field_tag(:date_from, Date.yesterday, class:"date")%>
+    <label>To date</label> <%= date_field_tag(:date_to, Date.today, class:"date")%>
+    <% if params[:topic_id].present? %>
+      <%= hidden_field_tag :topic_id,params[:topic_id] %>
+    <% end %>
+  </div>
+  <div class="text-center"><%= f.submit "Show Details",class:"btn btn-secondary" %></div>
+<% end %>

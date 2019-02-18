@@ -1,8 +1,9 @@
 class CommentsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_topic, only: [ :new, :create, :show, :edit, :update, :destroy]
   before_action :set_post, only: [ :new, :create, :show, :edit, :update, :destroy]
   before_action :set_comment, only: [:show, :edit, :update, :destroy]
   load_and_authorize_resource
-
 
   def index
     @comments = Post.find(params[:post_id]).comments.includes(:user)
@@ -12,14 +13,12 @@ class CommentsController < ApplicationController
     @comment = @post.comments.new
   end
 
-
   def edit
   end
 
   def create
     @comment = @post.comments.new(comment_params.merge(user_id: current_user.id))
     @comment.commenter = current_user.email
-    
     respond_to do |format|
       if @comment.save
         flash[:success] = 'Comment was successfully created.'
@@ -56,19 +55,39 @@ class CommentsController < ApplicationController
     end
   end
 
+  def rate_comment
+    if current_user
+      comment_rating = Rating.create!(rating:params[:rating])
+      UserCommentRating.create!(user_id: current_user.id,comment_id: params[:id],rating_id: comment_rating.id)
+    end
+    respond_to do |format|
+      format.js
+      format.html { redirect_to topic_post_path(params[:topic_id],params[:id]) }
+    end
+  end
+
+  def show_comment
+    @check =  UserCommentRating.where(comment_id: params[:id]).eager_load(:user)
+    respond_to do |format|
+      format.js
+      format.html { redirect_to topic_post_path(params[:topic_id],params[:id])}
+    end
+  end
+
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-        @topic = Topic.find(params[:topic_id])
-        @post = @topic.posts.find(params[:post_id])
-    end
-    def set_comment
-        @comment = @post.comments.find(params[:id])
-    end
+  def set_topic
+    @topic = Topic.find(params[:topic_id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def comment_params
-      params.require(:comment).permit(:body)
-    end
+  def set_post
+    @post = @topic.posts.find(params[:post_id])
+  end
 
+  def set_comment
+    @comment = @post.comments.find(params[:id])
+  end
+
+  def comment_params
+    params.require(:comment).permit(:body)
+  end
 end

@@ -1,10 +1,10 @@
 $('.pagination').remove();
 $('#exist').empty();
 $('#generated').empty();
-$('#generated').prepend('<%= j will_paginate @posts, renderer: BootstrapPagination::Rails %>');
+$('#paginate').html('<%= j will_paginate @posts, renderer: BootstrapPagination::Rails %>');
 $str = ""
 <% @posts.each do |post| %>
   $str += '<%= j render(partial: "posts/post",locals: {post: post}) %>';
 <% end %>
-$('#generated').append($str);
+$('#generated').html($str);
 $('.pagination a').attr('data-remote', 'true');

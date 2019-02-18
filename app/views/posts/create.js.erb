@@ -2,7 +2,7 @@ $('#flash-notice').hide();
 $('#flash-alert').hide();
 <% if @post.errors.any? %>
   $("#error_explanation").remove();
-  $(document).find("#new_post").prepend('<%= j render(partial: "layouts/error_display",locals: {error_display: @post  }, :formats => [:html]) %>');
+  $(document).find("#new_post").prepend('<%= j render(partial: "shared/error_display",locals: {error_display: @post  }, :formats => [:html]) %>');
   $('#errortitle').html(' <%=  @post.errors.full_messages_for(:title).join(', ') %> ');
   $('#errorbody').html(' <%=  @post.errors.full_messages_for(:body).join(', ') %> ');
   $('#errorimage').html(' <%=  @post.errors.full_messages_for(:image).join(', ') %> ');

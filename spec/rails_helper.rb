@@ -7,10 +7,12 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'rspec/rails'
 require 'devise'
 require 'capybara/rspec'
-
+require 'capybara/webkit/matchers'
 require "paperclip/matchers"
-require_relative 'support/controller_macros'
-# require 'support/factory_bot'
+
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+# require_relative 'support/controller_macros'
+# require 'factories'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -65,8 +67,31 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
+  # Capybara.javascript_driver = :chrome
+  #
+  # Capybara.register_driver :chrome do |app|
+  #   Capybara::Selenium::Driver.new app, browser: :chrome,
+  #                                  options: Selenium::WebDriver::Chrome::Options.new(args: %w[headless disable-gpu])
+  # end
 
-  Capybara.javascript_driver = :webkit
+  Capybara.register_driver :chrome do |app|
+    Capybara::Selenium::Driver.new(app, browser: :chrome)
+  end
+
+  Capybara.register_driver :headless_chrome do |app|
+    caps = Selenium::WebDriver::Remote::Capabilities.chrome(loggingPrefs: { browser: 'ALL' })
+    opts = Selenium::WebDriver::Chrome::Options.new
+
+    chrome_args = %w[--headless --window-size=1920,1080 --no-sandbox --disable-dev-shm-usage]
+    chrome_args.each { |arg| opts.add_argument(arg) }
+    Capybara::Selenium::Driver.new(app, browser: :chrome, options: opts, desired_capabilities: caps)
+  end
+
+  Capybara.configure do |config|
+    # change this to :chrome to observe tests in a real browser
+    config.javascript_driver = :headless_chrome
+  end
+
 
   config.before(:suite) do
     DatabaseCleaner[:active_record].strategy = :transaction
@@ -90,22 +115,24 @@ RSpec.configure do |config|
     end
   end
 
-  RSpec.configure do |config|
-    config.include Paperclip::Shoulda::Matchers
-  end
+  config.include Paperclip::Shoulda::Matchers
 
-  RSpec.configure do |config|
-    config.include Devise::Test::ControllerHelpers, type: :controller
-    config.include Devise::Test::ControllerHelpers, type: :view
-    config.extend ControllerMacros, :type => :controller
-  end
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :view
+  config.extend ControllerMacros, :type => :controller
 
-  RSpec.configure do |config|
-    config.expect_with :rspec do |expectations|
-      expectations.syntax = [:expect, :should]
-    end
+  config.expect_with :rspec do |expectations|
+    expectations.syntax = [:expect, :should]
   end
 
   config.render_views = true
+
+  # config.include WaitForAjax, type: :feature
+
+  config.include AuthenticationHelper, type: :feature
+
+  config.include Requests::JsonHelpers, :type => :controller
+
+  # config.include(Capybara::Webkit::RspecMatchers, :type => :feature)
 
 end

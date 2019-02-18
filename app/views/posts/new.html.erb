@@ -1,35 +1,7 @@
 <div class="container">
-	<div class="row">
-		<div class="offset-md-3 col-md-5">
-
-			<%= render 'form', post: @post %>
-
-		</div>
-	</div>
+  <div class="row">
+    <div class="offset-md-3 col-md-5">
+      <%= render 'form', post: @post %>
+    </div>
+  </div>
 </div>
-
-<div id="status"></div>
-
-<%#= hidden_field_tag :topic_id, params[:topic_id] %>
-
-
-<!--<script>-->
-<!--    $(document).ready(function(){-->
-<!--        $('#submit').on('click',function (e) {-->
-<!--            $.ajax({-->
-<!--                method: 'POST',-->
-<!--                dataType: json,-->
-<!--                url: '/topics/'+$("#topic_id").val()+'/posts',-->
-<!--                data: {post:{ title: $("#post_title").val(), body: $("#post_body").val(), tag_ids: $("#post_tag_ids").val(),-->
-<!--                        tags_attributes:{0:{tag:$("#post_tags_attributes_0_tag").val() }} } },-->
-<!--                success: function (data) {-->
-<!--                    $('#new_post').remove();-->
-<!--                    event.preventDefault();-->
-<!--                    alert(data);-->
-<!--                    $('#status').html('<div class="read-status">data</div>');-->
-<!--                    e.preventDefault();-->
-<!--                }-->
-<!--            })-->
-<!--        })-->
-<!--    })-->
-<!--</script>-->

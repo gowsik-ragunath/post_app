@@ -18,7 +18,6 @@ RSpec.describe TopicsController, type: :routing do
       expect(:get => "/topics/1/edit").to route_to("topics#edit", :id => "1")
     end
 
-
     it "routes to #create" do
       expect(:post => "/topics").to route_to("topics#create")
     end

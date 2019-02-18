@@ -73,6 +73,8 @@ group :test do
   gem 'chromedriver-helper'
   gem 'shoulda-matchers'
   gem 'database_cleaner'
+  gem 'capybara-webkit', github: 'thoughtbot/capybara-webkit', branch: 'master'
+  gem 'chromedriver-helper'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
