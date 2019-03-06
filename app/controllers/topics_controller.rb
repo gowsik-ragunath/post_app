@@ -9,13 +9,7 @@ class TopicsController < ApplicationController
   end
 
   def show
-    @topic = Topic.find(params[:id])
-    if current_user.nil? or not current_user.admin?
-      @post = pagination(@topic.posts.includes([:posts_users,:user]).eager_load(:users))
-    else
-      @post = pagination(@topic.posts)
-    end
-    @new_post = Post.new
+    @post = pagination(@topic.posts.includes(:user)).eager_load(:users)
   end
 
   def new
@@ -29,12 +23,12 @@ class TopicsController < ApplicationController
     @topic = Topic.new(topic_params)
     respond_to do |format|
       if @topic.save
-        arg = { user: current_user.id, topic: @topic.name }
+        arg = { user: current_user.id, topic_name: @topic.name }
         # SendEmailJob.set(wait: 2.seconds).perform_later(arg)
         EmailWorker.perform_in(5.seconds,arg)
         # TopicMailer.topic_created(arg).deliver_now
         format.html { redirect_to topics_path, notice: 'Topic was successfully created.' }
-        format.json { render json:  @topic.as_json(except: [:created_at, :updated_at]) }
+        format.json { render json:  @topic }
       else
         format.html { render :new }
         format.json { render json: @topic.errors, status: :unprocessable_entity }
@@ -70,17 +64,5 @@ class TopicsController < ApplicationController
 
   def topic_params
     params.require(:topic).permit(:name)
-  end
-
-  def authenticate
-    authenticate_or_request_with_http_basic do |username, password|
-      basic_auth=User.find_by_email(username)
-      if basic_auth && basic_auth.valid_password?(password)
-        sign_in :user, basic_auth
-        # render json: {response: { email: current_user.email, id: current_user.id} }, status: :ok
-      else
-        render json: {error: "Unauthorized access" }, status: 401
-      end
-    end
   end
 end

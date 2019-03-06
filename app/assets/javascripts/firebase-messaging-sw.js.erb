@@ -1,0 +1,32 @@
+
+importScripts('https://www.gstatic.com/firebasejs/5.8.5/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/5.8.5/firebase-messaging.js');
+
+// $.getScript( "https://www.gstatic.com/firebasejs/5.8.5/firebase-app.js" );
+// $.getScript( "https://www.gstatic.com/firebasejs/5.8.5/firebase-messaging.js" );
+/* Now initialize firebase app in the serv  ie worker.
+ *
+ */
+alert("!!!");
+firebase.initializeApp({
+    apiKey: "AIzaSyDrXpB3mc6EOaxl7tBH-V6yl9FNxD7u5Fc",
+    authDomain: "task-34851.firebaseapp.com",
+    databaseURL: "https://task-34851.firebaseio.com",
+    projectId: "task-34851",
+    storageBucket: "task-34851.appspot.com",
+    messagingSenderId: "13912232000"
+}); //These are example configuration value
+
+
+const messaging = firebase.messaging();
+alert(messaging);
+
+messaging.setBackgroundMessageHandler(function (payload) {
+    const notificationTitle = payload.data.title;
+    const notificationOptions = {
+        body: payload.data.body,
+        icon: payload.data.icon
+    };
+    return self.registration.showNotification(notificationTitle,
+        notificationOptions);
+});

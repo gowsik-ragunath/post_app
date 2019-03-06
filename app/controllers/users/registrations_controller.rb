@@ -40,7 +40,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
       # Sign in the user bypassing validation in case their password changed
       bypass_sign_in(@user)
     end
-
     respond_to do |format|
       format.html
       format.js
@@ -49,7 +48,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # DELETE /resource
   def destroy
-    super
+    puts params[:user]
+    @user = User.find_by_email(params[:user][:email])
+    if @user.destroy_with_password(params[:user][:current_password])
+      flash[:danger] = 'User was destroyed.'
+      redirect_to new_user_session_path
+    else
+      flash[:notice] = 'Incorrect password'
+      respond_to do |format|
+        format.html
+        format.js
+      end
+    end
   end
 
   # GET /resource/cancel

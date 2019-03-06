@@ -26,6 +26,8 @@
   <div class="form-group">
     <%= p.label :tag_ids %><br>
     <%= p.collection_select :tag_ids, @tags, :id, :tag,{}, { class:"custom-select", multiple: true}%></div>
-  <div class="form-group"><%= p.submit('submit',data: {disable_with: "Saving..."},class:"btn btn-primary",id:'submit')%></div>
+  <div class="form-group">
+    <%= p.submit('submit',data: {disable_with: "Saving..."},class:"btn btn-primary",id:'submit')%>
+  </div>
 <% end %>
 

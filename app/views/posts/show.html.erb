@@ -1,6 +1,6 @@
 <div>
   <h1 class="d-inline-block"> <%= @post.title %> </h1>
-  <%= link_to 'Back', topic_posts_path(params[:topic_id]),class: "btn btn-dark d-inline-block post-btn" %>
+  <%= link_to 'Back', request.referrer ,class: "btn btn-dark d-inline-block post-btn" %>
   <%if can? :update, @post %>
     <%= link_to 'Edit', edit_topic_post_path(params[:topic_id],@post),class: "btn btn-warning d-inline-block post-btn" %>
   <% end %>

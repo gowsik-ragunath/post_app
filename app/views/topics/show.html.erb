@@ -4,14 +4,14 @@
   <% if can? :edit, @topic %>
     <%= link_to 'Edit', edit_topic_path(@topic),class: 'btn btn-warning' %>
   <% end %>
-  <%= link_to 'Back', topics_path,class: 'btn btn-secondary post-btn' %>
+  <%= link_to 'Back', request.referrer ,class: 'btn btn-secondary post-btn' %>
 </div>
 <div>
   <strong>Name:</strong>
   <%= @topic.name %>
 </div>
 <ul class="list-group">
-  <% @post.post_recent.each do |f| %>
+  <% @post.each do |f| %>
     <li class="list-group-item"><%= link_to f.title , topic_post_path(@topic,f), class:"d-inline" %>
       <p class="d-inline">
         <%if f.users.include?(current_user) %>

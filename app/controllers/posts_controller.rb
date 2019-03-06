@@ -11,7 +11,7 @@ class PostsController < ApplicationController
           @posts =  pagination(Post.includes([:topic,:users]).eager_load([:comments,:ratings,:poly_rates]).content_filter(params[:date_from],params[:date_to]))
         end
       else
-        @posts = pagination(Post.post_order).includes([:topic,:posts_users,:users]).eager_load([:ratings,:comments,:poly_rates])
+        @posts = pagination(Post.title_asc.includes([:topic,:posts_users,:users]).eager_load([:ratings,:comments,:poly_rates]))
       end
     else
       if params[:date_to].present? and params[:date_from].present?

@@ -1,7 +1,6 @@
 class Ability
   include CanCan::Ability
   def initialize(user)
-    user ||= User.new # guest user (not logged in)
     if user.admin?
       can :manage, :all
     else
@@ -19,7 +18,7 @@ class Ability
       end
       can :manage, Topic
       can [:create ,:status, :filter,:rate] , Post
-      can [:create , :rate , :show] , Comment
+      can [:create , :rate] , Comment
       can :read, :all
     end
   end

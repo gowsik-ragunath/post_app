@@ -4,7 +4,7 @@
       <h1>Editing Topic</h1>
       <%= render 'form', topic: @topic %>
       <%= link_to 'Show', @topic,class: 'btn btn-warning'  %>
-      <%= link_to 'Back', topics_path,class: 'btn btn-secondary'  %>
+      <%= link_to 'Back', request.referrer ,class: 'btn btn-secondary'  %>
     </div>
   </div>
 </div>

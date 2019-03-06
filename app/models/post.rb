@@ -22,7 +22,7 @@ class Post < ApplicationRecord
 											 size: { in: 0..2.megabytes }
 
 ################################SCOPE###########################################################################
-	scope :post_order, -> { order(title: :asc) }
-	scope :post_recent, -> { order(created_at: :desc) }
-	scope :content_filter, -> (period_start, period_end) { where(created_at: period_start..period_end) }
+	scope :title_asc, -> { order(title: :asc) }
+	scope :recent, -> { order(created_at: :desc) }
+	scope :content_filter, -> (period_start, period_end) { where('"posts"."created_at" BETWEEN ? AND ?',period_start,period_end) }
 end
