@@ -1,8 +1,8 @@
 class TopicMailer < ApplicationMailer
 
-  def topic_created(val)
-    @user = User.find(val['user'])
-    @topic_name = val['topic_name']
+  def send_topic_created(args)
+    @user = User.find(args['user_id'])
+    @topic_name = args['topic_name']
     # mail(to:@user.email, subject: 'topic created')
 
     from = SendGrid::Email.new(email: 'gowsikvragunath@gmail.com')

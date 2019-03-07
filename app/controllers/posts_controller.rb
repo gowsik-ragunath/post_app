@@ -1,27 +1,12 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_topic, only: [ :index, :new, :create,  :show, :edit, :update, :destroy, :status,:rate]
-  before_action :set_post , only: [ :show, :edit, :update, :destroy,:status,:rate]
+  before_action :set_topic_and_tags
+  before_action :set_post , only: [ :show, :edit, :update, :destroy,:status,:rate ]
   load_and_authorize_resource
 
   def index
-    if params[:topic_id].nil?
-      if params[:date_to].present? and params[:date_from].present?
-        if params[:date_to] > params[:date_from]
-          @posts =  pagination(Post.includes([:topic,:users]).eager_load([:comments,:ratings,:poly_rates]).content_filter(params[:date_from],params[:date_to]))
-        end
-      else
-        @posts = pagination(Post.title_asc.includes([:topic,:posts_users,:users]).eager_load([:ratings,:comments,:poly_rates]))
-      end
-    else
-      if params[:date_to].present? and params[:date_from].present?
-        if params[:date_to] > params[:date_from]
-          @posts =  pagination(@topic.posts.eager_load([:comments,:ratings,:poly_rates]).includes(:users).content_filter(params[:date_from],params[:date_to]))
-        end
-      else
-        @posts = pagination(@topic.posts).eager_load([:ratings,:comments,:poly_rates]).includes([:posts_users,:users])
-      end
-    end
+    filter(params[:date_from],params[:date_to])
+    @posts =  pagination(Post.includes([:topic,:users]).eager_load([:comments,:ratings,:poly_rates]).content_filter(@date_from,@date_to))
     respond_to do |format|
       format.html
       format.js
@@ -33,10 +18,16 @@ class PostsController < ApplicationController
   end
 
   def rate
-    @post.poly_rates.create(rating:params[:rating],user_id: current_user.id)
-    respond_to do |format|
-      format.html { redirect_to topic_post_path(@topic,@post), notice:'Post rated successfully.' }
-      format.js
+    if @post.poly_rates.create(rating:params[:rating],user_id: current_user.id)
+      respond_to do |format|
+        format.html { redirect_to topic_post_path(@topic,@post), notice:'Post rated successfully.' }
+        format.js
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to topic_post_path(@topic,@post), notice:'Post was not rated successfully.' }
+        format.js
+      end
     end
   end
 
@@ -65,11 +56,16 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    @post.destroy
     respond_to do |format|
-      flash[:destroy] = 'Post was successfully destroyed.'
-      format.html { redirect_to topic_posts_path }
-      format.json { head :no_content }
+      if @post.destroy
+        flash[:destroy] = 'Post was successfully destroyed.'
+        format.html { redirect_to topic_posts_path }
+        format.json { head :no_content }
+      else
+        flash[:destroy] = 'Post doesn\'t exist.'
+        format.html { redirect_to topic_posts_path }
+        format.json { head :not_found }
+      end
     end
   end
 
@@ -95,7 +91,7 @@ class PostsController < ApplicationController
   end
 
   private
-  def set_topic
+  def set_topic_and_tags
     if not params[:topic_id].blank?
       @topic = Topic.find(params[:topic_id])
       @tags = Tag.all
@@ -116,5 +112,16 @@ class PostsController < ApplicationController
       rating_hash[key] = collection.size
     end
     rating_hash
+  end
+
+  def filter(date_from ,date_to)
+    unless date_from.present? and date_to.present?
+      date_to = Time.now.strftime("%Y-%m-%d")
+      date_from = "1990-01-01"
+    end
+    @date_from = DateTime.parse(date_from).beginning_of_day.strftime("%F %T")
+    @date_to = Date.parse(date_to).end_of_day.strftime("%F %T")
+    puts @date_to
+    puts @date_from
   end
 end

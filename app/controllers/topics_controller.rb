@@ -9,7 +9,7 @@ class TopicsController < ApplicationController
   end
 
   def show
-    @post = pagination(@topic.posts.includes(:user)).eager_load(:users)
+    @post = pagination(@topic.posts.eager_load(:users,:user))
   end
 
   def new
@@ -23,12 +23,12 @@ class TopicsController < ApplicationController
     @topic = Topic.new(topic_params)
     respond_to do |format|
       if @topic.save
-        arg = { user: current_user.id, topic_name: @topic.name }
-        # SendEmailJob.set(wait: 2.seconds).perform_later(arg)
-        EmailWorker.perform_in(5.seconds,arg)
-        # TopicMailer.topic_created(arg).deliver_now
+        args = { user_id: current_user.id, topic_name: @topic.name }
+        # SendEmailJob.set(wait: 2.seconds).perform_later(args)
+        EmailWorker.perform_in(5.seconds,args)
+        # TopicMailer.send_topic_created(args).deliver_now
         format.html { redirect_to topics_path, notice: 'Topic was successfully created.' }
-        format.json { render json:  @topic }
+        format.json { render :show, status: :created, location: @topic  }
       else
         format.html { render :new }
         format.json { render json: @topic.errors, status: :unprocessable_entity }

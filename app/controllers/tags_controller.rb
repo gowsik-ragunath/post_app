@@ -44,12 +44,16 @@ class TagsController < ApplicationController
   end
 
   def destroy
-    @tag.destroy
     respond_to do |format|
-      flash[:danger] = 'Tag was successfully destroyed.'
-      format.html { redirect_to tags_url }
-      format.json { head :no_content }
-      format.js
+      if @tag.destroy
+        flash[:destroy] = 'Tag was successfully destroyed.'
+        format.html { redirect_to topic_posts_path }
+        format.json { head :no_content }
+      else
+        flash[:destroy] = 'Tag doesn\'t exist.'
+        format.html { redirect_to topic_posts_path }
+        format.json { head :not_found }
+      end
     end
   end
 

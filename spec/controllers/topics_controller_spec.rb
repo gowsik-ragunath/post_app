@@ -162,7 +162,7 @@ RSpec.describe TopicsController, type: :controller do
 
       it "returns a json response" do
         post :create, params: {topic: {name:"new"}} , format: :json
-        expect(response.status).to eql 200
+        expect(response.status).to eql 201
         expect(json.keys).to contain_exactly('id','name')
         expect(json).to match({"id"=>Topic.last.id, "name"=>"new"})
       end

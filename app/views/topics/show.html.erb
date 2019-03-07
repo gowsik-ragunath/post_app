@@ -1,30 +1,29 @@
 <div class="col-md-12">
-<div> <%= will_paginate @post, renderer: BootstrapPagination::Rails%>
-  <%= link_to 'All Posts', topic_posts_path(@topic),class: 'btn btn-dark' %>
-  <% if can? :edit, @topic %>
-    <%= link_to 'Edit', edit_topic_path(@topic),class: 'btn btn-warning' %>
-  <% end %>
-  <%= link_to 'Back', request.referrer ,class: 'btn btn-secondary post-btn' %>
-</div>
-<div>
-  <strong>Name:</strong>
-  <%= @topic.name %>
-</div>
-<ul class="list-group">
-  <% @post.each do |f| %>
-    <li class="list-group-item"><%= link_to f.title , topic_post_path(@topic,f), class:"d-inline" %>
-      <p class="d-inline">
-        <%if f.users.include?(current_user) %>
-          <span class="read-status">Read</span>
-        <% else %>
-          <span class="unread-status"> Unread </span>
-        <% end %>
-      </p>
-      <% if can? :edit, f %>
-        <%= link_to 'edit' , edit_topic_post_path(@topic,f),class: 'btn btn-warning post-btn' %>
+  <h1 class="text-center"> <%= @topic.name %> </h1>
+  <div> <%= will_paginate @post, renderer: BootstrapPagination::Rails%>
+    <%= link_to 'All Posts', topic_posts_path(@topic),class: 'btn btn-dark' %>
+    <% if can? :edit, @topic %>
+      <%= link_to 'Edit', edit_topic_path(@topic),class: 'btn btn-warning' %>
+    <% end %>
+    <%= link_to 'Back', request.referrer ,class: 'btn btn-secondary post-btn' %>
+  </div>
+  <p>
+    <ul class="list-group">
+      <% @post.each do |f| %>
+        <li class="list-group-item"><%= link_to f.title , topic_post_path(@topic,f), class:"d-inline" %>
+          <p class="d-inline">
+            <%if f.users.include?(current_user) %>
+              <span class="read-status">Read</span>
+            <% else %>
+              <span class="unread-status"> Unread </span>
+            <% end %>
+          </p>
+          <% if can? :edit, f %>
+            <%= link_to 'edit' , edit_topic_post_path(@topic,f),class: 'btn btn-warning post-btn' %>
+          <% end %>
+          <%= link_to 'show' , topic_post_path(@topic,f),class: 'btn btn-primary post-btn' %>
+        </li>
       <% end %>
-      <%= link_to 'show' , topic_post_path(@topic,f),class: 'btn btn-primary post-btn' %>
-    </li>
-  <% end %>
-</ul>
+    </ul>
+  </p>
 </div>

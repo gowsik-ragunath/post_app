@@ -1,8 +1,7 @@
 module SharedMethods
   extend ActiveSupport::Concern
-  # @decodedVapidPublicKey = Base64.urlsafe_decode64(ENV['VAPID_PUBLIC_KEY']).bytes
-  def pagination(model,per = 10)
-    model.paginate(page: params[:page], per_page: per)
+  def pagination(model_name,per = 10)
+    model_name.paginate(page: params[:page], per_page: per)
   end
 
   def authenticate

@@ -1,11 +1,10 @@
 $('.pagination').remove();
 $('#exist').empty();
 $('#generated').empty();
-<%= params[:date_to] > params[:date_from] %>
-<% if params[:date_to] > params[:date_from] %>
+<% if @date_to > @date_from %>
   $('#paginate').html('<%= j will_paginate @posts, renderer: BootstrapPagination::Rails %>');
   $str = ""
-  <% if @posts.exists? %>
+  <% unless @posts.nil? %>
     <% @posts.each do |post| %>
       $str += '<%= j render(partial: "posts/post",locals: {post: post}) %>';
     <% end %>

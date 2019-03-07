@@ -6,29 +6,19 @@ RSpec.describe UserCommentRating, type: :model do
     @user = User.create!(email:"email@email.com",password:"password",password_confirmation:"password")
     @topic = Topic.create!(name:"topic")
     @topic.posts.create!(title:'post1',body:'body of post1',topic_id:1,user_id:1)
-    Comment.create!(commenter:@user.email, body:"comment rating",post_id:1,user_id:1)
+    @comment = create(:comment,commenter:@user.email, body:"comment rating",post_id:1,user_id:1)
+    @rating = create(:rating,rating: 5)
   }
 
-  subject { described_class.create!(rating:5 ,comment_id:1,user_id:1) }
+  subject { described_class.create!(rating_id:@rating.id ,comment_id: @comment.id ,user_id: @user.id ) }
 
   describe "validating comment rating" do
-
-    it "should rating by positive int and fails" do
-      expect(subject).to be_valid
-      subject.rating = 1
-      expect(subject).to be_valid
-    end
-
-    it "should rating by positive int and fails" do
-      expect(subject).to be_valid
-      subject.rating = 10
-      expect(subject).not_to be_valid
-    end
-
-    it "should rating by negative int and fails" do
-      expect(subject).to be_valid
-      subject.rating = -8
-      expect(subject).not_to be_valid
+    before{
+      @rating1 = Rating.create!(rating: 5)
+    }
+    it "if user rate same comment again should fail" do
+      subject
+      expect{ described_class.create!(rating_id: @rating1.id,comment_id: @comment.id,user_id: @user.id) }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 

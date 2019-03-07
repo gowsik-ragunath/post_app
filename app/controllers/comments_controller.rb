@@ -1,12 +1,12 @@
 class CommentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_topic, only: [ :new, :create, :show, :edit, :update, :destroy]
-  before_action :set_post, only: [ :new, :create, :show, :edit, :update, :destroy]
+  before_action :set_topic
+  before_action :set_post
   before_action :set_comment, only: [:show, :edit, :update, :destroy]
   load_and_authorize_resource
 
   def index
-    @comments = Post.find(params[:post_id]).comments.includes(:user)
+    @comments = @post.comments.includes(:user)
   end
 
   def new
@@ -47,12 +47,18 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    @comment.destroy
     respond_to do |format|
-      flash[:destroy] = 'Comment was successfully destroyed.'
-      format.html { redirect_to topic_post_path(params[:topic_id],params[:post_id]) }
-      format.json { head :no_content }
+      if @comment.destroy
+        flash[:destroy] = 'Comment was successfully destroyed.'
+        format.html { redirect_to topic_post_path(params[:topic_id],params[:post_id]) }
+        format.json { head :no_content }
+      else
+        flash[:destroy] = 'Comment doesn\'t exists'
+        format.html { redirect_to topic_post_path(params[:topic_id],params[:post_id]) }
+        format.json { head :not_found }
+      end
     end
+
   end
 
   def rate

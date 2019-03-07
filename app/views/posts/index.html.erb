@@ -3,8 +3,8 @@
 
 <% if not params[:topic_id].nil? %>
   <% if not  current_user.nil? %>
-    <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-primary btn-lg btn-block', id: "new_link", remote:true %>
-    <%= render "new_post_modal" %>
+    <div class="text-center"> <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-dark btn-lg', id: "new_link", remote:true %>
+    </div><%= render "new_post_modal" %>
   <% end %>
   <div id="exist">
     <% @posts.recent.each do |post| %>
