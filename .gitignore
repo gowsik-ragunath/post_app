@@ -23,7 +23,7 @@
 /public/system
 /spec/support/*.png
 /spec/support/*.gif
-/.idea
+/.idea/*
 
 /node_modules
 /yarn-error.log
