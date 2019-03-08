@@ -91,25 +91,13 @@ RSpec.describe CommentsController, type: :controller do
   describe "POST#rate" do
     it "should create comment rating with remote true" do
       expect{ post :rate, params: { post_id: @post.to_param,topic_id: @topic.id,
-                                           id:@comment.id , rating:4},format: :js }.to change(PolyRate, :count).by(1)
-      expect(response).to be_successful
-    end
-
-    it "should not create comment rating with remote true" do
-      expect{ post :rate, params: {post_id: @post.to_param,topic_id: @topic.id,
-                                           id:@comment.id , rating:10},format: :js }.to change(PolyRate, :count).by(0)
+                                           id:@comment.id , rating:PolyRate.rating_as["four"] },format: :js }.to change(PolyRate, :count).by(1)
       expect(response).to be_successful
     end
 
     it "should create comment rating with remote true" do
       expect{ post :rate, params: {post_id: @post.to_param,topic_id: @topic.id,
                                            id:@comment.id , rating:4} }.to change(PolyRate, :count).by(1)
-      expect(response).to redirect_to(topic_post_path(@topic,@post))
-    end
-
-    it "should not create comment rating with remote true" do
-      expect{ post :rate, params: {post_id: @post.to_param,topic_id: @topic.id,
-                                           id:@comment.id , rating:-1} }.to change(PolyRate, :count).by(0)
       expect(response).to redirect_to(topic_post_path(@topic,@post))
     end
   end

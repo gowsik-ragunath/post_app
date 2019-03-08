@@ -26,7 +26,7 @@ class TopicsController < ApplicationController
         args = { user_id: current_user.id, topic_name: @topic.name }
         # SendEmailJob.set(wait: 2.seconds).perform_later(args)
         EmailWorker.perform_in(5.seconds,args)
-        # TopicMailer.send_topic_created(args).deliver_now
+        # TopicMailer.topic_created(args).deliver_now
         format.html { redirect_to topics_path, notice: 'Topic was successfully created.' }
         format.json { render :show, status: :created, location: @topic  }
       else

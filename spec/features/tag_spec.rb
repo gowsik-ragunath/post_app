@@ -19,7 +19,7 @@ RSpec.feature '#tags' do
     scenario 'visit new tag page' do
       fill_in :tag_tag, with: ''
       click_button('submit')
-      expect(page).to have_content('error prohibited this post from being saved')
+      expect(page).to have_content('error prohibited this action from being saved')
     end
   end
 
@@ -60,7 +60,7 @@ RSpec.feature '#tags' do
       expect(page).to have_selector("input[value='new_tag']")
       fill_in :tag_tag, with:''
       click_button("submit")
-      expect(page).to have_content('error prohibited this post from being saved')
+      expect(page).to have_content('error prohibited this action from being saved')
     end
   end
 

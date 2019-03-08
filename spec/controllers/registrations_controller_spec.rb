@@ -20,7 +20,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
       it "updates the requested user" do
         put :update, params: { user: { password: '1221312', password_confirmation: '1221312', current_password: 'password' } },format: :js
         expect(assigns(:user).updated_at).not_to eql(@user.updated_at)
-        expect(response.body).to match('Your account has been updated successfully.')
+        expect(response.body).to match('You are being <a href="http://test.host/users/sign_in">redirected</a>')
       end
     end
     context  "with invalid params" do

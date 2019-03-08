@@ -9,7 +9,7 @@ RSpec.feature '#comment' do
     visit('/')
     expect(page).to have_content('check topic')
     click_link('check topic')
-    expect(page).to have_content('Name: check topic')
+    expect(page).to have_content('check topic')
     click_link("All Post")
     expect(page).to have_content('post1 (CHECK TOPIC)')
     click_link("post1 (CHECK TOPIC)")

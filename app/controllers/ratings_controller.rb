@@ -2,7 +2,7 @@ class RatingsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_topic
   before_action :set_post
-  before_action :set_rating, only: [:show, :destroy ]
+  before_action :set_rating, only: [ :show, :destroy ]
 
   def index
     @ratings = @post.ratings
@@ -29,11 +29,11 @@ class RatingsController < ApplicationController
     respond_to do |format|
       if @rating.destroy
         flash[:destroy] = 'Rating was successfully destroyed.'
-        format.html { redirect_to topic_posts_path }
+        format.html { redirect_to topic_post_path }
         format.json { head :no_content }
       else
         flash[:destroy] = 'Rating doesn\'t exist.'
-        format.html { redirect_to topic_posts_path }
+        format.html { redirect_to topic_post_path }
         format.json { head :not_found }
       end
     end

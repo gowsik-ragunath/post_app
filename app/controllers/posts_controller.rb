@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_topic_and_tags
-  before_action :set_post , only: [ :show, :edit, :update, :destroy,:status,:rate ]
+  before_action :set_post , only: [ :show, :edit, :update, :destroy, :status, :rate ]
   load_and_authorize_resource
 
   def index
@@ -18,14 +18,15 @@ class PostsController < ApplicationController
   end
 
   def rate
-    if @post.poly_rates.create(rating:params[:rating],user_id: current_user.id)
+    @check = @post.poly_rates.new(rating:params[:rating],user_id: current_user.id)
+    if @check.save
       respond_to do |format|
         format.html { redirect_to topic_post_path(@topic,@post), notice:'Post rated successfully.' }
         format.js
       end
     else
       respond_to do |format|
-        format.html { redirect_to topic_post_path(@topic,@post), notice:'Post was not rated successfully.' }
+        format.html { redirect_to topic_post_path(@topic,@post), notice:'Post was already rated.' }
         format.js
       end
     end
@@ -48,7 +49,7 @@ class PostsController < ApplicationController
   end
 
   def show
-    @ratings = @post.ratings.rating_order
+    @ratings = @post.poly_rates.rating_order
     @check_rating = check_rating_order(@ratings)
     @comments = @post.comments.eager_load(:user)
     @comment_rating = UserCommentRating.new
@@ -121,7 +122,5 @@ class PostsController < ApplicationController
     end
     @date_from = DateTime.parse(date_from).beginning_of_day.strftime("%F %T")
     @date_to = Date.parse(date_to).end_of_day.strftime("%F %T")
-    puts @date_to
-    puts @date_from
   end
 end

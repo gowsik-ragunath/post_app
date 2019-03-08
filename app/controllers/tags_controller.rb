@@ -47,11 +47,11 @@ class TagsController < ApplicationController
     respond_to do |format|
       if @tag.destroy
         flash[:destroy] = 'Tag was successfully destroyed.'
-        format.html { redirect_to topic_posts_path }
+        format.html { redirect_to tags_path }
         format.json { head :no_content }
       else
         flash[:destroy] = 'Tag doesn\'t exist.'
-        format.html { redirect_to topic_posts_path }
+        format.html { redirect_to tags_path }
         format.json { head :not_found }
       end
     end

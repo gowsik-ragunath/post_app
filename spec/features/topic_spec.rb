@@ -39,7 +39,7 @@ RSpec.feature '#topics' do
 			expect(current_path).to have_content('/topics')
 			expect(page).to have_content('news')
 			click_link('news')
-			expect(page).to have_content('Name: news')
+			expect(page).to have_content('news')
 			click_link('Back')
 			expect(current_path).to have_content('/topics')
 		end

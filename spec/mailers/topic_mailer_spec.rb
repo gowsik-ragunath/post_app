@@ -4,10 +4,10 @@ RSpec.describe TopicMailer, type: :mailer do
   before{
     @user = create(:user)
     @topic = create(:topic)
-    @arg = {user: @user.id, 'topic': @topic.name}
+    @arg = {user_id: @user.id, topic_name: @topic.name}
   }
   describe "topic creation" do
-    let(:mail) { TopicMailer.topic_created(@arg.stringify_keys) }
+    let(:mail) { TopicMailer.send_topic_created(@arg.stringify_keys) }
 
     it "renders the header" do
       expect(mail.subject).to eq("topic created")

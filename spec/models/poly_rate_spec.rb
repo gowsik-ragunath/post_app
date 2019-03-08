@@ -12,22 +12,22 @@ RSpec.describe PolyRate, type: :model do
     subject { described_class.create!(rating:4,rateable_id: @post.id,rateable_type: 'Post',user_id:@user.id) }
 
     describe "validations" do
-      it "validation for rating by negative int" do
+      it "validation for rating by enum" do
         expect(subject).to be_valid
-        subject.rating = -8
-        expect(subject).not_to be_valid
+        subject.rating = PolyRate.rating_as["four"]
+        expect(subject.rating).to eql(4)
       end
 
-      it "validation for rating by positive int" do
+      it "validation for valid rating by enum" do
         expect(subject).to be_valid
-        subject.rating = 10
-        expect(subject).not_to be_valid
+        subject.rating = PolyRate.rating_as["one"]
+        expect(subject).to be_valid
       end
 
-      it "validation for valid rating by positive int" do
+      it "validation for rating by unknow enum" do
         expect(subject).to be_valid
-        subject.rating = 1
-        expect(subject).to be_valid
+        subject.rating = PolyRate.rating_as["six"]
+        expect(subject.rating).to eql(nil)
       end
     end
     describe "validate uniqueness for comment" do

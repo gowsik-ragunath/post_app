@@ -94,13 +94,13 @@ RSpec.describe TagsController, type: :controller do
       expect {
         delete :destroy, params: {id: @tag.to_param}
       }.to change(Tag, :count).by(-1)
-      expect(flash[:danger]).to eq "Tag was successfully destroyed."
+      expect(flash[:destroy]).to eq "Tag was successfully destroyed."
     end
 
     it "redirects to the tags list" do
       delete :destroy, params: {id: @tag.to_param}
       expect(response).to redirect_to(tags_path)
-      expect(flash[:danger]).to eq "Tag was successfully destroyed."
+      expect(flash[:destroy]).to eq "Tag was successfully destroyed."
     end
   end
 end

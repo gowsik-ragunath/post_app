@@ -1,12 +1,13 @@
 <%= bootstrap_form_with url: rate_topic_post_path(params[:topic_id],params[:id]),html:{class: 'rating-form',id:'rating-form'},local:true  do |form| %>
   <%= render(partial: "shared/error_display",locals: {error_display: rating}) %>
-  <div class="field">
-    <%= form.radio_button :rating, 1, label: '1' %>
-    <%= form.radio_button :rating, 2, label: '2' %>
-    <%= form.radio_button :rating, 3, label: '3' %>
-    <%= form.radio_button :rating, 4, label: '4' %>
-    <%= form.radio_button :rating, 5, label: '5' %>
-  </div>
+<!--  <div class="field">-->
+    <%#= form.radio_button :rating, 1, label: '1' %>
+    <%#= form.radio_button :rating, 2, label: '2' %>
+    <%#= form.radio_button :rating, 3, label: '3' %>
+    <%#= form.radio_button :rating, 4, label: '4' %>
+    <%#= form.radio_button :rating, 5, label: '5' %>
+<!--  </div>-->
+  <%= form.collection_radio_buttons(:rating, PolyRate.rating_as , :last ,:first) %>
   <div class="actions">
     <%= form.submit "save" %>
   </div>

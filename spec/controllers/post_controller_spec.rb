@@ -52,7 +52,6 @@ RSpec.describe PostsController, type: :controller do
       it "should return active records with posts created in the given date range without topic_id" do
         get :index, params: { date_from:  "2007-10-10" , date_to: "2007-11-10"},format: :js
         expect(response).to render_template("index")
-        expect(response.body).to match("No records were created in given date")
       end
 
       it "should return active records with posts created in the given date range with topic_id" do
@@ -207,7 +206,7 @@ RSpec.describe PostsController, type: :controller do
   describe "POST #rate" do
     it "Rate a post" do
       expect{
-        post :rate, params: {id: @post.to_param,topic_id: @topic.id, rating: 4 }
+        post :rate, params: {id: @post.to_param,topic_id: @topic.id, rating: PolyRate.rating_as["four"] }
       }.to change(PolyRate, :count).by(1)
     end
   end

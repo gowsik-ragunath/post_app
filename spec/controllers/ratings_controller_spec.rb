@@ -63,13 +63,13 @@ RSpec.describe RatingsController, type: :controller do
       expect {
         delete :destroy, params: {id: @rating.to_param,topic_id:@topic.id,post_id:@post.id}
       }.to change(Rating, :count).by(-1)
-      expect(flash[:notice]).to eq "Rating was successfully destroyed."
+      expect(flash[:destroy]).to eq "Rating was successfully destroyed."
     end
 
     it "redirects to the comments list" do
       delete :destroy, params: {id: @post.to_param,topic_id:@topic.id,post_id:@post.id}
       expect(response).to redirect_to(topic_post_path(@topic.id))
-      expect(flash[:notice]).to eq "Rating was successfully destroyed."
+      expect(flash[:destroy]).to eq "Rating was successfully destroyed."
     end
   end
 end
