@@ -26,7 +26,7 @@ class TopicsController < ApplicationController
         args = { user_id: current_user.id, topic_name: @topic.name }
         # SendEmailJob.set(wait: 2.seconds).perform_later(args)
         EmailWorker.perform_in(5.seconds,args)
-        # TopicMailer.topic_created(args).deliver_now
+        # TopicMailer.send_topic_created(args).deliver_now
         format.html { redirect_to topics_path, notice: 'Topic was successfully created.' }
         format.json { render :show, status: :created, location: @topic  }
       else
@@ -49,11 +49,16 @@ class TopicsController < ApplicationController
   end
 
   def destroy
-    @topic.destroy
     respond_to do |format|
-      flash[:destroy] = 'Topic was successfully destroyed.'
-      format.html { redirect_to topics_url }
-      format.json { render json: { message: 'record deleted' } }
+      if @topic.destroy
+        flash[:destroy] = 'Topic was successfully destroyed.'
+        format.html { redirect_to topics_url }
+        format.json { render json: { message: 'record deleted' } }
+      else
+        flash[:destroy] = 'Topic was not destroyed.'
+        format.html { redirect_to topics_url }
+        format.json { render json: { message: 'record deleted' } }
+      end
     end
   end
 
