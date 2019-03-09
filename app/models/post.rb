@@ -3,7 +3,7 @@ class Post < ApplicationRecord
 
 	belongs_to :topic
 	belongs_to :user
-	has_many :poly_rates, as: :rateable #polymorphic association
+	has_many :poly_rates, as: :rateable, dependent: :destroy #polymorphic association
 	has_many :comments, dependent: :destroy
 	has_many :ratings, dependent: :destroy #join table association
 	has_and_belongs_to_many :tags

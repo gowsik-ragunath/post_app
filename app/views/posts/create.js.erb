@@ -1,12 +1,12 @@
 $('#flash-notice').hide();
 $('#flash-alert').hide();
 <% if @post.errors.any? %>
-  $("#error_explanation").remove();
-  $('#new_post').html("<%= j render "form", locals: {post: @post} %>");
+$("#error_explanation").remove();
+$('#new_post').html("<%= j render "form", locals: {post: @post} %>");
 <% else %>
-  $("#new-post-modal-window").modal('toggle');
-  $('#new_link').show();
-  $('#list-post').prepend("<%= j render(partial: "post", locals: {post: @post})   %>");
-  $('#flash-alert').show();
-  alert("Post created successfully");
+$("#new-post-modal-window").modal('toggle');
+$('#new_link').show();
+$('#generated').prepend("<%= j render(partial: "post", locals: {post: @post})   %>");
+$('#flash-alert').show();
+alert("Post created successfully");
 <% end %>

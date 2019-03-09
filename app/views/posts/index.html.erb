@@ -6,13 +6,14 @@
     <div class="text-center"> <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-dark btn-lg', id: "new_link", remote:true %>
     </div><%= render "new_post_modal" %>
   <% end %>
+  <div id="generated"></div>
   <div id="exist">
     <% @posts.recent.each do |post| %>
       <%= render(partial: "post", locals: {post: post}) %>
     <% end %>
   </div>
-  <div id="generated"></div>
 <% else %>
+  <div id="generated"></div>
   <div id="exist">
     <% @posts.recent.group_by{ |t| t.topic_id }.each do |topic , posts| %>
       <h1 class="text-center"> <%= posts.first.topic.name %> </h1>
@@ -22,7 +23,6 @@
     <% end %>
   </div>
 <% end %>
-<div id="generated"></div>
 <%= will_paginate @posts, renderer: BootstrapPagination::Rails %>
 
 <script>
