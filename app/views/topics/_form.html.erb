@@ -1,20 +1,8 @@
-<%= bootstrap_form_with(model: topic, local: true) do |form| %>
-  <% if topic.errors.any? %>
-    <div id="error_explanation" class="alert alert-warning">
-      <h2><%= pluralize(topic.errors.count, "error") %> prohibited this topic from being saved:</h2>
-
-      <ul>
-      <% topic.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+<%= bootstrap_form_with(model: topic,url: topics_path, local: true) do |form| %>
+  <%= render(partial: "shared/error_display",locals: {error_display: topic}) %>
   <div class="form-group">
     <%= form.text_field :name %>
   </div>
-
   <div class="actions">
     <%= form.submit %>
   </div>

@@ -20,12 +20,19 @@
 # Ignore uploaded files in development
 /storage/*
 !/storage/.keep
+/public/system
+/spec/support/*.png
+/spec/support/*.gif
+/.idea/*
 
 /node_modules
 /yarn-error.log
-
-/public/assets
+/spec/example.txt
 .byebug_history
+
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore application configuration
+/config/application.yml

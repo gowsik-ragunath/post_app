@@ -18,7 +18,6 @@ RSpec.describe TagsController, type: :routing do
       expect(:get => "/tags/1/edit").to route_to("tags#edit", :id => "1")
     end
 
-
     it "routes to #create" do
       expect(:post => "/tags").to route_to("tags#create")
     end

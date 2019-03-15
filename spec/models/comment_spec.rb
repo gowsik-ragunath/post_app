@@ -1,49 +1,33 @@
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  
   before{
-	    Topic.create!(name:"topic")
-	    Tag.create!(tag:'check1')
-	    Post.create!(title:'post1',body:'body of post1',tag_ids:[1],topic_id:1)
-	}
+    @user = create(:user,email:"email@email.com",password:"password")
+    @topic = create(:topic,name:"topic")
+    @tag = create(:tag,tag:'check1')
+    @post = create(:post,title:'post1',body:'body of post1',tag_ids:[@tag.id],user_id:@user.id,topic_id:@topic.id)
+  }
 
-  subject { described_class.create!(commenter:'user',body:'comment of user',post_id:1) }
+  subject { described_class.create!(commenter:'user',body:'comment of user',post_id:@post.id,user_id:@user.id) }
 
   describe "validations" do
-	
-    it "commenter validation" do
-	  	expect(subject).to be_valid
-	  	subject.commenter = nil
-	  	expect(subject).to_not be_valid
-	end
-  
     it "body validation" do
       expect(subject).to be_valid
       subject.body = nil
       expect(subject).to_not be_valid
     end
-  
+
     it "post_id validation" do
       expect(subject).to be_valid
       subject.post_id = nil
       expect(subject).to_not be_valid
     end
-
   end
 
   describe "destroy" do
-
-  	it "comment deletion" do
+    it "comment deletion" do
       expect(subject).to be_valid
-	  
-	  puts "before deleting comment post count: " + Comment.count.to_s
-      
       expect { subject.destroy }.to change{ Comment.count}
-	  
-	  puts "after comment post count: " + Comment.count.to_s
-  	end
-
+    end
   end
-
 end

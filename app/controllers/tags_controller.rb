@@ -1,38 +1,26 @@
 class TagsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_tag, only: [:show, :edit, :update, :destroy]
 
-  #creating and update tags with in post page
-
-
-  # GET /tags
-  # GET /tags.json
   def index
     @tags = Tag.all
   end
 
-  # GET /tags/1
-  # GET /tags/1.json
   def show
   end
 
-  # GET /tags/new
   def new
     @tag = Tag.new
   end
 
-  # GET /tags/1/edit
   def edit
   end
 
-  # POST /tags
-  # POST /tags.json
   def create
     @tag = Tag.new(tag_params)
-
     respond_to do |format|
       if @tag.save
         flash[:success] = 'Tag was successfully created.'
-        puts params
         format.html { redirect_to tags_path }
         format.json { render :show, status: :created, location: @tag }
       else
@@ -42,12 +30,10 @@ class TagsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /tags/1
-  # PATCH/PUT /tags/1.json
   def update
     respond_to do |format|
       if @tag.update(tag_params)
-        flash[:warning] = 'Tag was successfully updated.' 
+        flash[:warning] = 'Tag was successfully updated.'
         format.html { redirect_to @tag}
         format.json { render :show, status: :ok, location: @tag }
       else
@@ -57,25 +43,26 @@ class TagsController < ApplicationController
     end
   end
 
-  # DELETE /tags/1
-  # DELETE /tags/1.json
   def destroy
-    @tag.destroy
     respond_to do |format|
-      flash[:danger] = 'Tag was successfully destroyed.'
-      format.html { redirect_to tags_url }
-      format.json { head :no_content }
+      if @tag.destroy
+        flash[:destroy] = 'Tag was successfully destroyed.'
+        format.html { redirect_to tags_path }
+        format.json { head :no_content }
+      else
+        flash[:destroy] = 'Tag doesn\'t exist.'
+        format.html { redirect_to tags_path }
+        format.json { head :not_found }
+      end
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_tag
-      @tag = Tag.find(params[:id])
-    end
+  def set_tag
+    @tag = Tag.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def tag_params
-      params.require(:tag).permit(:tag)
-    end
+  def tag_params
+    params.require(:tag).permit(:tag)
+  end
 end

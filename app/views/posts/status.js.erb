@@ -1,0 +1,3 @@
+<% if @post.users.include?(current_user) %>
+  $("#status").html('<span class="read-status"> Read </span>');
+<% end %>

@@ -1,175 +1,122 @@
 require 'rails_helper'
 
-RSpec.describe '#post' do
-
+RSpec.feature '#post' do
 	before{
-		Topic.create!(name:'check topic')
-		Tag.create!(tag:'check')
+		@topic = create(:topic,name:'check topic')
+		@tag = create(:tag,tag:'check')
+		sign_in_auth
+		Post.create!(title:'post1',body:'body of post1',topic_id:1,tag_ids:[1],user_id:@user.id)
+		Post.create!(title:'post2',body:'body of post2',topic_id:1,tag_ids:[1],user_id:@user.id)
+		visit('/')
+		expect(page).to have_content('check topic')
+		click_link('check topic')
+		click_link("All Post")
 	}
 
-
-	describe 'post#new' do
-		it 'list all the post' do
-			
-			visit('/')
-			expect(page).to have_content('check topic')
-
-			click_link('check topic')
-			expect(page).to have_content('Name: check topic')
+	feature 'post#new' do
+		scenario 'list all the post' do
 			click_link("New Post")
-
-			expect(current_path).to have_content('/topics/1/posts/new')
 			fill_in('post_title', with:'post1')
 			fill_in('post_body', with:'body of post1')
 			select "check", from: 'post_tag_ids'
 			click_button('submit')
-
 			expect(current_path).to have_content('/topics/1/posts')
 			expect(page).to have_content('Post was successfully created.')
 			expect(page).to have_content('post1 (CHECK TOPIC)')
-
 		end
 	end
 
-
-	describe 'post#new fail' do
-
-		it 'post creation fails because of Body' do
-			
-			visit('/')
-			expect(page).to have_content('check topic')
-
-			click_link('check topic')
-			expect(page).to have_content('Name: check topic')
+	feature 'post#new fail' do
+		scenario 'post creation fails because of Body' do
 			click_link("New Post")
-
-			expect(current_path).to have_content('/topics/1/posts/new')
 			fill_in('post_title', with:'post1')
 			fill_in('post_body', with:'')
 			select "check", from: 'post_tag_ids'
 			click_button('submit')
-
 			expect(current_path).to have_content('/topics/1/posts')
-			expect(page).to have_content("1 error prohibited this post from being saved:")
-			expect(page).to have_content("Body can't be blank")
-
 		end
 
-		it 'post creation fails because of Title and Body' do
-			
-			visit('/')
-			expect(page).to have_content('check topic')
-
-			click_link('check topic')
-			expect(page).to have_content('Name: check topic')
+		scenario 'post creation fails because of Title and Body' do
 			click_link("New Post")
-
-			expect(current_path).to have_content('/topics/1/posts/new')
 			fill_in('post_title', with:'')
 			fill_in('post_body', with:'')
 			select "check", from: 'post_tag_ids'
 			click_button('submit')
-
 			expect(current_path).to have_content('/topics/1/posts')
-			expect(page).to have_content("2 errors prohibited this post from being saved:")
-			expect(page).to have_content("Title can't be blank")
-			expect(page).to have_content("Body can't be blank")
-
 		end
 	end
 
-
-
-	describe 'post#show' do
-		before{
-			Post.create!(title:'post1',body:'body of post1',topic_id:1,tag_ids:[1])
-			Post.create!(title:'post2',body:'body of post2',topic_id:1,tag_ids:[1])
-		}
-
-
-		it 'list all the post' do
-			
-			visit('/')
-			expect(page).to have_content('check topic')
-
-			click_link('check topic')
-			expect(page).to have_content('Name: check topic')
-
-			click_link('All Posts')
+	feature 'post#show' do
+		scenario 'list all the post' do
 			expect(current_path).to have_content('/topics/1/posts')
 			expect(page).to have_content('post1 (CHECK TOPIC)')
 			expect(page).to have_content('post2 (CHECK TOPIC)')
-		
-
 		end
 
-		it 'show post1' do
-
+		scenario 'show post1'  do
 			visit('/topics/1/posts')
 			expect(current_path).to have_content('/topics/1/posts')
 			click_link('post1 (CHECK TOPIC)')
-
 			expect(current_path).to have_content('/topics/1/posts/1')
 			expect(page).to have_content('post1')
 			expect(page).to have_content('Tags: check')
 			expect(page).to have_content('body of post1')
-
 		end
 
-		it 'show post2' do
-
+		scenario 'show post2' do
 			visit('/topics/1/posts')
 			expect(current_path).to have_content('/topics/1/posts')
-			
 			click_link('post2 (CHECK TOPIC)')
-
 			expect(current_path).to have_content('/topics/1/posts/2')
 			expect(page).to have_content('post2')
 			expect(page).to have_content('Tags: check')
 			expect(page).to have_content('body of post2')
+		end
+  end
 
+	feature "posts#edit" do
+		scenario 'edit posts2' do
+			click_link('post2 (CHECK TOPIC)')
+			expect(current_path).to have_content('/topics/1/posts/2')
+			click_link('Edit')
+			expect(current_path).to have_content('/topics/1/posts/2/edit')
+			fill_in('post_title', with:'new_title')
+			fill_in('post_body', with:'body of new_title')
+			click_button('submit')
+			expect(current_path).to have_content('/topics/1/posts/2')
+      expect(page).to have_content('Post was successfully updated.')
+			expect(page).to have_content('new_title')
+			expect(page).to have_content('body of new_title')
 		end
 
-	end
+		scenario 'edit post with invalid field data' do
+			click_link('post2 (CHECK TOPIC)')
+			expect(current_path).to have_content('/topics/1/posts/2')
+			click_link('Edit')
+			expect(current_path).to have_content('/topics/1/posts/2/edit')
+			fill_in('post_title', with:'')
+			fill_in('post_body', with:'')
+			click_button('submit')
+			expect(page).to have_content("Title can't be blank, Title is too short (minimum is 3 characters)")
+			expect(page).to have_content("Body can't be blank, Body is too short (minimum is 3 characters)")
+		end
+  end
 
-	describe "posts#delete" do
-
-		before{
-			Post.create!(title:'post1',body:'body of post1',topic_id:1,tag_ids:[1])
-			Post.create!(title:'post2',body:'body of post2',topic_id:1,tag_ids:[1])
-			
-			visit('/')
-			expect(page).to have_content('check topic')
-
-			click_link('check topic')
-			expect(page).to have_content('Name: check topic')
-
-			click_link('All Posts')
-			expect(current_path).to have_content('/topics/1/posts')
-
-		}
-
-		it 'delete posts2' do
-			
+	feature "posts#delete" do
+		scenario 'delete posts2' do
 			click_link('post2 (CHECK TOPIC)')
 			expect(current_path).to have_content('/topics/1/posts/2')
 			click_link('Delete')
-
 			expect(current_path).to have_content('/topics/1/posts')
 			expect(page).to have_content('Post was successfully destroyed.')
-		
 		end
 
-		it 'delete post1' do			
-			
+		scenario 'delete post1' do
 			click_link('post1 (CHECK TOPIC)')
 			expect(current_path).to have_content('/topics/1/posts/1')
 			click_link('Delete')
-
 			expect(current_path).to have_content('/topics/1/posts')
 			expect(page).to have_content('Post was successfully destroyed.')
-
 		end
 	end
-
 end

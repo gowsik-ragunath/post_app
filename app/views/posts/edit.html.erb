@@ -1,11 +1,4 @@
+<%= link_to 'Delete', topic_post_path , method: :delete, class: "btn btn-danger d-inline-block  post-btn",
+            data: { confirm: 'Are you sure?' } %>
+<h2>Edit Post</h2>
 <p><%= render 'form', edit_post: @post %></p>
-			
-<div class="container">
-	<div class="row">
-		<div class="col-md-6">	
-			<%= button_to 'Delete', topic_post_path , method: :delete, class: "btn btn-danger show-btn", 
-                         data: { confirm: 'Are you sure?' } %>
-			<%= button_to 'Edit', edit_topic_post_path , method: :get, class: "btn btn-warning show-btn" %>
-		</div>
-	</div>
-</div>

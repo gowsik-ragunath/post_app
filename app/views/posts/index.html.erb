@@ -1,47 +1,42 @@
-<div class="container">
-	<div class="row">
-		<div class="col-md-12">
-		  
-<% flash.each do |key, value| %>
-    <div class="<%= flash_class(key) %>">
+<div id="paginate"><%= will_paginate @posts, renderer: BootstrapPagination::Rails,remote: true %></div>
+<%= render(partial: 'posts/index') %>
 
-    <%= content_tag :div, class: "alert alert-#{['success','notice'].include?(key) ? 'success' : 'danger'}" do %>
-      <%= value %>
+<% if not params[:topic_id].nil? %>
+  <% if not  current_user.nil? %>
+    <div class="text-center"> <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-dark btn-lg', id: "new_link", remote:true %>
+    </div><%= render "new_post_modal" %>
+  <% end %>
+  <div id="generated"></div>
+  <div id="exist">
+    <% @posts.recent.each do |post| %>
+      <%= render(partial: "post", locals: {post: post}) %>
     <% end %>
- <% end %>
-		
-			
-			<br>
-			 
-			 <% if not params[:topic_id].nil? %>
-			 <%= will_paginate @posts, renderer: BootstrapPagination::Rails%>
-				 <%= link_to 'New Post' , new_topic_post_path(params[:topic_id]),class: 'btn btn-primary btn-lg btn-block' %>
-				 <br>
+  </div>
+<% else %>
+  <div id="generated"></div>
+  <div id="exist">
+    <% @posts.recent.group_by{ |t| t.topic_id }.each do |topic , posts| %>
+      <h1 class="text-center"> <%= posts.first.topic.name %> </h1>
+      <% posts.each do |post| %>
+        <%= render(partial: "post", locals: {post: post}) %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+<%= will_paginate @posts, renderer: BootstrapPagination::Rails %>
 
-					<ul class="post-list">
-						<% @posts.each do |f| %>
-							<h2><%= link_to f.title+" ("+f.topic.name.upcase+")", topic_post_path(f.topic_id,f), class: "list-heading" %></h2>
-							<li class="list-body"><p><%= f.body %></p></li>
-						<% end %>
-					</ul>
-					<%= will_paginate @posts, renderer: BootstrapPagination::Rails%>
-				<% else %>
-					<ul class="post-list">
-						<% @topic_posts.each do |topic , posts| %>
-							<h1 class="text-center"> <%= Topic.find(topic).name  %> </h1>
-							<br>	
-							<% posts.each do |f| %>
-								<h2><%= link_to f.title+" ("+f.topic.name.upcase+")", topic_post_path(f.topic_id,f), class: "list-heading" %></h2>
-								<li class="list-body"><p><%= f.body %></p></li>
-							<% end %>
-						<% end %>
-					</ul>
-			<% end%>
-			<br>
+<script>
+    $(document).ready(function (event) {
+        $("#date_from").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+        $("#date_to").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+</script>
 
-			<%#= will_paginate @post, renderer: BootstrapPagination::Rails %>
-		</div>
-		<div class="co-md-6"></div>
-	</div>
-</div>
-			
+
+
+
+

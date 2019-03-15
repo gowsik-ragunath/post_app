@@ -1,11 +1,29 @@
+$state-danger-text: #dc3545;
+
+
+
 body{
 	padding:80px;
 }
 
+::-webkit-calendar-picker-indicator { display: none; }
+
+.ui-datepicker
+{
+  margin-top: 0px;
+  z-index: 1003 !important;
+}
 
 .post-btn{
 	margin-left:10px;
 	float:right;
+}
+
+.post-body{
+  font-weight: 400;
+  font-style: normal;
+  font-size: 21px;
+  line-height: 1.58;
 }
 
 .post-list{
@@ -25,9 +43,9 @@ body{
 	}
 }
 .pagination{
-	justify-content: center;
+	justify-content: center !important;
 	li{
-		border: 1px solid #ddd;
+		border: 0.5px solid #ddd;
   		padding: 8px 16px;
   		text-decoration: none;
 	}
@@ -35,15 +53,52 @@ body{
 
 
 .rating-form{
-	float:right;
+  display: block;
 	.form-check{
-		float:right;
+		display: inline;
 	}
 }
-
-
 
 .show-btn{
 	float:left;
 	margin-right:20px;
+}
+
+.rating-view{
+  padding: 2px;
+  border: gold 2px solid ;
+  display:inline;
+}
+
+.field_with_errors {
+  textarea , input{
+    border-radius: 0.25rem;
+    border: 1px solid  $state-danger-text !important;
+    padding-right: 2.25rem;
+  }
+}
+
+.error_small{
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545;
+}
+
+.btn-space{
+  margin-left:10px;
+}
+
+.read-status{
+  background-color: #42f486;
+  color: #000000;
+  padding: 3px;
+  border-radius: 5px;
+}
+
+.unread-status{
+  background-color: #dc3545;
+  color: #F7F7F7;
+  padding: 3px;
+  border-radius: 5px;
 }

@@ -1,38 +1,44 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
+<h1>Topics</h1>
+<div><%= will_paginate @topics, renderer: BootstrapPagination::Rails%></div>
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th>Name</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @topics.each do |topic| %>
+    <tr>
+      <td><%= link_to topic.name, topic%>
+        <% if can? :destroy, topic %>
+          <%= link_to 'Destroy', topic, method: :delete, data: { confirm: 'Are you sure?' },class: 'btn btn-danger post-btn' %>
+        <% end %>
+        <% if can? :edit, topic %>
+          <%= link_to 'Edit', edit_topic_path(topic),class: 'btn btn-warning post-btn' %>
+        <% end %>
+        <%= link_to 'Show', topic ,class: 'btn btn-primary post-btn'%>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+<%= link_to 'New Topic', new_topic_path, class: "btn btn-primary" %>
+<input type="button" class="btn btn-secondary webpush-button" value="Send Push" onclick="sendPush()"/>
 
-      <% flash.each do |name, msg| %>
-        <%= content_tag :div, msg, class: "alert alert-info" %>
-      <% end %>
+<script>
 
-      <h1>Topics</h1>
+    function sendPush() {
+        navigator.serviceWorker.register('/serviceworker.js', {scope: './'})          //5
+            .then(function (registration) {
+                const title = 'Push Notification';
+                const options = {
+                    "notification": {
+                        icon: 'logo.png',
+                        body: "push notification body"
+                    }
+                };
+                registration.showNotification(title, options);
+            })
+    };
 
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Name</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% @topics.each do |topic| %>
-            <tr>
-              <td><%= link_to topic.name, topic%>
-              <%= link_to 'Destroy', topic, method: :delete, data: { confirm: 'Are you sure?' },class: 'btn btn-danger post-btn' %>
-              <%= link_to 'Edit', edit_topic_path(topic),class: 'btn btn-warning post-btn' %>
-              <%= link_to 'Show', topic ,class: 'btn btn-primary post-btn'%>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-
-      <br>
-
-      <%= link_to 'New Topic', new_topic_path, class: "btn btn-primary" %>
-
-
-</div>
-</div>
-</div>
+</script>

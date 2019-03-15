@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_22_120238) do
+ActiveRecord::Schema.define(version: 2019_03_04_113947) do
 
   create_table "comments", force: :cascade do |t|
     t.string "commenter"
@@ -18,7 +18,20 @@ ActiveRecord::Schema.define(version: 2019_01_22_120238) do
     t.integer "post_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
     t.index ["post_id"], name: "index_comments_on_post_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "poly_rates", force: :cascade do |t|
+    t.integer "rating"
+    t.string "rateable_type"
+    t.integer "rateable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["rateable_type", "rateable_id"], name: "index_poly_rates_on_rateable_type_and_rateable_id"
+    t.index ["user_id"], name: "index_poly_rates_on_user_id"
   end
 
   create_table "posts", force: :cascade do |t|
@@ -27,7 +40,13 @@ ActiveRecord::Schema.define(version: 2019_01_22_120238) do
     t.integer "topic_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image_file_name"
+    t.string "image_content_type"
+    t.bigint "image_file_size"
+    t.datetime "image_updated_at"
+    t.integer "user_id"
     t.index ["topic_id"], name: "index_posts_on_topic_id"
+    t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
   create_table "posts_tags", id: false, force: :cascade do |t|
@@ -37,19 +56,19 @@ ActiveRecord::Schema.define(version: 2019_01_22_120238) do
     t.index ["tag_id"], name: "index_posts_tags_on_tag_id"
   end
 
+  create_table "posts_users_reads", id: false, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "post_id"
+    t.index ["post_id"], name: "index_posts_users_reads_on_post_id"
+    t.index ["user_id"], name: "index_posts_users_reads_on_user_id"
+  end
+
   create_table "ratings", force: :cascade do |t|
     t.integer "rating"
     t.integer "post_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["post_id"], name: "index_ratings_on_post_id"
-  end
-
-  create_table "tag_post_members", force: :cascade do |t|
-    t.integer "tag_id"
-    t.integer "post_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "tags", force: :cascade do |t|
@@ -62,6 +81,28 @@ ActiveRecord::Schema.define(version: 2019_01_22_120238) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "user_comment_ratings", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "comment_id"
+    t.integer "rating_id"
+    t.index ["comment_id"], name: "index_user_comment_ratings_on_comment_id"
+    t.index ["rating_id"], name: "index_user_comment_ratings_on_rating_id"
+    t.index ["user_id"], name: "index_user_comment_ratings_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "admin", default: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
 end

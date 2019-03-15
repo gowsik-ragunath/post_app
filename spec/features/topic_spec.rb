@@ -1,91 +1,66 @@
 require 'rails_helper'
 
-RSpec.describe '#topics' do
-	
+RSpec.feature '#topics' do
+	before{
+		sign_in_auth(true)
+		visit('/')
+		click_link('New Topic')
+		expect(current_path).to have_content('/topics/new')
+	}
 
-	describe 'topics#new success'  do
-		it 'visit new topic page' do
-			visit('/')
-			click_link('New Topic')
-
-			expect(current_path).to have_content('/topics/new')
+	feature 'topics#new success'  do
+		scenario 'visit new topic page' do
 			fill_in('topic_name', with: 'rspec test topic')
 			click_button('Create Topic')
-
 			expect(current_path).to have_content('/topics')
+			expect(page).to have_content('Topic was successfully created.')
 			expect(page).to have_content('rspec test topic')
 		end
 	end
 
-
-	describe 'topics#new fail'  do
-		it 'visit new topic page' do
-			visit('/')
-			click_link('New Topic')
-
-			expect(current_path).to have_content('/topics/new')
+	feature 'topics#new fail'  do
+		scenario 'visit new topic page' do
 			fill_in('topic_name', with: '')
 			click_button('Create Topic')
+			expect(page).to have_content("can't be blank, is too short (minimum is 3 characters)")
+    end
 
-			expect(page).to have_content("1 error prohibited this topic from being saved:")
-			expect(page).to have_content("Name can't be blank")
+		scenario 'visit new topic page' do
+			fill_in('topic_name', with: 'abcdefghijklmnopqurstuvwxyz')
+			click_button('Create Topic')
+			expect(page).to have_content("is too long (maximum is 25 characters)")
 		end
 	end
 
-	describe 'topics#show'  do
-		it 'show new topic' do
-			visit('/')
-			click_link('New Topic')
-
-			expect(current_path).to have_content('/topics/new')
+	feature 'topics#show'  do
+		scenario 'show new topic' do
 			fill_in('topic_name', with: 'news')
 			click_button('Create Topic')
-			
 			expect(current_path).to have_content('/topics')
 			expect(page).to have_content('news')
-			
 			click_link('news')
-			expect(page).to have_content('Name: news')
+			expect(page).to have_content('news')
 			click_link('Back')
-
 			expect(current_path).to have_content('/topics')
 		end
 	end
 
-
-	describe 'topics#edit fail'  do
-		it 'update topic' do
-			visit('/')
-			click_link('New Topic')
-
-			expect(current_path).to have_content('/topics/new')
+	feature 'topics#edit fail'  do
+		scenario 'update topic' do
 			fill_in('topic_name', with: '')
 			click_button('Create Topic')
-			
 			expect(current_path).to have_content('/topics')
-			
-			expect(page).to have_content("1 error prohibited this topic from being saved:")
-			expect(page).to have_content("Name can't be blank")
 		end
 	end
 
-
-	describe 'topics#delete'  do
-		it 'visit topic page' do
-			visit('/')
-			click_link('New Topic')
-
-			expect(current_path).to have_content('/topics/new')
+	feature 'topics#delete'  do
+		scenario 'visit topic page' do
 			fill_in('topic_name', with: 'news')
 			click_button('Create Topic')
-			
 			expect(current_path).to have_content('/topics')
 			expect(page).to have_content('news')
-			
 			click_link('Destroy')
-
 			expect(page).to have_content('Topic was successfully destroyed.')
 		end
 	end
-
 end

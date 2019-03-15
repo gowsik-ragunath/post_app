@@ -5,7 +5,15 @@ require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
+require 'devise'
 require 'capybara/rspec'
+require 'capybara/webkit/matchers'
+require "paperclip/matchers"
+require 'sidekiq/testing'
+
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+# require_relative 'support/controller_macros'
+# require 'factories'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -60,6 +68,52 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
+  Capybara.javascript_driver = :webkit
 
-    Capybara.javascript_driver = :webkit
+  config.before(:suite) do
+    DatabaseCleaner[:active_record].strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+
+
+  Shoulda::Matchers.configure do |config|
+    config.integrate do |with|
+      # Choose a test framework:
+      with.test_framework :rspec
+      with.library :rails
+    end
+  end
+
+  config.include Paperclip::Shoulda::Matchers
+
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :view
+  config.extend ControllerMacros, :type => :controller
+
+  config.expect_with :rspec do |expectations|
+    expectations.syntax = [:expect, :should]
+  end
+
+  config.render_views = true
+
+  # config.include WaitForAjax, type: :feature
+
+  config.include AuthenticationHelper, type: :feature
+
+  config.include Requests::JsonHelpers, :type => :controller
+
+  # config.include(Capybara::Webkit::RspecMatchers, :type => :feature)
+  #
+  config.before(:each) do
+      Sidekiq::Worker.clear_all
+  end
+  Sidekiq::Testing.fake!
 end

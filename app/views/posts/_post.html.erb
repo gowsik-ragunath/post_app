@@ -1,0 +1,15 @@
+<ul class="post-list" id="list-post">
+  <h2><%= link_to post.title+" ("+post.topic.name.upcase+")", topic_post_path(post.topic_id,post), class: "list-heading" %></h2>
+  <li class="list-body"> <%if post.poly_rates.present? %><p class="d-inline"> Rating : <%= post.poly_rates.post_average %></p>
+    <% end %>
+    <%if post.comments.present? %>
+      <p class="d-inline"> Comment : <%= post.comments.size %></p>
+    <% end %>
+    <p class="d-inline">
+      <% if post.users.include?(current_user) %>
+        <span class="read-status"> Read </span>
+      <% else %>
+        <span class="unread-status"> Unread</span>
+      <% end %></p></li>
+  <li class="list-body"><p><%= post.body %></p></li>
+</ul>

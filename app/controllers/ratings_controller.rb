@@ -1,32 +1,19 @@
 class RatingsController < ApplicationController
-  before_action :set_rating, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!
+  before_action :set_topic
+  before_action :set_post
+  before_action :set_rating, only: [ :show, :destroy ]
 
-  # GET /ratings
-  # GET /ratings.json
   def index
-    @ratings = Rating.all
+    @ratings = @post.ratings
   end
 
-  # GET /ratings/1
-  # GET /ratings/1.json
-  def show
-  end
-
-  # GET /ratings/new
   def new
-    @rating = Rating.new
-    @post = Post.all
+    @rating = @post.ratings.new
   end
 
-  # GET /ratings/1/edit
-  def edit
-  end
-
-  # POST /ratings
-  # POST /ratings.json
   def create
-    @rating = Rating.new(rating_params)
-    @rating.post_id = params[:post_id]
+    @rating = @post.ratings.new(rating_params)
     respond_to do |format|
       if @rating.save
         format.html { redirect_to topic_post_path(params[:topic_id],params[:post_id]), notice: 'Rating was successfully created.' }
@@ -38,38 +25,34 @@ class RatingsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /ratings/1
-  # PATCH/PUT /ratings/1.json
-  def update
+  def destroy
     respond_to do |format|
-      if @rating.update(rating_params)
-        format.html { redirect_to topic_post_path(params[:topic_id],params[:post_id]), notice: 'Rating was successfully updated.' }
-        format.json { render :show, status: :ok, location: @rating }
+      if @rating.destroy
+        flash[:destroy] = 'Rating was successfully destroyed.'
+        format.html { redirect_to topic_post_path }
+        format.json { head :no_content }
       else
-        format.html { render :edit }
-        format.json { render json: @rating.errors, status: :unprocessable_entity }
+        flash[:destroy] = 'Rating doesn\'t exist.'
+        format.html { redirect_to topic_post_path }
+        format.json { head :not_found }
       end
     end
   end
 
-  # DELETE /ratings/1
-  # DELETE /ratings/1.json
-  def destroy
-    @rating.destroy
-    respond_to do |format|
-      format.html { redirect_to topic_post_ratings_url, notice: 'Rating was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+  private
+  def set_topic
+    @topic = Topic.find(params[:topic_id])
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_rating
-      @rating = Rating.find(params[:id])
-    end
+  def set_post
+    @post = @topic.posts.find(params[:post_id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def rating_params
-      params.permit(:rating, :post_id)
-    end
+  def set_rating
+    @rating = Rating.find(params[:id])
+  end
+
+  def rating_params
+    params.permit(:rating)
+  end
 end

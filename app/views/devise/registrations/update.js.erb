@@ -1,0 +1,12 @@
+$('#flash-notice').hide();
+$('#flash-alert').hide();
+<% if resource.errors.any? %>
+  $("#error_explanation").remove();
+  $("#profile-modal-window").find(".modal-body").html("<%= j render('devise/registrations/edit') %>");
+<% else %>
+  if($('#profile-modal-window').is(':visible'))
+  {
+    $("#profile-modal-window").modal('toggle');
+  }
+  $('#flash-alert').show().html('<div id="flash-notice" class="alert alert-success">Your account has been updated successfully.</div>');
+<% end %>
