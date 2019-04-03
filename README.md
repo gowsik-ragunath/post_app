@@ -1,3 +1,3 @@
 # README
 
-***Live demo*** ---------> [text](https://stark-hamlet-91640.herokuapp.com/)
+***Live demo*** ---------> [click here!](https://stark-hamlet-91640.herokuapp.com/)
